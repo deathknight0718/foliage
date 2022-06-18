@@ -1,0 +1,66 @@
+##################################################
+# Git Ignore.
+##################################################
+
+# Filter Files
+**/*.class
+**/*.jar
+**/*.war
+**/*.ear
+**/*.iml
+**/*.o
+**/*.so
+**/*.so.*
+**/*.swp
+**/*.log
+**/*.out
+**/*.db
+**/*.pc
+**/*.tar.gz
+
+!/repository/*.jar
+!**/src/main/**/*.jar
+!**/src/main/**/*.tar.gz
+
+# Maven Shade Plugin
+**/dependency-reduced-pom.xml
+
+# PID Files
+**/PID
+
+# Virtual Machine Crash Logs, see http://www.java.com/en/download/help/error_hotspot.xml
+**/hs_err_pid*
+
+# Eclipse Target Directory
+target/
+test-output/
+allure-results/
+node_modules/
+
+# Logger and Temp Directory
+/log/
+/logs/
+/data/
+/temp/
+/work/
+/webapps/
+
+# Eclipse Plugin Directory
+**/.settings/
+
+# Eclipse Plugin File
+**/.project
+**/.allure/
+**/.cproject
+**/.classpath
+**/.cache-*
+
+# Subversion direntory
+**/.svn/
+
+# Filter Files
+
+# Filter Links
+
+/.metadata/
+/.idea/
