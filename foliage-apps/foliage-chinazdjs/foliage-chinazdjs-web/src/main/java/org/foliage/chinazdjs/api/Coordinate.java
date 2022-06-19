@@ -15,10 +15,43 @@
  */
 package org.foliage.chinazdjs.api;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 /**
  * 
  * @author deathknight0718@qq.com
  */
 public class Coordinate {
 
+    // ------------------------------------------------------------------------
+
+    private final double longitude, latitude;
+
+    // ------------------------------------------------------------------------
+
+    public Coordinate(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    // ------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE) //
+            .append("longitude", longitude).append("latitude", latitude) //
+            .toString();
+    }
+
+    // ------------------------------------------------------------------------
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+    
 }

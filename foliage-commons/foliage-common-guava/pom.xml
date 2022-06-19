@@ -39,8 +39,8 @@
     </dependencies>
     <distributionManagement>
         <snapshotRepository>
-            <id>foliage.guava</id>
-            <url>https://maven.pkg.github.com/deathknight0718/foliage-guava</url>
+            <id>foliage.snapshots</id>
+            <url>https://maven.pkg.github.com/deathknight0718/foliage</url>
         </snapshotRepository>
     </distributionManagement>
     <build>

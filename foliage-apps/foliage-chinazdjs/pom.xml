@@ -25,5 +25,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>foliage-chinazdjs-web</module>
+        <module>foliage-chinazdjs-assembly</module>
 	</modules>
 </project>

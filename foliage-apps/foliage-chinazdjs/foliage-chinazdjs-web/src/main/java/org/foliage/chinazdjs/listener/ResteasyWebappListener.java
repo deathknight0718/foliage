@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2020 Greatwall Inc.
+ * Copyright 2022 deathknight0718@qq.com.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy
@@ -15,14 +15,19 @@
  ******************************************************************************/
 package org.foliage.chinazdjs.listener;
 
+import java.sql.SQLException;
 import java.util.Set;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRegistration;
+import javax.sql.DataSource;
 import javax.ws.rs.core.Application;
 
+import org.foliage.chinazdjs.api.impl.DeviceJdbcSession;
 import org.foliage.chinazdjs.rest.RestApi;
 import org.foliage.chinazdjs.util.ServletUtils;
 import org.foliage.guava.common.collect.Sets;
@@ -60,13 +65,14 @@ public class ResteasyWebappListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
         try {
+            initTables();
             ListenerBootstrap bootstrap = new ListenerBootstrap(context);
             deployment = bootstrap.createDeployment();
             deployment.start();
             context.setAttribute(ResteasyDeployment.class.getName(), deployment);
             ServletRegistration.Dynamic resteasy = context.addServlet(RESTEASY_SERVLET_NAME, HttpServletDispatcher.class);
             resteasy.setInitParameter("javax.ws.rs.Application", InternalApplication.class.getName());
-            resteasy.addMapping(ServletUtils.obtainParameterAsString(context, RESTEASY_SERVLET_PATTERN, "/v1/*"));
+            resteasy.addMapping(ServletUtils.obtainParameterAsString(context, RESTEASY_SERVLET_PATTERN, "/api/v1/*"));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(-1);
@@ -75,8 +81,20 @@ public class ResteasyWebappListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        if (deployment != null)
-            deployment.stop();
+        if (deployment != null) deployment.stop();
+    }
+
+    private static DeviceJdbcSession jdbcSession() throws SQLException, NamingException {
+        DataSource source = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/h2");
+        return new DeviceJdbcSession(source.getConnection());
+    }
+
+    private static void initTables() throws SQLException, Exception {
+        LOGGER.info("Init h2 database tables.");
+        try (DeviceJdbcSession session = jdbcSession()) {
+            session.debugTables();
+            session.commit();
+        }
     }
 
     // ------------------------------------------------------------------------

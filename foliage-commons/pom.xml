@@ -23,4 +23,7 @@
 	<artifactId>foliage-commons</artifactId>
 	<description>Foliage Commons</description>
 	<packaging>pom</packaging>
+	<modules>
+		<module>foliage-common-core</module>
+	</modules>
 </project>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+    <dependencySets>
+        <dependencySet>
+            <scope>compile</scope>
+            <outputDirectory>webapps</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <directoryMode>0775</directoryMode>
+            <fileMode>0664</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <includes>
+                <include>org.foliage:*</include>
+            </includes>
+            <excludes>
+                <exclude>org.foliage:foliage-assembly-tomcat</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <scope>compile</scope>
+            <outputDirectory>lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <directoryMode>0775</directoryMode>
+            <fileMode>0664</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <includes>
+                <include>com.h2database:h2</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</component>

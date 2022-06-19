@@ -23,4 +23,11 @@
 	<artifactId>foliage-assemblies</artifactId>
 	<description>Foliage Assemblies</description>
 	<packaging>pom</packaging>
+	<properties>
+		<deploy.repository.id>foliage.snapshots</deploy.repository.id>
+		<deploy.url>https://maven.pkg.github.com/deathknight0718/foliage/</deploy.url>
+	</properties>
+	<modules>
+		<module>foliage-assembly-tomcat</module>
+	</modules>
 </project>

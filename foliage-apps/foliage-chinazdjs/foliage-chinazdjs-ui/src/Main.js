@@ -91,7 +91,7 @@ function MachineList() {
           </CardContent>
           <CardActions>
             <Button size="small">详细信息</Button>
-            <Button size="small" onClick={useCallback(() => navigate("/map?devcode=14811212136", { replace : true }), [navigate])}>地理信息</Button>
+            <Button size="small" onClick={useCallback(() => navigate("/geographic?devcode=14811212136", { replace : true }), [navigate])}>地理信息</Button>
             <Button size="small">删除设备</Button>
           </CardActions>
         </Card>
