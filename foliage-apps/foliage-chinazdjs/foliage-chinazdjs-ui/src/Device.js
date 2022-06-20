@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Typography, Paper, Box, Stack } from "@mui/material";
 import { TextField } from "@mui/material";
@@ -10,6 +10,7 @@ import { Button, IconButton } from "@mui/material";
 import { Card, CardContent, CardActions } from "@mui/material";
 import { AppBar, Toolbar } from "@mui/material";
 import { Search, Menu, Feed } from "@mui/icons-material";
+import { AxiosContext } from "./Context";
 
 function Header() {
   return (
@@ -34,7 +35,8 @@ function Footer(props) {
 }
 
 function MachineDialog(props) {
-  const { axios, opened, onSwitching } = props;
+  const axios = useContext(AxiosContext);
+  const { opened, onSwitching } = props;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({ devcode: '', name: '', message: null });
   const handleSubmit = async () => {
@@ -45,7 +47,7 @@ function MachineDialog(props) {
       onSwitching();
       setLoading(false);
     } catch (e) {
-      setData({ ...data, message: e.message })
+      setData({ ...data, message: e.response.data })
       setLoading(false);
     }
   };
@@ -77,37 +79,44 @@ function MachineDialog(props) {
   );
 }
 
-function MachineList() {
+function DeviceCard(props) {
+  const { device: { id, name, devcode } } = props;
   const navigate = useNavigate();
+  const onGeographic = useCallback(() => navigate(`/geographic/${id}`, { replace: true }), [navigate, id]);
+  return (
+    <Card sx={{ backgroundColor: "#FAFAFA" }}>
+      <CardContent>
+        <Typography sx={{ fontSize: 14, mb: 1.5 }}>{name}</Typography>
+        <Typography sx={{ fontSize: 12 }}>{devcode}</Typography>
+      </CardContent>
+      <CardActions>
+        <Button size="small">详细信息</Button>
+        <Button size="small" onClick={onGeographic}>地理信息</Button>
+        <Button size="small">删除设备</Button>
+      </CardActions>
+    </Card>
+  );
+}
+
+function DeviceList() {
+  const axios = useContext(AxiosContext);
+  const [devices, setDevices] = useState([]);
+  useEffect(() => { axios.get(`/api/v1/device/query-by-paging?offset=0&limit=10`).then((response) => setDevices([...response.data])); }, [axios, devices.length]);
   return (
     <Container sx={{ pt: 9, pb: 2, px: 2 }}>
-      <Stack spacing={1}>
-        <Card sx={{ backgroundColor: "#FAFAFA" }}>
-          <CardContent>
-            <Typography sx={{ fontSize: 12, mb: 1.5 }} color="text.secondary">XXXXXXXXXX</Typography>
-            <Typography sx={{ fontSize: 14, mb: 1.5 }}>设备名称</Typography>
-            <Typography sx={{ fontSize: 12 }}>地址信息 XXXXXXXXXXXXXXXXXXXXX</Typography>
-          </CardContent>
-          <CardActions>
-            <Button size="small">详细信息</Button>
-            <Button size="small" onClick={useCallback(() => navigate("/geographic?devcode=14811212136", { replace : true }), [navigate])}>地理信息</Button>
-            <Button size="small">删除设备</Button>
-          </CardActions>
-        </Card>
-      </Stack>
+      <Stack spacing={1}>{devices.map((device) => <DeviceCard key={`card-${device.id}`} device={device} />)}</Stack>
     </Container>
   );
 }
 
 export default function BaiList(props) {
-  const { axios } = props;
   const [dialogOpened, dialogSwitching] = useState(false);
   return (
     <Box>
       <Header />
-      <MachineList />
+      <DeviceList />
       <Footer onFeed={() => dialogSwitching(true)} onSearch={() => dialogSwitching(true)} />
-      <MachineDialog axios={axios} opened={dialogOpened} onSwitching={() => dialogSwitching(false)} />
+      <MachineDialog opened={dialogOpened} onSwitching={() => dialogSwitching(false)} />
     </Box>
   );
 }
