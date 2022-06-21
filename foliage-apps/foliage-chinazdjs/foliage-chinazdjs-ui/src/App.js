@@ -7,7 +7,11 @@ import Geographic from "./Geographic";
 import Specification from "./Specification";
 import { AxiosProvider } from "./Context";
 
-const instance = axios.create({ baseURL: "https://localhost:7443/foliage-chinazdjs-web" });
+const instance = axios.create({
+  baseURL: `${process.env.REACT_APP_HOST}/foliage-chinazdjs-web`,
+  withCredentials: true,
+  auth: { username: "tomcat", password: "secret" }
+});
 
 export default function App() {
   return (
@@ -17,7 +21,7 @@ export default function App() {
             <Route path="/" element={<Main />} />
             <Route path="/device" element={<Device />} />
             <Route path="/geographic/:id" element={<Geographic />} />
-            <Route path="/specification" element={<Specification />} />
+            <Route path="/specification/:id" element={<Specification />} />
           </Routes>
       </AxiosProvider>
     </BrowserRouter>

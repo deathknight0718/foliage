@@ -7,7 +7,7 @@ import { AxiosContext } from "./Context";
 
 function BackButton() {
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("/", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate("/device", { replace: true }), [navigate])
   return (
     <Fab sx={{ position: "fixed", left: 10, top: 10, zIndex: "tooltip" }} color="primary" size="small" onClick={onClick}>
       <ArrowBackIosNew />
@@ -19,7 +19,13 @@ export default function Geographic(props) {
   const axios = useContext(AxiosContext);
   const { id } = useParams();
   const [point, setPoint] = useState({ lng: 116.331398, lat: 39.897445 });
-  useEffect(() => { axios.get(`/api/v1/geographic/${id}`).then((response) => setPoint({ ...response.data.coordinate })); });
+  useEffect(() => {
+    axios.get(`/api/v1/geographic/${id}`)
+      .then((response) => {
+        const { longitude: lng, latitude: lat } = response.data.coordinate;
+        setPoint({ lng, lat });
+      });
+  }, [axios, id]);
   return (
     <div style={{ height: "100vh" }}>
       <BackButton />

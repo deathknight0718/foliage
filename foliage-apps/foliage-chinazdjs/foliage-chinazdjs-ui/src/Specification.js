@@ -1,113 +1,143 @@
-import * as axios from "axios";
-import React, { useState, useCallback } from "react";
+import * as echarts from "echarts";
+import React, { useState, useCallback, useEffect, useRef, useContext } from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Container, Typography, Paper, Box, Stack } from "@mui/material";
-import { TextField } from "@mui/material";
-import { LinearProgress, Collapse } from "@mui/material";
-import { Alert, AlertTitle } from "@mui/material";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
-import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { Button, IconButton } from "@mui/material";
-import { Card, CardContent, CardActions } from "@mui/material";
+import { Container, Typography, Box, Stack, Grid } from "@mui/material";
+import { Switch } from "@mui/material";
+import { ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { IconButton } from "@mui/material";
+import { Card, CardContent } from "@mui/material";
 import { AppBar, Toolbar } from "@mui/material";
-import { Search, Menu, Feed } from "@mui/icons-material";
+import { LinearProgress } from "@mui/material";
+import { ArrowBackIosNew } from "@mui/icons-material";
+import { AxiosContext } from "./Context";
 
-function Header() {
+function Header(props) {
+  const { loading } = props;
+  const navigate = useNavigate();
+  const onClick = useCallback(() => navigate("/device", { replace: true }), [navigate])
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}><Menu /></IconButton>
+        <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={onClick}><ArrowBackIosNew /></IconButton>
+        <Typography>设备信息</Typography>
       </Toolbar>
+      {loading && <LinearProgress />}
     </AppBar>
   );
 }
 
-function Footer(props) {
-  const { onFeed, onSearch } = props;
-  return (
-    <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
-      <BottomNavigation>
-        <BottomNavigationAction value="feed" icon={<Feed />} onClick={onFeed} />
-        <BottomNavigationAction value="search" icon={<Search />} onClick={onSearch} />
-      </BottomNavigation>
-    </Paper>
-  );
-}
-
-function MachineDialog(props) {
-  const { opened, onSwitching } = props;
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({ devcode: '', name: '', message: null });
-  const handleSubmit = async () => {
-    setLoading(true);
-    const response = await axios.post(`http://iot.scientop.com:7050/api/DeviceData/QueryRealDatas`, { row: 1, ...data });
-    if (response.data.rows.length === 0) setData({ ...data, message: "无法找到该设备" });
-    else {
-      const item = response.data.rows.find((i) => i !== undefined);
-      console.log(item);
-      setData({ devcode: '', name: '', message: null });
-      onSwitching();
+function Gauge(props) {
+  const { value, max, name } = props;
+  const [chart, setChart] = useState(null);
+  const ref = useRef();
+  useEffect(() => {
+    if (!ref.current) return;
+    if (!chart) {
+      const dom = ref.current;
+      const echart = echarts.init(dom);
+      setChart(echart);
+      return;
     }
-    setLoading(false);
-  };
-  const handleCancel = () => {
-    setData({ devcode: '', name: '', message: null });
-    onSwitching();
-  };
-  return (
-    <Dialog open={opened}>
-      <DialogTitle>设备注册</DialogTitle>
-      <DialogContent dividers>
-        <Stack spacing={2}>
-          <Collapse in={!!data.message}>
-            <Alert severity="error">
-              <AlertTitle>错误</AlertTitle>
-              {data.message}
-            </Alert>
-          </Collapse>
-          <TextField autoFocus margin="dense" label="识别码" fullWidth value={data.devcode} onChange={(event) => setData({ ...data, devcode: event.target.value })} />
-          <TextField margin="dense" label="别名" fullWidth value={data.name} onChange={(event) => setData({ ...data, name: event.target.value })} />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel}>取消</Button>
-        <Button onClick={handleSubmit}>注册</Button>
-      </DialogActions>
-      {loading && <LinearProgress />}
-    </Dialog>
-  );
+    const option = {
+      series: [{
+        name: "Pressure",
+        type: "gauge",
+        max,
+        axisLine: { lineStyle: { width: 7 } },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        splitLine: { show: false },
+        detail: { formatter: "{value}", fontSize: 10, offsetCenter: [0, "60%"] },
+        title: { fontSize: 12, offsetCenter: [0, "120%"] },
+        data: [{ value, name }],
+        progress: { show: true, width: 7 },
+      }]
+    };
+    chart.setOption(option);
+  }, [value, max, name, chart, setChart]);
+  return <div ref={ref} style={{ width: "100%", height: "100%" }}></div>;
 }
 
-function MachineList() {
-  const navigate = useNavigate();
+function DeviceCards(props) {
+  const { data } = props;
+  const { 手柄前进开关输入状态: c1v1, 手柄后退开关输入状态: c1v2, 手柄中位开关输入状态: c1v3 } = data;
+  const { 发动机转速: c2v1, 水温: c2v2, 机油压力: c2v3, 行车速度: c2v4, 振动频率: c2v5 } = data;
+  const { 发动机水温高报警: c3v1, 补油压力报警: c3v2, 空滤阻塞报警: c3v3, 液压真空度报警: c3v4 } = data;
+  const { 前行走压力: c4v1, 后行走压力: c4v2, 前振动压力: c4v3, 后振动压力: c4v4 } = data;
   return (
     <Container sx={{ pt: 9, pb: 2, px: 2 }}>
       <Stack spacing={1}>
         <Card sx={{ backgroundColor: "#FAFAFA" }}>
           <CardContent>
-            <Typography sx={{ fontSize: 12, mb: 1.5 }} color="text.secondary">XXXXXXXXXX</Typography>
-            <Typography sx={{ fontSize: 14, mb: 1.5 }}>设备名称</Typography>
-            <Typography sx={{ fontSize: 12 }}>地址信息 XXXXXXXXXXXXXXXXXXXXX</Typography>
+            <Typography sx={{ fontSize: 14, mb: 1.5 }}>设备状态</Typography>
+            <ToggleButtonGroup color="primary" value={[`c1v1${c1v1}`, `c1v2${c1v2}`, `c1v3${c1v3}`]} size="small">
+              <ToggleButton value="c1v11">前进</ToggleButton>
+              <ToggleButton value="c1v21">后退</ToggleButton>
+              <ToggleButton value="c1v31">停止</ToggleButton>
+            </ToggleButtonGroup>
           </CardContent>
-          <CardActions>
-            <Button size="small">详细信息</Button>
-            <Button size="small" onClick={useCallback(() => navigate("/map?devcode=14811212136", { replace : true }), [navigate])}>地理信息</Button>
-            <Button size="small">删除设备</Button>
-          </CardActions>
+        </Card>
+        <Card sx={{ backgroundColor: "#FAFAFA" }}>
+          <CardContent>
+            <Typography sx={{ fontSize: 14, mb: 1.5 }}>运行参数</Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={4} style={{ textAlign: "center" }}><Gauge value={Number(c2v1)} max={5000} name={"发动机转速"} /></Grid>
+              <Grid item xs={4} style={{ textAlign: "center" }}><Gauge value={Number(c2v2)} max={100} name={"水温"} /></Grid>
+              <Grid item xs={4} style={{ textAlign: "center" }}><Gauge value={Number(c2v3)} max={2} name={"机油压力"}/></Grid>
+              <Grid item xs={4} style={{ textAlign: "center" }}><Gauge value={Number(c2v4)} max={150} name={"行驶速度"} /></Grid>
+              <Grid item xs={4} style={{ textAlign: "center" }}><Gauge value={Number(c2v5)} max={200} name={"振动频率"} /></Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <Card sx={{ backgroundColor: "#FAFAFA" }}>
+          <CardContent>
+            <Typography sx={{ fontSize: 14, mb: 1.5 }}>报警状态</Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Switch color="error" disabled checked={c3v1 === "1"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Switch color="error" disabled checked={c3v2 === "1"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Typography variant="caption" display="block" gutterBottom>水温过高预警</Typography></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Typography variant="caption" display="block" gutterBottom>机油压力预警</Typography></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Switch color="error" disabled checked={c3v3 === "1"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Switch color="error" disabled checked={c3v4 === "1"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Typography variant="caption" display="block" gutterBottom>空滤阻塞预警</Typography></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Typography variant="caption" display="block" gutterBottom>液压真空预警</Typography></Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <Card sx={{ backgroundColor: "#FAFAFA" }}>
+          <CardContent>
+            <Typography sx={{ fontSize: 14, mb: 1.5 }}>控制参数</Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v1)} max={40000} name={"前行走压力"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v2)} max={40000} name={"后行走压力"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v3)} max={40000} name={"前振动压力"}/></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v4)} max={40000} name={"后振动压力"} /></Grid>
+            </Grid>
+          </CardContent>
         </Card>
       </Stack>
     </Container>
   );
 }
 
-export default function BaiList() {
-  const [dialogOpened, dialogSwitching] = useState(false);
+export default function Specification() {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
+  const { id } = useParams();
+  const axios = useContext(AxiosContext);
+  useEffect(() => {
+    axios.get(`api/v1/specification/${id}`)
+      .then((response) => {
+        const { data } = response.data;
+        setData(data);
+      })
+      .then(() => setLoading(false));
+  }, [axios, id, setLoading]);
   return (
     <Box>
-      <Header />
-      <MachineList />
-      <Footer onFeed={() => dialogSwitching(true)} onSearch={() => dialogSwitching(true)} />
-      <MachineDialog opened={dialogOpened} onSwitching={() => dialogSwitching(false)} />
+      <Header loading={loading} />
+      {!loading && <DeviceCards data={data} />}
     </Box>
   );
 }

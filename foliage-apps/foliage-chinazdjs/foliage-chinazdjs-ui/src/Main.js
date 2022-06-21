@@ -1,113 +1,60 @@
-import * as axios from "axios";
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Typography, Paper, Box, Stack } from "@mui/material";
-import { TextField } from "@mui/material";
-import { LinearProgress, Collapse } from "@mui/material";
-import { Alert, AlertTitle } from "@mui/material";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
-import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { Button, IconButton } from "@mui/material";
-import { Card, CardContent, CardActions } from "@mui/material";
+import { Box, Container, Divider, Grid } from "@mui/material";
+import { Card, CardContent } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import { AppBar, Toolbar } from "@mui/material";
-import { Search, Menu, Feed } from "@mui/icons-material";
+import { Menu, DeviceHub } from "@mui/icons-material";
 
 function Header() {
   return (
     <AppBar position="fixed">
       <Toolbar>
         <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}><Menu /></IconButton>
+        <Typography>中大工业设备移动端</Typography>
       </Toolbar>
     </AppBar>
   );
 }
 
-function Footer(props) {
-  const { onFeed, onSearch } = props;
-  return (
-    <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
-      <BottomNavigation>
-        <BottomNavigationAction value="feed" icon={<Feed />} onClick={onFeed} />
-        <BottomNavigationAction value="search" icon={<Search />} onClick={onSearch} />
-      </BottomNavigation>
-    </Paper>
-  );
-}
-
-function MachineDialog(props) {
-  const { opened, onSwitching } = props;
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({ devcode: '', name: '', message: null });
-  const handleSubmit = async () => {
-    setLoading(true);
-    const response = await axios.post(`http://iot.scientop.com:7050/api/DeviceData/QueryRealDatas`, { row: 1, ...data });
-    if (response.data.rows.length === 0) setData({ ...data, message: "无法找到该设备" });
-    else {
-      const item = response.data.rows.find((i) => i !== undefined);
-      console.log(item);
-      setData({ devcode: '', name: '', message: null });
-      onSwitching();
-    }
-    setLoading(false);
-  };
-  const handleCancel = () => {
-    setData({ devcode: '', name: '', message: null });
-    onSwitching();
-  };
-  return (
-    <Dialog open={opened}>
-      <DialogTitle>设备注册</DialogTitle>
-      <DialogContent dividers>
-        <Stack spacing={2}>
-          <Collapse in={!!data.message}>
-            <Alert severity="error">
-              <AlertTitle>错误</AlertTitle>
-              {data.message}
-            </Alert>
-          </Collapse>
-          <TextField autoFocus margin="dense" label="识别码" fullWidth value={data.devcode} onChange={(event) => setData({ ...data, devcode: event.target.value })} />
-          <TextField margin="dense" label="别名" fullWidth value={data.name} onChange={(event) => setData({ ...data, name: event.target.value })} />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel}>取消</Button>
-        <Button onClick={handleSubmit}>注册</Button>
-      </DialogActions>
-      {loading && <LinearProgress />}
-    </Dialog>
-  );
-}
-
-function MachineList() {
+function Modules(props) {
   const navigate = useNavigate();
+  const onClick = useCallback(() => navigate("/device", { replace: true }), [navigate])
   return (
     <Container sx={{ pt: 9, pb: 2, px: 2 }}>
       <Stack spacing={1}>
         <Card sx={{ backgroundColor: "#FAFAFA" }}>
           <CardContent>
-            <Typography sx={{ fontSize: 12, mb: 1.5 }} color="text.secondary">XXXXXXXXXX</Typography>
-            <Typography sx={{ fontSize: 14, mb: 1.5 }}>设备名称</Typography>
-            <Typography sx={{ fontSize: 12 }}>地址信息 XXXXXXXXXXXXXXXXXXXXX</Typography>
+            <Typography sx={{ fontSize: 14 }}>组件列表</Typography>
           </CardContent>
-          <CardActions>
-            <Button size="small">详细信息</Button>
-            <Button size="small" onClick={useCallback(() => navigate("/geographic?devcode=14811212136", { replace : true }), [navigate])}>地理信息</Button>
-            <Button size="small">删除设备</Button>
-          </CardActions>
+          <Divider />
+          <CardContent>
+            <Grid container spacing={1}>
+              <Grid item xs={3} style={{ textAlign: "center" }}>
+                <Button onClick={onClick}>
+                  <DeviceHub />
+                </Button>
+              </Grid>
+              <Grid item xs={3} style={{ textAlign: "center" }}></Grid>
+              <Grid item xs={3} style={{ textAlign: "center" }}></Grid>
+              <Grid item xs={3} style={{ textAlign: "center" }}></Grid>
+              <Grid item xs={3} style={{ textAlign: "center" }}>
+                <Typography variant="caption">设备监控</Typography>
+              </Grid>
+            </Grid>
+          </CardContent>
         </Card>
       </Stack>
     </Container>
-  );
+  )
 }
 
-export default function BaiList() {
-  const [dialogOpened, dialogSwitching] = useState(false);
+export default function Main() {
   return (
     <Box>
       <Header />
-      <MachineList />
-      <Footer onFeed={() => dialogSwitching(true)} onSearch={() => dialogSwitching(true)} />
-      <MachineDialog opened={dialogOpened} onSwitching={() => dialogSwitching(false)} />
+      <Modules />
     </Box>
   );
 }
