@@ -50,6 +50,13 @@ public class DeviceJdbcBuilder {
         return sqle;
     }
 
+    public static Object buildForDeviceDelete() {
+        SQLE sqle = new SQLE();
+        sqle.DELETE_FROM("tbl_devices");
+        sqle.WHERE("id = ?");
+        return sqle;
+    }
+
     // ------------------------------------------------------------------------
 
     public static SQLE buildForLatestSpecificationSelectById() {

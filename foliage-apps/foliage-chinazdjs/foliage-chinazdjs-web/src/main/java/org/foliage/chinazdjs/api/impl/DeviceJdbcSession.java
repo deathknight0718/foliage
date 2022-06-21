@@ -98,6 +98,15 @@ public class DeviceJdbcSession implements AutoCloseable {
         }
     }
 
+    public void deleteDevice(UUID id) throws SQLException {
+        String sql = DeviceJdbcBuilder.buildForDeviceDelete().toString();
+        LOGGER.debug("execute sql: {}", StringUtils.normalizeSpace(sql));
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setBytes(1, Identities.uuidBytes(id));
+            statement.execute();
+        }
+    }
+
     // ------------------------------------------------------------------------
 
     public Device.Specification selectLatestSpecificationByDevice(Device device) throws Exception {
@@ -170,15 +179,15 @@ public class DeviceJdbcSession implements AutoCloseable {
     public void close() throws SQLException {
         connection.close();
     }
-    
+
     public void commit() throws SQLException {
         connection.commit();
     }
-    
+
     public void rollback() throws SQLException {
         connection.rollback();
     }
-    
+
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         connection.setAutoCommit(autoCommit);
     }

@@ -7,7 +7,7 @@ import { AxiosContext } from "./Context";
 
 function BackButton() {
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("/device", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate(`/${process.env.REACT_APP_NAME}/device`, { replace: true }), [navigate])
   return (
     <Fab sx={{ position: "fixed", left: 10, top: 10, zIndex: "tooltip" }} color="primary" size="small" onClick={onClick}>
       <ArrowBackIosNew />

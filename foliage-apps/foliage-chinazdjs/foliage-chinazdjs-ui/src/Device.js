@@ -15,7 +15,7 @@ import { AxiosContext } from "./Context";
 
 function Header() {
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("/", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate(`/${process.env.REACT_APP_NAME}/`, { replace: true }), [navigate])
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -119,8 +119,8 @@ function DeviceCard(props) {
   const { device: { id, name, devcode }, onReload } = props;
   const axios = useContext(AxiosContext);
   const navigate = useNavigate();
-  const onGeographic = useCallback(() => navigate(`/geographic/${id}`, { replace: true }), [navigate, id]);
-  const onSpecification = useCallback(() => navigate(`/specification/${id}`, { replace: true }), [navigate, id]);
+  const onGeographic = useCallback(() => navigate(`/${process.env.REACT_APP_NAME}/geographic/${id}`, { replace: true }), [navigate, id]);
+  const onSpecification = useCallback(() => navigate(`/${process.env.REACT_APP_NAME}/specification/${id}`, { replace: true }), [navigate, id]);
   const onDelete = () => {
     axios.delete(`api/v1/device/${id}`)
       .then(() => onReload());

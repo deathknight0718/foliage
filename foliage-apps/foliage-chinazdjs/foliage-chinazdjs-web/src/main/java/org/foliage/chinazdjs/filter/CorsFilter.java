@@ -23,7 +23,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -45,13 +44,12 @@ public class CorsFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        LOGGER.debug(((HttpServletRequest) request).getMethod());
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
-        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-        httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type,X-Requested-With");
-        LOGGER.debug(((HttpServletResponse) response).getHeaderNames().toString());
+        httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type,X-Requested-With,Authorization");
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
     @Override

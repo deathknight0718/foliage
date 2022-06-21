@@ -8,9 +8,9 @@ import Specification from "./Specification";
 import { AxiosProvider } from "./Context";
 
 const instance = axios.create({
-  baseURL: `${process.env.REACT_APP_HOST}/foliage-chinazdjs-web`,
-  withCredentials: true,
-  auth: { username: "tomcat", password: "secret" }
+  baseURL: `${process.env.REACT_APP_HOST}`
+  // withCredentials: true,
+  // auth: { username: "tomcat", password: "secret" }
 });
 
 export default function App() {
@@ -18,10 +18,10 @@ export default function App() {
     <BrowserRouter>
       <AxiosProvider value={instance}>
           <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/device" element={<Device />} />
-            <Route path="/geographic/:id" element={<Geographic />} />
-            <Route path="/specification/:id" element={<Specification />} />
+            <Route path={`/${process.env.REACT_APP_NAME}/`} element={<Main />} />
+            <Route path={`/${process.env.REACT_APP_NAME}/device`} element={<Device />} />
+            <Route path={`/${process.env.REACT_APP_NAME}/geographic/:id`} element={<Geographic />} />
+            <Route path={`/${process.env.REACT_APP_NAME}/specification/:id`} element={<Specification />} />
           </Routes>
       </AxiosProvider>
     </BrowserRouter>

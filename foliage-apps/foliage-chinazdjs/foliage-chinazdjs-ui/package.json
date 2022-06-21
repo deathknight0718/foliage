@@ -1,6 +1,7 @@
 {
   "name": "foliage-chinazdjs-ui",
   "version": "5.0.0",
+  "homepage": "foliage-chinazdjs-web",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

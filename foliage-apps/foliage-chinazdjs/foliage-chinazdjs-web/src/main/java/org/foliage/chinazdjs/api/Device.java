@@ -119,6 +119,14 @@ public class Device {
         }
     }
 
+    public static void remove(UUID id) throws Exception {
+        try (DeviceJdbcSession session = jdbcSession()) {
+            session.setAutoCommit(false);
+            session.deleteDevice(id);
+            session.commit();
+        }
+    }
+
     // ------------------------------------------------------------------------
 
     public Specification latestSpecification() throws Exception {

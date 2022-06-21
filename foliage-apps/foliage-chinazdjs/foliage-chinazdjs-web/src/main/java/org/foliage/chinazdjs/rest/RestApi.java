@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -77,6 +78,19 @@ public class RestApi {
             LOGGER.debug("called the method queryDevicesByPaging with offset {} and limit {}", offset, limit);
             List<Device> devices = Device.listByPaging(offset, limit);
             return ResponseUtils.handleSuccess(MAPPER.writeValueAsString(devices));
+        } catch (Exception e) {
+            LOGGER.warn(Throwables.getStackTraceAsString(e));
+            return ResponseUtils.handleException(e.getMessage());
+        }
+    }
+    
+    @DELETE
+    @Path("/device/{id}")
+    public Response deleteDeviceById(@PathParam("id") String id) {
+        try {
+            LOGGER.debug("called the method deleteDeviceById with id {}", id);
+            Device.remove(UUID.fromString(id));
+            return ResponseUtils.handleSuccess();
         } catch (Exception e) {
             LOGGER.warn(Throwables.getStackTraceAsString(e));
             return ResponseUtils.handleException(e.getMessage());

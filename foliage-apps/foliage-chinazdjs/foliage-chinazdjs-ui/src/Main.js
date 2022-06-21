@@ -20,7 +20,7 @@ function Header() {
 
 function Modules(props) {
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("/device", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate(`/${process.env.REACT_APP_NAME}/device`, { replace: true }), [navigate])
   return (
     <Container sx={{ pt: 9, pb: 2, px: 2 }}>
       <Stack spacing={1}>
