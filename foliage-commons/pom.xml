@@ -21,7 +21,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>foliage-commons</artifactId>
-	<description>Foliage Commons</description>
+	<name>Foliage Commons</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>foliage-common-core</module>

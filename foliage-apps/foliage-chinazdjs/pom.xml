@@ -21,7 +21,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>foliage-chinazdjs</artifactId>
-	<description>Foliage Apps</description>
+	<name>Foliage Apps</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>foliage-chinazdjs-web</module>

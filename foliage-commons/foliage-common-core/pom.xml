@@ -7,7 +7,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>foliage-common-core</artifactId>
-	<description>Foliage Common Core</description>
+	<name>Foliage Common Core</name>
 	<dependencies>
         <!-- ======================================== -->
         <!-- Local Project Dependencies -->

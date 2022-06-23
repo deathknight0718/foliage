@@ -21,7 +21,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>foliage-assemblies</artifactId>
-	<description>Foliage Assemblies</description>
+	<name>Foliage Assemblies</name>
 	<packaging>pom</packaging>
 	<properties>
 		<deploy.repository.id>foliage.snapshots</deploy.repository.id>

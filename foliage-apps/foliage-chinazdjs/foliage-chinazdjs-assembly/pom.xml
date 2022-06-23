@@ -21,7 +21,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-chinazdjs-assembly</artifactId>
-    <description>Foliage Chinazdjs Assembly</description>
+    <name>Foliage Chinazdjs Assembly</name>
     <packaging>pom</packaging>
     <profiles>
         <profile>
