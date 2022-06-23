@@ -63,7 +63,7 @@
 			<url>https://maven.pkg.github.com/deathknight0718/foliage</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 		</repository>
 	</repositories>
