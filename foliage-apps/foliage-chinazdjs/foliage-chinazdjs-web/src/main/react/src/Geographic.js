@@ -5,9 +5,11 @@ import { Fab } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
 import { AxiosContext } from "./Context";
 
+const { REACT_APP_NAME } = process.env;
+
 function BackButton() {
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("./device", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate(`/${REACT_APP_NAME}/device`, { replace: true }), [navigate])
   return (
     <Fab sx={{ position: "fixed", left: 10, top: 10, zIndex: "tooltip" }} color="primary" size="small" onClick={onClick}>
       <ArrowBackIosNew />

@@ -13,9 +13,11 @@ import { AppBar, Toolbar } from "@mui/material";
 import { Search, ArrowBackIosNew, Feed, Refresh } from "@mui/icons-material";
 import { AxiosContext } from "./Context";
 
+const { REACT_APP_NAME } = process.env;
+
 function Header() {
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("./", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate(`/${REACT_APP_NAME}/`, { replace: true }), [navigate])
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -119,8 +121,8 @@ function DeviceCard(props) {
   const { device: { id, name, devcode }, onReload } = props;
   const axios = useContext(AxiosContext);
   const navigate = useNavigate();
-  const onGeographic = useCallback(() => navigate(`./geographic/${id}`, { replace: true }), [navigate, id]);
-  const onSpecification = useCallback(() => navigate(`./specification/${id}`, { replace: true }), [navigate, id]);
+  const onGeographic = useCallback(() => navigate(`/${REACT_APP_NAME}/geographic/${id}`, { replace: true }), [navigate, id]);
+  const onSpecification = useCallback(() => navigate(`/${REACT_APP_NAME}/specification/${id}`, { replace: true }), [navigate, id]);
   const onDelete = () => {
     axios.delete(`api/v1/device/${id}`)
       .then(() => onReload());
@@ -132,9 +134,9 @@ function DeviceCard(props) {
         <Typography sx={{ fontSize: 12 }}>{devcode}</Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={onSpecification}>详细信息</Button>
-        <Button size="small" onClick={onGeographic}>地理信息</Button>
-        <Button size="small" onClick={onDelete}>删除设备</Button>
+        <Button size="small" onClick={onSpecification}>状态</Button>
+        <Button size="small" onClick={onGeographic}>位置</Button>
+        <Button size="small" onClick={onDelete}>退出</Button>
       </CardActions>
     </Card>
   );

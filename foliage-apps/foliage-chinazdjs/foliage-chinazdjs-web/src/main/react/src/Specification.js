@@ -12,10 +12,12 @@ import { LinearProgress } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
 import { AxiosContext } from "./Context";
 
+const { REACT_APP_NAME } = process.env;
+
 function Header(props) {
   const { loading } = props;
   const navigate = useNavigate();
-  const onClick = useCallback(() => navigate("./device", { replace: true }), [navigate])
+  const onClick = useCallback(() => navigate(`/${REACT_APP_NAME}/device`, { replace: true }), [navigate])
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -64,7 +66,7 @@ function DeviceCards(props) {
   const { 手柄前进开关输入状态: c1v1, 手柄后退开关输入状态: c1v2, 手柄中位开关输入状态: c1v3 } = data;
   const { 发动机转速: c2v1, 水温: c2v2, 机油压力: c2v3, 行车速度: c2v4, 振动频率: c2v5 } = data;
   const { 发动机水温高报警: c3v1, 补油压力报警: c3v2, 空滤阻塞报警: c3v3, 液压真空度报警: c3v4 } = data;
-  const { 前行走压力: c4v1, 后行走压力: c4v2, 前振动压力: c4v3, 后振动压力: c4v4 } = data;
+  const { 行走泵前进比例阀输出: c4v1, 行走泵后退比例阀输出: c4v2, 振动泵正转比例阀输出: c4v3, 振动泵反转比例阀输出: c4v4 } = data;
   return (
     <Container sx={{ pt: 9, pb: 2, px: 2 }}>
       <Stack spacing={1}>
@@ -109,10 +111,10 @@ function DeviceCards(props) {
           <CardContent>
             <Typography sx={{ fontSize: 14, mb: 1.5 }}>控制参数</Typography>
             <Grid container spacing={1}>
-              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v1)} max={40000} name={"前行走压力"} /></Grid>
-              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v2)} max={40000} name={"后行走压力"} /></Grid>
-              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v3)} max={40000} name={"前振动压力"}/></Grid>
-              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v4)} max={40000} name={"后振动压力"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v1)} max={800} name={"前行走电流"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v2)} max={800} name={"后行走电流"} /></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v3)} max={800} name={"前振动电流"}/></Grid>
+              <Grid item xs={6} style={{ textAlign: "center" }}><Gauge value={Number(c4v4)} max={800} name={"后振动电流"} /></Grid>
             </Grid>
           </CardContent>
         </Card>
