@@ -17,13 +17,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.foliage</groupId>
-		<artifactId>foliage</artifactId>
+		<artifactId>foliage-apps</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>foliage-apps</artifactId>
-	<name>Foliage Apps</name>
+	<artifactId>foliage-zdjxzz</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>foliage-zdjxzz</module>
+		<module>foliage-zdjxzz-web</module>
+        <module>foliage-zdjxzz-assembly</module>
 	</modules>
 </project>
