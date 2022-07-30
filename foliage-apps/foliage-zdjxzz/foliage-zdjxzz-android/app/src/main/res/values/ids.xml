@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="statusBarView" type="id"/>
+    <item name="translucentView" type="id"/>
+    
+    <item name="adapter_item_tag_key" type="id"/>
+</resources>
