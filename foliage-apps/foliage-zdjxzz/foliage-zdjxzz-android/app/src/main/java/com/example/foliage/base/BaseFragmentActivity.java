@@ -34,7 +34,9 @@ import retrofit2.HttpException;
 public abstract class BaseFragmentActivity extends AppCompatActivity {
 
     private RippleLoadingDialog loadingDialog;
+
     private Unbinder unbinder;
+
     protected Context mContext;
 
     protected Bundle savedInstanceState;
@@ -49,7 +51,6 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
         AppContextUtil.pushActivity(this);
         StatusBarCompat.setStatusBarColor(this, ContextCompat.getColor(this, R.color.colorPrimary));
-
         String actionBarTitle = getActionBarTitle();
         if (!TextUtils.isEmpty(actionBarTitle)) {
             ActionBar actionBar = getSupportActionBar();
@@ -189,4 +190,5 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
             ToastUtil.showTextViewPrompt(e.getMessage());
         }
     }
+
 }

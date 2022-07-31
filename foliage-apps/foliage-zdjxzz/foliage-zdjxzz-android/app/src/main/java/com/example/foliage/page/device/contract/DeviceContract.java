@@ -32,6 +32,7 @@ public interface DeviceContract {
     interface DetailView extends IBaseExtraView<DetailPresenter> {
 
         void showDetailView(JsonObject retDatBean);
+
     }
 
     interface MapGeographicView extends IBaseExtraView<MapGeographicPresenter> {
@@ -39,6 +40,7 @@ public interface DeviceContract {
         void showMapMaker(GeographicDTO retDatBean);
 
         void showGeoDialog(GeographicDTO geographicDTO);
+
     }
 
     interface DeviceListPresenter extends IBasePresenter {
@@ -74,4 +76,5 @@ public interface DeviceContract {
         void geographic(String id);
 
     }
+
 }

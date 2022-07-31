@@ -9,8 +9,7 @@ public class CommonConfig {
 
     public static String APP_DIR_NAME = "qlch";
 
-    public static String DIR_APP_NAME = android.os.Environment.getExternalStorageDirectory()
-            .getAbsolutePath() + "/" + APP_DIR_NAME;
+    public static String DIR_APP_NAME = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + APP_DIR_NAME;
 
     public static String DIR_APP_CACHE = DIR_APP_NAME + "/cache";
 
@@ -45,22 +44,22 @@ public class CommonConfig {
     /**
      * 微信、QQ注册ID
      */
-    public static final String WX_APPID    = "wx874adc7e2f7fef35";
+    public static final String WX_APPID = "wx874adc7e2f7fef35";
     public static final String WXPAY_APPID = "wx06f223b4b40503e4";
-    public static final String QQ_APPID    = "1108109036";
-    public static final String FB_APPID    = "23725345";
-    public static final String WX_SECRET   = "5e83c43d589a339edbbb17f1ad953232";
+    public static final String QQ_APPID = "1108109036";
+    public static final String FB_APPID = "23725345";
+    public static final String WX_SECRET = "5e83c43d589a339edbbb17f1ad953232";
     /**
      * 微信支付回调
      */
     public static final String WX_PAY_RESULT_ACTION = "com.weixin.pay.result.action";
-    public static final String WX_PAY_RESULT        = "wx_pay_result";
+    public static final String WX_PAY_RESULT = "wx_pay_result";
 
     /**
      * 支付类型
      */
-    public static final String TRANTYPE_APP  = "APP";
-    public static final String TRANTYPE_H5   = "H5";
+    public static final String TRANTYPE_APP = "APP";
+    public static final String TRANTYPE_H5 = "H5";
     public static final String TRANTYPE_SCAN = "SCAN";
 
     /**
@@ -81,9 +80,9 @@ public class CommonConfig {
      * 分享类型
      */
     public static String SHARETYPE_WXCIRCLE = "WXCIRCLE";
-    public static String SHARETYPE_WX       = "WX";
-    public static String SHARETYPE_QQ       = "QQ";
-    public static String SHARETYPE_QZONE    = "QZONE";
+    public static String SHARETYPE_WX = "WX";
+    public static String SHARETYPE_QQ = "QQ";
+    public static String SHARETYPE_QZONE = "QZONE";
 
     /**
      * 会员等级
@@ -97,32 +96,32 @@ public class CommonConfig {
     /**
      * 网络传参公共参数
      */
-    public static final String REQDATA       = "reqData";
-    public static final String SESSIONID     = "sessionId";
-    public static final String CHARSET       = "charset";
-    public static final String VERSION       = "version";
-    public static final String SIGNTYPE      = "signType";
-    public static final String APPTYPE      = "appType";
-    public static final String ENCTYPE       = "encType";
+    public static final String REQDATA = "reqData";
+    public static final String SESSIONID = "sessionId";
+    public static final String CHARSET = "charset";
+    public static final String VERSION = "version";
+    public static final String SIGNTYPE = "signType";
+    public static final String APPTYPE = "appType";
+    public static final String ENCTYPE = "encType";
     public static final String PUBKEYVERSION = "pubKeyVersion";
-    public static final String REQTIME       = "reqTime";
-    public static final String KEY           = "key";
-    public static final String SIGN          = "sign";
+    public static final String REQTIME = "reqTime";
+    public static final String KEY = "key";
+    public static final String SIGN = "sign";
 
     /**
      * 认证状态
      */
-    public static final String AUTHEN_NOTSUB       = "INIT";//未提交0
+    public static final String AUTHEN_NOTSUB = "INIT";//未提交0
     public static final String AUTHEN_NOCOMPLETION = "INCOMPLETE_INFO";//资料待补全4
-    public static final String AUTHEN_PASS         = "PASS";//已认证2
-    public static final String AUTHEN_AUDIT        = "IN_REVIEW";//审核中1
-    public static final String AUTHEN_NOPASS       = "REFUSE";//审核未通过3
+    public static final String AUTHEN_PASS = "PASS";//已认证2
+    public static final String AUTHEN_AUDIT = "IN_REVIEW";//审核中1
+    public static final String AUTHEN_NOPASS = "REFUSE";//审核未通过3
 
     /**
      * 图片类型
      */
-    public static final String TYPE_IDFROPIC  = "idFroPic";
-    public static final String TYPE_IDCONPIC  = "idConPic";
+    public static final String TYPE_IDFROPIC = "idFroPic";
+    public static final String TYPE_IDCONPIC = "idConPic";
     public static final String TYPE_IDHANDPIC = "idHandPic";
     public static final String TYPE_CRDFROPIC = "crdFroPic";
     public static final String TYPE_CRDCONPIC = "crdConPic";
@@ -179,8 +178,8 @@ public class CommonConfig {
     /**
      * APP跳转标识
      */
-    public static final String FLAG_NATIVE     = "native";
-    public static final String FLAG_HTML       = "html";
+    public static final String FLAG_NATIVE = "native";
+    public static final String FLAG_HTML = "html";
     public static final String FLAG_OVERSEAPAY = "overSeaPay";
 
     /**
@@ -228,4 +227,5 @@ public class CommonConfig {
     public static final int REQUESTCODE_IMAGE_CAPTURE = WEB_REQUESTCODE_FILE_CHOOSE + 1;
     public static final int REQUESTCODE_IMAGE_PICKER = REQUESTCODE_IMAGE_CAPTURE + 1;
     public static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = REQUESTCODE_IMAGE_PICKER + 1;
+
 }

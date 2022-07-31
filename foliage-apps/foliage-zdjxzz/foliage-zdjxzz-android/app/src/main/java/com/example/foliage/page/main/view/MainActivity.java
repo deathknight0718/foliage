@@ -85,8 +85,7 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
                 return new BannerViewHolder();
             }
         });
-        if (retDatBean.size() > 1)
-            vMZBannerView.start();
+        if (retDatBean.size() > 1) vMZBannerView.start();
 
     }
 
@@ -106,6 +105,7 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
     }
 
     public static class BannerViewHolder implements MZViewHolder<BannerEntity> {
+
         private ImageView mImageView;
         private TextView mTextView;
 
@@ -119,13 +119,14 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
 
         @Override
         public void onBind(Context context, int i, BannerEntity banner) {
-            DzImageLoader.getInstance().displayImage(mImageView.getContext(),
-                    banner.getUrl(), mImageView);
+            DzImageLoader.getInstance().displayImage(mImageView.getContext(), banner.getUrl(), mImageView);
             mTextView.setText(banner.getName());
         }
+
     }
 
     public static class GridAdapter extends BaseAdapter {
+
         private Context mContext;
         private List<GridEntity> all = new ArrayList<>();
 
@@ -160,10 +161,11 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
             GridEntity entity = getItem(position);
             if (entity != null) {
                 titleTv.setText(entity.getName());
-                DzImageLoader.getInstance().displayImage(
-                        mContext, entity.getIcon(), iconView);
+                DzImageLoader.getInstance().displayImage(mContext, entity.getIcon(), iconView);
             }
             return convertView;
         }
+
     }
+
 }

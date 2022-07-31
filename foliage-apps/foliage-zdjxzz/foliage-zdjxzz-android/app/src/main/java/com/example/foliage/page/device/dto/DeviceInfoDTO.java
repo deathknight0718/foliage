@@ -29,4 +29,5 @@ public class DeviceInfoDTO {
     public void setDevcode(String devcode) {
         this.devcode = devcode;
     }
+
 }

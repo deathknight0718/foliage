@@ -100,15 +100,8 @@ public class DeviceListActivity extends BaseFragmentActivity implements DeviceCo
         vProgressRegister = ButterKnife.findById(registerView, R.id.progress_register);
         TextInputEditText teDevAs = ButterKnife.findById(registerView, R.id.dev_as);
         TextInputEditText teDevCode = ButterKnife.findById(registerView, R.id.dev_code);
-
-        vDialog = new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-                .setTitle("设备注册")
-                .setView(registerView)
-                .setNegativeButton("取消", (dialogInterface, i) -> {
-                })
-                .setCancelable(false)
-                .setPositiveButton("注册", null)
-                .create();
+        vDialog = new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme).setTitle("设备注册").setView(registerView).setNegativeButton("取消", (dialogInterface, i) -> {
+        }).setCancelable(false).setPositiveButton("注册", null).create();
         vDialog.setOnShowListener(dialogInterface -> {
             Button button = ((AlertDialog) vDialog).getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener(view -> mPresenter.registerDevice(teDevAs.getText().toString(), teDevCode.getText().toString()));
@@ -154,9 +147,7 @@ public class DeviceListActivity extends BaseFragmentActivity implements DeviceCo
     }
 
     @Override
-    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-
-    }
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {}
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {

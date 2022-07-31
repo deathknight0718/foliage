@@ -30,6 +30,7 @@ public class GeographicDTO implements Serializable {
     }
 
     public static class CurrentBean {
+
         /**
          * device : {"id":"328c150c-6e2a-3d99-82b2-d5e2078df930","devcode":"14893189421","name":"asss"}
          * tid : 6538215477812920320
@@ -85,6 +86,7 @@ public class GeographicDTO implements Serializable {
         }
 
         public static class DeviceBean {
+
             /**
              * id : 328c150c-6e2a-3d99-82b2-d5e2078df930
              * devcode : 14893189421
@@ -118,9 +120,11 @@ public class GeographicDTO implements Serializable {
             public void setName(String name) {
                 this.name = name;
             }
+
         }
 
         public static class CoordinateBean {
+
             /**
              * longitude : 121.58643689172118
              * latitude : 29.407551709586063
@@ -144,10 +148,13 @@ public class GeographicDTO implements Serializable {
             public void setLatitude(double latitude) {
                 this.latitude = latitude;
             }
+
         }
+
     }
 
     public static class GeographicsByProvinceBean {
+
         /**
          * device : {"id":"328c150c-6e2a-3d99-82b2-d5e2078df930","devcode":"14893189421","name":"asss"}
          * tid : 6538215477812920320
@@ -203,6 +210,7 @@ public class GeographicDTO implements Serializable {
         }
 
         public static class DeviceBeanX {
+
             /**
              * id : 328c150c-6e2a-3d99-82b2-d5e2078df930
              * devcode : 14893189421
@@ -236,9 +244,11 @@ public class GeographicDTO implements Serializable {
             public void setName(String name) {
                 this.name = name;
             }
+
         }
 
         public static class CoordinateBeanX {
+
             /**
              * longitude : 121.58643689172118
              * latitude : 29.407551709586063
@@ -262,6 +272,9 @@ public class GeographicDTO implements Serializable {
             public void setLatitude(double latitude) {
                 this.latitude = latitude;
             }
+
         }
+
     }
+
 }

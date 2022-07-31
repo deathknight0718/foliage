@@ -32,8 +32,7 @@ public class DeviceListPresenter implements DeviceContract.DeviceListPresenter {
 
     @Override
     public void onDestroyPresenter() {
-        if (mView != null)
-            mView = null;
+        if (mView != null) mView = null;
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
             mSubscription = null;
@@ -42,81 +41,70 @@ public class DeviceListPresenter implements DeviceContract.DeviceListPresenter {
 
     @Override
     public void fetchDevices() {
-        Subscription subscription = DeviceModel.getInstance().devices()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<>() {
-                    @Override
-                    public void onCompleted() {
-                    }
+        Subscription subscription = DeviceModel.getInstance().devices().subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<>() {
+            @Override
+            public void onCompleted() {
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.dismissLoadingDialog();
-                        mView.showErrorText(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                mView.dismissLoadingDialog();
+                mView.showErrorText(e);
+            }
 
-                    @Override
-                    public void onNext(List<DeviceInfoDTO> devices) {
-                        mView.showDeviceList(devices);
-                    }
-                });
+            @Override
+            public void onNext(List<DeviceInfoDTO> devices) {
+                mView.showDeviceList(devices);
+            }
+        });
         mSubscription.add(subscription);
     }
 
     @Override
     public void registerDevice(String name, String devCode) {
         mView.showLineProgress(true);
-        Subscription subscription = DeviceModel.getInstance().register(name, devCode)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Void>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.showLineProgress(false);
-                    }
+        Subscription subscription = DeviceModel.getInstance().register(name, devCode).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+                mView.showLineProgress(false);
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.showLineProgress(false);
-                        mView.showErrorText(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                mView.showLineProgress(false);
+                mView.showErrorText(e);
+            }
 
-                    @Override
-                    public void onNext(Void unused) {
-                        fetchDevices();
-                    }
-                });
+            @Override
+            public void onNext(Void unused) {
+                fetchDevices();
+            }
+        });
         mSubscription.add(subscription);
     }
 
     @Override
     public void unRegisterDevice(String id) {
         mView.showLoadingDialog(false);
-        Subscription subscription = DeviceModel.getInstance().unRegister(id)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Void>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.dismissLoadingDialog();
-                    }
+        Subscription subscription = DeviceModel.getInstance().unRegister(id).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+                mView.dismissLoadingDialog();
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.dismissLoadingDialog();
-                        mView.showErrorText(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                mView.dismissLoadingDialog();
+                mView.showErrorText(e);
+            }
 
-                    @Override
-                    public void onNext(Void unused) {
-                        fetchDevices();
-                    }
+            @Override
+            public void onNext(Void unused) {
+                fetchDevices();
+            }
 
-                });
+        });
         mSubscription.add(subscription);
     }
+
 }

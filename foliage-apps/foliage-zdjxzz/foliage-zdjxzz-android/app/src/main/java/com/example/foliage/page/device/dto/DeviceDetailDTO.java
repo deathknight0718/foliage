@@ -37,6 +37,7 @@ public class DeviceDetailDTO {
     }
 
     public static class DeviceBean {
+
         private String id;
         private String devcode;
         private String name;
@@ -64,9 +65,11 @@ public class DeviceDetailDTO {
         public void setName(String name) {
             this.name = name;
         }
+
     }
 
     public static class DataBean {
+
         private String dataway;
         private String 急停指示;
         private String 振动模式;
@@ -263,5 +266,7 @@ public class DeviceDetailDTO {
 
         private String datatime;
         private String sysdate;
+
     }
+
 }

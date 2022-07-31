@@ -46,6 +46,9 @@ node_modules/
 /webapps/
 
 # Eclipse Plugin Directory
+**/.idea/
+
+# Eclipse Plugin Directory
 **/.settings/
 
 # Eclipse Plugin File
@@ -57,6 +60,9 @@ node_modules/
 
 # Subversion direntory
 **/.svn/
+
+# Gradle Plugin Directory
+**/.gradle/
 
 # Filter Files
 

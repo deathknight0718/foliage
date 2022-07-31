@@ -11,8 +11,7 @@ public class RequestMap {
 
     private ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
 
-    public RequestMap() {
-    }
+    public RequestMap() {}
 
     public RequestMap(ConcurrentHashMap<String, String> map) {
         this.map = map;

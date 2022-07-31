@@ -38,13 +38,7 @@ public class DeviceClient extends BaseClient {
     private DeviceService service;
 
     private DeviceClient() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(UrlConstants.getBaseUrl())
-                .client(client)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(UrlConstants.getBaseUrl()).client(client).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
         service = retrofit.create(DeviceService.class);
     }
 

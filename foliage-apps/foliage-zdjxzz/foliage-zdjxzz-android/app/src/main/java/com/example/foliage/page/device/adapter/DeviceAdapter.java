@@ -24,4 +24,5 @@ public class DeviceAdapter extends BaseQuickAdapter<DeviceInfoDTO, BaseViewHolde
         helper.setText(R.id.tv_device_name, item.getName());
         helper.setText(R.id.tv_device_code, item.getDevcode());
     }
+
 }

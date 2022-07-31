@@ -29,8 +29,7 @@ public class DeviceMapPresenter implements DeviceContract.MapGeographicPresenter
 
     @Override
     public void onDestroyPresenter() {
-        if (mView != null)
-            mView = null;
+        if (mView != null) mView = null;
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
             mSubscription = null;
@@ -40,27 +39,24 @@ public class DeviceMapPresenter implements DeviceContract.MapGeographicPresenter
     @Override
     public void geographic(String id) {
         mView.showLoadingDialog(false);
-        Subscription subscription = DeviceModel.getInstance().geographic(id)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.dismissLoadingDialog();
-                    }
+        Subscription subscription = DeviceModel.getInstance().geographic(id).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<>() {
+            @Override
+            public void onCompleted() {
+                mView.dismissLoadingDialog();
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.dismissLoadingDialog();
-                        mView.showErrorText(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                mView.dismissLoadingDialog();
+                mView.showErrorText(e);
+            }
 
-                    @Override
-                    public void onNext(GeographicDTO geographic) {
-                        mView.showMapMaker(geographic);
-                    }
-                });
+            @Override
+            public void onNext(GeographicDTO geographic) {
+                mView.showMapMaker(geographic);
+            }
+        });
         mSubscription.add(subscription);
     }
+
 }

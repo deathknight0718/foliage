@@ -15,10 +15,7 @@ public class RxError extends Exception {
     /**
      * 错误类型
      */
-//    public String type = ERROR_TYPE_COMMON;
-
-    public RxError() {
-    }
+    public RxError() {}
 
     private RxError(String detailMessage) {
         super(detailMessage);
@@ -33,7 +30,7 @@ public class RxError extends Exception {
     }
 
     /**
-     * @param type 错误类型
+     * @param type      错误类型
      * @param errorCode 错误类型对应的错误码
      */
     public static RxError create(String type, String errorCode) {
@@ -48,11 +45,11 @@ public class RxError extends Exception {
         return create(type, errorCode, "", throwable);
     }
 
-    public static RxError create(String type, String errorCode, String detailMessage,
-                                 Throwable throwable) {
+    public static RxError create(String type, String errorCode, String detailMessage, Throwable throwable) {
         RxError e = new RxError(detailMessage, throwable);
         e.errorCode = errorCode;
-//        e.type = type;
+        //        e.type = type;
         return e;
     }
+
 }

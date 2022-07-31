@@ -12,7 +12,6 @@ import com.example.foliage.infrastructure.utils.TimeManager;
  * Description：应用入口
  * Created by liang.qfzc@gmail.com on 2018/6/11.
  */
-
 public class DzApplication extends Application {
 
     private static DzApplication instance;
@@ -39,7 +38,7 @@ public class DzApplication extends Application {
                 TimeManager.getInstance().initLoginTime();
             }
         }).start();
-        SDKInitializer.setAgreePrivacy(this,true);
+        SDKInitializer.setAgreePrivacy(this, true);
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
         SDKInitializer.initialize(this);
         //自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
@@ -50,8 +49,6 @@ public class DzApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        // you must install multiDex whatever tinker is installed!
-
-        // 安装tinker
     }
+
 }

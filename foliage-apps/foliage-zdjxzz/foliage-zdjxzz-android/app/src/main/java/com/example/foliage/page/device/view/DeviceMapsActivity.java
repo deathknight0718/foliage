@@ -30,7 +30,6 @@ import butterknife.BindView;
 public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceContract.MapGeographicView, BaiduMap.OnMarkerClickListener {
 
     private DeviceContract.MapGeographicPresenter mPresenter;
-
     private GeoAdapter mGeoAdapter;
     private GeographicDTO mGeographicDTO;
 
@@ -62,14 +61,11 @@ public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceCo
     protected void initView() {
         super.initView();
         mPresenter = new DeviceMapPresenter(this);
-
         Intent intent = this.getIntent();
         String id = intent.getStringExtra("id");
-
         BaiduMap map = vMapView.getMap();
         map.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         map.setOnMarkerClickListener(this);
-
         mPresenter.geographic(id);
     }
 
@@ -110,52 +106,9 @@ public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceCo
 
         List<GeographicDTO.GeographicsByProvinceBean> allGeo = retDatBean.getGeographicsByProvince();
         for (GeographicDTO.GeographicsByProvinceBean geographicsBean : allGeo) {
-            //定义Maker坐标点
             LatLng point = new LatLng(geographicsBean.getCoordinate().getLatitude(), geographicsBean.getCoordinate().getLongitude());
-            //构建Marker图标
-            BitmapDescriptor bitmap = BitmapDescriptorFactory
-                    .fromResource(R.drawable.ic_marker);
-
-            //通过LatLng列表构造Transformation对象
-//            Transformation mTransforma = new Transformation(llC, latLng1, llC);
-//            //动画执行时间
-//            mTransforma.setDuration(500);
-//            //动画重复模式
-//            mTransforma.setRepeatMode(Animation.RepeatMode.RESTART);
-//            //动画重复次数
-//            mTransforma.setRepeatCount(1);
-//            //根据开发需要设置动画监听
-//            mTransforma.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart() {
-//                }
-//
-//                @Override
-//                public void onAnimationEnd() {
-//                }
-//
-//                @Override
-//                public void onAnimationCancel() {
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat() {
-//
-//                }
-//            });
-
-////设置动画
-//            mMarkerC.setAnimation(mTransforma);
-//
-////开启动画
-//            mMarkerC.startAnimation();
-
-            //构建MarkerOption，用于在地图上添加Marker
-            OverlayOptions option = new MarkerOptions()
-                    .position(point)
-                    .animateType(MarkerOptions.MarkerAnimateType.jump)
-                    .icon(bitmap);
-            //在地图上添加Marker，并显示
+            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_marker);
+            OverlayOptions option = new MarkerOptions().position(point).animateType(MarkerOptions.MarkerAnimateType.jump).icon(bitmap);
             BaiduMap map = vMapView.getMap();
             MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()), 13);
             map.animateMapStatus(msu);
@@ -166,16 +119,12 @@ public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceCo
     @Override
     public void showGeoDialog(GeographicDTO geographicDTO) {
         mGeoAdapter.setData(geographicDTO.getGeographicsByProvince());
-        DialogPlus dialog = DialogPlus.newDialog(getContext())
-                .setAdapter(mGeoAdapter)
-                .setHeader(R.layout.view_dialogplus_header_map)
-                .setOnItemClickListener((dialog1, item, view, position) -> {
+        DialogPlus dialog = DialogPlus.newDialog(getContext()).setAdapter(mGeoAdapter).setHeader(R.layout.view_dialogplus_header_map).setOnItemClickListener((dialog1, item, view, position) -> {
                     if (position < 0) return;
                     GeographicDTO.GeographicsByProvinceBean data = mGeoAdapter.getItem(position);
                     MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(new LatLng(data.getCoordinate().getLatitude(), data.getCoordinate().getLongitude()), 13);
                     vMapView.getMap().animateMapStatus(msu);
-                })
-                .setExpanded(false)  // This will enable the expand feature, (similar to android L share dialog)
+                }).setExpanded(false)  // This will enable the expand feature, (similar to android L share dialog)
                 .create();
         dialog.show();
     }
@@ -191,4 +140,5 @@ public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceCo
         showGeoDialog(mGeographicDTO);
         return false;
     }
+
 }

@@ -1,4 +1,3 @@
-
 package com.example.foliage.base;
 
 import android.content.Context;
@@ -8,15 +7,19 @@ import android.content.Context;
  * Created by liang.qfzc@gmail.com on 2018/6/12.
  */
 public interface IBaseView<T> {
+
     /**
      * 给View设置Presenter
+     *
      * @param presenter
      */
     void setPresenter(T presenter);
 
     /**
      * 获取Context方便P层使用
+     *
      * @return
      */
     Context getContext();
+
 }

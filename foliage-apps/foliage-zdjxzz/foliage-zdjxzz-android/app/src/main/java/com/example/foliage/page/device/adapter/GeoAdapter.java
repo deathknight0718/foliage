@@ -87,10 +87,12 @@ public class GeoAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+
         TextView deviceCode;
         TextView deviceName;
         TextView location;
         AppCompatImageView deviceDetail;
+
     }
 
 }

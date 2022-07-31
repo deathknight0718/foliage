@@ -1,4 +1,3 @@
-
 package com.example.foliage.base;
 
 /**
@@ -7,7 +6,9 @@ package com.example.foliage.base;
  */
 public interface IBasePresenter<T> {
 
-    /** 清理Presenter加载的数据 */
+    /**
+     * 清理Presenter加载的数据
+     */
     void onDestroyPresenter();
 
 }

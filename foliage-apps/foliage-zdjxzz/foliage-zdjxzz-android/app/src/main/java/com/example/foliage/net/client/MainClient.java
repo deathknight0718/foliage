@@ -31,35 +31,8 @@ public class MainClient extends BaseClient {
     private MainService service;
 
     private MainClient() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(UrlConstants.getBaseUrl())
-                .client(client)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(UrlConstants.getBaseUrl()).client(client).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
         service = retrofit.create(MainService.class);
     }
-
-//    /**
-//     * 获取个人信息
-//     */
-//    public Observable<UserCenterOutput> userCenter() {
-//        return callMapAfterLogin(service.userCenter(new RequestMap().getReqParams(true)))
-//                .flatMap(new Func1<Pair<MetaBean, String>, Observable<UserCenterOutput>>() {
-//                    @Override
-//                    public Observable<UserCenterOutput> call(Pair<MetaBean, String> pair) {
-//                        if (pair == null) {
-//                            return toObservable(null);
-//                        }
-//                        UserCenterOutput output = null;
-//                        if (!TextUtils.isEmpty(pair.second)) {
-//                            output = new Gson().fromJson(pair.second, new TypeToken<UserCenterOutput>() {
-//                            }.getType());
-//                        }
-//                        return toObservable(new Pair<>(pair.first, output));
-//                    }
-//                });
-//    }
 
 }

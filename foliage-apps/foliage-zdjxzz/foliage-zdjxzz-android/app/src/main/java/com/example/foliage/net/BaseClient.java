@@ -27,30 +27,22 @@ import rx.functions.Func1;
  */
 
 public class BaseClient {
+
     private HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-    protected OkHttpClient client;
     private Interceptor headInterceptor;
+    protected OkHttpClient client;
 
     protected BaseClient() {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         headInterceptor = new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request()
-                        .newBuilder()
-                        .addHeader("timestamp", String.valueOf(TimeManager.getInstance().getCurTimeMillis()))
-                        .addHeader("Authorization", "Basic dG9tY2F0OnNlY3JldA==")
-                        .build();
+                Request request = chain.request().newBuilder().addHeader("timestamp", String.valueOf(TimeManager.getInstance().getCurTimeMillis())).addHeader("Authorization", "Basic dG9tY2F0OnNlY3JldA==").build();
                 return chain.proceed(request);
             }
         };
 
-        client = new OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .addInterceptor(headInterceptor)
-                .readTimeout(UrlConstants.HTTP_TIMEOUT, TimeUnit.SECONDS)
-                .connectTimeout(UrlConstants.HTTP_TIMEOUT, TimeUnit.SECONDS)
-                .build();
+        client = new OkHttpClient.Builder().addInterceptor(logging).addInterceptor(headInterceptor).readTimeout(UrlConstants.HTTP_TIMEOUT, TimeUnit.SECONDS).connectTimeout(UrlConstants.HTTP_TIMEOUT, TimeUnit.SECONDS).build();
     }
 
 }

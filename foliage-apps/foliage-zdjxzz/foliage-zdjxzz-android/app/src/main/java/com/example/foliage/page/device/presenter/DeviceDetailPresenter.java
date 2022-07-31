@@ -28,8 +28,7 @@ public class DeviceDetailPresenter implements DeviceContract.DetailPresenter {
 
     @Override
     public void onDestroyPresenter() {
-        if (mView != null)
-            mView = null;
+        if (mView != null) mView = null;
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
             mSubscription = null;
@@ -39,27 +38,23 @@ public class DeviceDetailPresenter implements DeviceContract.DetailPresenter {
     @Override
     public void fetchDeviceById(String id) {
         mView.showLoadingDialog(false);
-        Subscription subscription = DeviceModel.getInstance().detailById(id)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.dismissLoadingDialog();
-                    }
+        Subscription subscription = DeviceModel.getInstance().detailById(id).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<>() {
+            @Override
+            public void onCompleted() {
+                mView.dismissLoadingDialog();
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.dismissLoadingDialog();
-                        mView.showErrorText(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                mView.dismissLoadingDialog();
+                mView.showErrorText(e);
+            }
 
-                    @Override
-                    public void onNext(JsonObject devices) {
-                        mView.showDetailView(devices);
-                    }
-                });
+            @Override
+            public void onNext(JsonObject devices) {
+                mView.showDetailView(devices);
+            }
+        });
         mSubscription.add(subscription);
     }
 

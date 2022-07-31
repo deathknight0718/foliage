@@ -11,7 +11,6 @@ import rx.subscriptions.CompositeSubscription;
  * Description：主界面presenter
  * Created by liang.qfzc@gmail.com on 2018/7/9.
  */
-
 public class MainPresenter implements MainContract.Presenter {
 
     private MainContract.View mView;
@@ -25,8 +24,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onDestroyPresenter() {
-        if (mView != null)
-            mView = null;
+        if (mView != null) mView = null;
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
             mSubscription = null;
@@ -49,7 +47,6 @@ public class MainPresenter implements MainContract.Presenter {
         bean3.setUrl("http://www.zdjxzz.cn/uploadfile/2018/01/22/1516606274413707.jpg");
         list.add(bean3);
         mView.initBanner(list);
-
         mView.initGrid();
     }
 

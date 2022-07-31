@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import com.example.foliage.infrastructure.dialog.BaseAnimatorSet;
 
 public abstract class BaseDialog<T extends BaseDialog<T>> extends Dialog {
+
     /**
      * mTag(日志)
      */
@@ -149,25 +150,19 @@ public abstract class BaseDialog<T extends BaseDialog<T>> extends Dialog {
         Log.d(mTag, "onCreate");
         mDisplayMetrics = mContext.getResources().getDisplayMetrics();
         mMaxHeight = mDisplayMetrics.heightPixels;
-
         mLlTop = new LinearLayout(mContext);
         mLlTop.setGravity(Gravity.CENTER);
-
         mLlControlHeight = new LinearLayout(mContext);
         mLlControlHeight.setOrientation(LinearLayout.VERTICAL);
-
         mOnCreateView = onCreateView();
         mLlControlHeight.addView(mOnCreateView);
         mLlTop.addView(mLlControlHeight);
         onViewCreated(mOnCreateView);
-
         if (mIsPopupStyle) {
-            setContentView(mLlTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            setContentView(mLlTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
             setContentView(mLlTop, new ViewGroup.LayoutParams(mDisplayMetrics.widthPixels, (int) mMaxHeight));
         }
-
         mLlTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +171,6 @@ public abstract class BaseDialog<T extends BaseDialog<T>> extends Dialog {
                 }
             }
         });
-
         mOnCreateView.setClickable(true);
     }
 
@@ -195,28 +189,23 @@ public abstract class BaseDialog<T extends BaseDialog<T>> extends Dialog {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         Log.d(mTag, "onAttachedToWindow");
-
         setUiBeforShow();
-
         int width;
         if (mWidthScale == 0) {
             width = ViewGroup.LayoutParams.WRAP_CONTENT;
         } else {
             width = (int) (mDisplayMetrics.widthPixels * mWidthScale);
         }
-
         int height;
         if (mHeightScale == 0) {
             height = ViewGroup.LayoutParams.WRAP_CONTENT;
         } else if (mHeightScale == 1) {
-//            height = ViewGroup.LayoutParams.MATCH_PARENT;
+            //            height = ViewGroup.LayoutParams.MATCH_PARENT;
             height = (int) mMaxHeight;
         } else {
             height = (int) (mMaxHeight * mHeightScale);
         }
-
         mLlControlHeight.setLayoutParams(new LinearLayout.LayoutParams(width, height));
-
         if (mShowAnim != null) {
             mShowAnim.listener(new BaseAnimatorSet.AnimatorListener() {
                 @Override
@@ -280,17 +269,10 @@ public abstract class BaseDialog<T extends BaseDialog<T>> extends Dialog {
     @Override
     public void dismiss() {
         Log.d(mTag, "dismiss");
-
         if (mContext instanceof Activity && ((Activity) mContext).isFinishing()) {
             return;
         }
-
-//        if (mContext instanceof Fragment && !((Fragment) mContext).isAdded()){
-//            return;
-//        }
-
         if (!isShowing()) return;
-
         if (mDismissAnim != null) {
             mDismissAnim.listener(new BaseAnimatorSet.AnimatorListener() {
                 @Override
@@ -460,4 +442,5 @@ public abstract class BaseDialog<T extends BaseDialog<T>> extends Dialog {
         final float scale = mContext.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
+
 }

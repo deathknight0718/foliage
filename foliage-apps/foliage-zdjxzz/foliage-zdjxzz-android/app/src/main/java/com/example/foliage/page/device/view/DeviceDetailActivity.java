@@ -131,4 +131,5 @@ public class DeviceDetailActivity extends BaseFragmentActivity implements Device
         intent.putExtra("id", id);
         IntentTool.startActivity(context, intent);
     }
+
 }

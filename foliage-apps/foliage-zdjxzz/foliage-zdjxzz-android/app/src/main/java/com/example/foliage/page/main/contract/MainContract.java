@@ -7,7 +7,7 @@ import com.example.foliage.page.main.entity.BannerEntity;
 import java.util.List;
 
 /**
- * Description：主界面Contract
+ * Description：主界面 Contract
  * Created by liang.qfzc@gmail.com on 2018/7/9.
  */
 
@@ -15,9 +15,6 @@ public interface MainContract {
 
     interface View extends IBaseExtraView<Presenter> {
 
-        /**
-         * 初始化Banner
-         */
         void initBanner(List<BannerEntity> retDatBean);
 
         void initGrid();
@@ -29,4 +26,5 @@ public interface MainContract {
         void init();
 
     }
+
 }
