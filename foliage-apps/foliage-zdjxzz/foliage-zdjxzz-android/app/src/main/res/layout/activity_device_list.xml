@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".page.main.view.MainActivity">
 
-    <com.example.foliage.infrastructure.widget.VerticalSwipeRefreshLayout
+    <org.foliage.zdjxzz.infrastructure.widget.VerticalSwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,7 +22,7 @@
             android:listDivider="@null"
             android:saveEnabled="false"
             android:visibility="gone" />
-    </com.example.foliage.infrastructure.widget.VerticalSwipeRefreshLayout>
+    </org.foliage.zdjxzz.infrastructure.widget.VerticalSwipeRefreshLayout>
 
     <include
         android:id="@+id/emptyView"

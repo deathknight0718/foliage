@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".page.main.view.MainActivity">
 
-    <com.example.foliage.infrastructure.banner.MZBannerView
+    <org.foliage.zdjxzz.infrastructure.banner.MZBannerView
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="260dp"

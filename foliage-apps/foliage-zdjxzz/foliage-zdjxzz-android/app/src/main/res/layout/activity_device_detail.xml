@@ -37,7 +37,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp">
 
-                    <com.example.foliage.infrastructure.roundview.RoundTextView
+                    <org.foliage.zdjxzz.infrastructure.roundview.RoundTextView
                         android:id="@+id/tv_device_front"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
@@ -52,7 +52,7 @@
                         app:rv_strokeWidth="1px"
                         app:rv_textPressColor="@color/white" />
 
-                    <com.example.foliage.infrastructure.roundview.RoundTextView
+                    <org.foliage.zdjxzz.infrastructure.roundview.RoundTextView
                         android:id="@+id/tv_device_back"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
@@ -65,7 +65,7 @@
                         app:rv_strokeWidth="1px"
                         app:rv_textPressColor="@color/white" />
 
-                    <com.example.foliage.infrastructure.roundview.RoundTextView
+                    <org.foliage.zdjxzz.infrastructure.roundview.RoundTextView
                         android:id="@+id/tv_device_stop"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
@@ -133,7 +133,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -168,7 +169,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -203,7 +205,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -246,7 +249,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -281,7 +285,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -475,7 +480,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -511,7 +517,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -556,7 +563,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -592,7 +600,8 @@
                             app:sv_speedTextSize="10dp"
                             app:sv_speedometerColor="@color/colorPrimary"
                             app:sv_unit=""
-                            app:sv_unitTextColor="@color/colorPrimary" />
+                            app:sv_unitTextColor="@color/colorPrimary"
+                            app:sv_withTremble="false" />
 
                         <TextView
                             android:layout_width="wrap_content"
