@@ -1,7 +1,10 @@
 package org.foliage.zdjxzz.page.device.view;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,6 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+
 import org.foliage.zdjxzz.R;
 import org.foliage.zdjxzz.base.BaseFragmentActivity;
 import org.foliage.zdjxzz.infrastructure.widget.VerticalSwipeRefreshLayout;
@@ -20,10 +27,8 @@ import org.foliage.zdjxzz.page.device.adapter.DeviceAdapter;
 import org.foliage.zdjxzz.page.device.contract.DeviceContract;
 import org.foliage.zdjxzz.page.device.dto.DeviceInfoDTO;
 import org.foliage.zdjxzz.page.device.presenter.DeviceListPresenter;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,9 +49,12 @@ public class DeviceListActivity extends BaseFragmentActivity implements DeviceCo
     View emptyView;
 
     View vProgressRegister;
-    AlertDialog vDialog;
+    AlertDialog vRegisterDialog;
+    AlertDialog vQueryDialog;
 
     private DeviceAdapter mDeviceAdapter;
+
+    private List<DeviceInfoDTO> mDevices;
 
     @Override
     protected int getLayoutResID() {
@@ -92,18 +100,68 @@ public class DeviceListActivity extends BaseFragmentActivity implements DeviceCo
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_query) {
+            displayQueryDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void displayQueryDialog() {
+        View queryView = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
+        vProgressRegister = ButterKnife.findById(queryView, R.id.progress_register);
+        ButterKnife.findById(queryView, R.id.l_dev_as).setVisibility(View.GONE);
+        TextInputEditText teDevCode = ButterKnife.findById(queryView, R.id.dev_code);
+
+        vQueryDialog = new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                .setTitle("设备查询")
+                .setView(queryView)
+                .setNegativeButton("取消", (dialogInterface, i) -> {
+                }).setCancelable(false).setPositiveButton("查询", null).create();
+        vQueryDialog.setOnShowListener(dialogInterface -> {
+            Button button = ((AlertDialog) vQueryDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String inputCode = teDevCode.getText().toString();
+
+                    if (TextUtils.isEmpty(inputCode)) {
+                        mDeviceAdapter.setList(mDevices);
+                    } else {
+                        List<DeviceInfoDTO> filterList = new ArrayList<>();
+                        for (DeviceInfoDTO info : mDevices) {
+                            if (info.getDevcode().contains(inputCode)) {
+                                filterList.add(info);
+                            }
+                        }
+                        mDeviceAdapter.setList(filterList);
+                    }
+                }
+            });
+        });
+        vQueryDialog.show();
+    }
+
     public void displayRegisterDialog() {
         View registerView = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
         vProgressRegister = ButterKnife.findById(registerView, R.id.progress_register);
         TextInputEditText teDevAs = ButterKnife.findById(registerView, R.id.dev_as);
         TextInputEditText teDevCode = ButterKnife.findById(registerView, R.id.dev_code);
-        vDialog = new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme).setTitle("设备注册").setView(registerView).setNegativeButton("取消", (dialogInterface, i) -> {
+        vRegisterDialog = new MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme).setTitle("设备注册").setView(registerView).setNegativeButton("取消", (dialogInterface, i) -> {
         }).setCancelable(false).setPositiveButton("注册", null).create();
-        vDialog.setOnShowListener(dialogInterface -> {
-            Button button = ((AlertDialog) vDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+        vRegisterDialog.setOnShowListener(dialogInterface -> {
+            Button button = ((AlertDialog) vRegisterDialog).getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener(view -> mPresenter.registerDevice(teDevAs.getText().toString(), teDevCode.getText().toString()));
         });
-        vDialog.show();
+        vRegisterDialog.show();
     }
 
     @Override
@@ -125,12 +183,13 @@ public class DeviceListActivity extends BaseFragmentActivity implements DeviceCo
 
     @Override
     public void showDeviceList(List<DeviceInfoDTO> devices) {
+        mDevices = devices;
         if (vSwipeRefreshLayout.isRefreshing()) {
             vSwipeRefreshLayout.setRefreshing(false);
         }
 
-        if (vDialog != null) {
-            vDialog.dismiss();
+        if (vRegisterDialog != null) {
+            vRegisterDialog.dismiss();
         }
 
         if (devices != null && devices.size() > 0) {
@@ -144,7 +203,8 @@ public class DeviceListActivity extends BaseFragmentActivity implements DeviceCo
     }
 
     @Override
-    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {}
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+    }
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {

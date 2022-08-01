@@ -17,7 +17,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:clipToPadding="true"
             android:listDivider="@null"
             android:saveEnabled="false"
@@ -36,6 +35,7 @@
         app:backgroundTint="@color/colorPrimary"
         android:layout_margin="24dp"
         app:rippleColor="@color/white"
+        app:tint="@color/white"
         android:src="@drawable/ic_fab_add" />
 
 </FrameLayout>

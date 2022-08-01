@@ -22,6 +22,8 @@ import org.foliage.zdjxzz.page.main.contract.MainContract;
 import org.foliage.zdjxzz.page.main.entity.BannerEntity;
 import org.foliage.zdjxzz.page.main.entity.GridEntity;
 import org.foliage.zdjxzz.page.main.presenter.MainPresenter;
+import org.foliage.zdjxzz.page.web.WebViewActivity;
+
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 
@@ -77,7 +79,8 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
     @Override
     public void initBanner(List<BannerEntity> retDatBean) {
         vMZBannerView.setBannerPageClickListener((view, position) -> {
-
+            BannerEntity item = (BannerEntity) vMZBannerView.getAdapter().getItem(position);
+            WebViewActivity.startActivity(mContext, item.getHref());
         });
         vMZBannerView.setPages(retDatBean, new MZHolderCreator() {
             @Override
@@ -96,12 +99,7 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
         entity.setName("设备监控");
         GridAdapter adapter = new GridAdapter(this, List.of(entity));
         vGridView.setAdapter(adapter);
-        vGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                IntentTool.startActivity(mContext, DeviceListActivity.class);
-            }
-        });
+        vGridView.setOnItemClickListener((adapterView, view, i, l) -> IntentTool.startActivity(mContext, DeviceListActivity.class));
     }
 
     public static class BannerViewHolder implements MZViewHolder<BannerEntity> {
@@ -119,7 +117,7 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
 
         @Override
         public void onBind(Context context, int i, BannerEntity banner) {
-            DzImageLoader.getInstance().displayImage(mImageView.getContext(), banner.getUrl(), mImageView);
+            DzImageLoader.getInstance().displayImage(mImageView.getContext(), banner.getImage(), mImageView);
             mTextView.setText(banner.getName());
         }
 
@@ -128,7 +126,7 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
     public static class GridAdapter extends BaseAdapter {
 
         private Context mContext;
-        private List<GridEntity> all = new ArrayList<>();
+        private List<GridEntity> all;
 
         public GridAdapter(Context mContext, List<GridEntity> data) {
             this.mContext = mContext;

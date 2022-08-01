@@ -36,6 +36,7 @@
         <activity android:name=".page.device.view.DeviceListActivity" />
         <activity android:name=".page.device.view.DeviceDetailActivity" />
         <activity android:name=".page.device.view.DeviceMapsActivity" />
+        <activity android:name=".page.web.WebViewActivity" />
     </application>
 
 </manifest>

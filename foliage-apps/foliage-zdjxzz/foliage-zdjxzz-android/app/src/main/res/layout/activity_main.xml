@@ -16,15 +16,17 @@
         app:indicatorAlign="center"
         app:open_mz_mode="false" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_line"/>
+    <!--   <View
+           android:layout_width="match_parent"
+           android:layout_height="1dp"
+           android:layout_marginTop="10dp"
+           android:background="@color/divider_line"/>-->
 
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@color/white"
         android:clipToPadding="false"
         android:numColumns="3" />

@@ -2,6 +2,9 @@ package org.foliage.zdjxzz.page.device.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -13,6 +16,7 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+
 import org.foliage.zdjxzz.R;
 import org.foliage.zdjxzz.base.BaseFragmentActivity;
 import org.foliage.zdjxzz.infrastructure.utils.IntentTool;
@@ -20,6 +24,7 @@ import org.foliage.zdjxzz.page.device.adapter.GeoAdapter;
 import org.foliage.zdjxzz.page.device.contract.DeviceContract;
 import org.foliage.zdjxzz.page.device.dto.GeographicDTO;
 import org.foliage.zdjxzz.page.device.presenter.DeviceMapPresenter;
+
 import com.orhanobut.dialogplus.DialogPlus;
 
 import java.util.List;
@@ -122,7 +127,12 @@ public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceCo
     @Override
     public void showGeoDialog(GeographicDTO geographicDTO) {
         mGeoAdapter.setData(geographicDTO.getGeographicsByProvince());
-        DialogPlus dialog = DialogPlus.newDialog(getContext()).setAdapter(mGeoAdapter).setHeader(R.layout.view_dialogplus_header_map).setOnItemClickListener((dialog1, item, view, position) -> {
+
+        View headerView = LayoutInflater.from(this).inflate(R.layout.view_dialogplus_header_map, null);
+        ((TextView) headerView.findViewById(R.id.header_title)).setText(geographicDTO.getCurrent().getProvince());
+        DialogPlus dialog = DialogPlus.newDialog(getContext()).setAdapter(mGeoAdapter)
+                .setHeader(headerView)
+                .setOnItemClickListener((dialog1, item, view, position) -> {
                     if (position < 0) return;
                     GeographicDTO.GeographicsByProvinceBean data = mGeoAdapter.getItem(position);
                     MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(new LatLng(data.getCoordinate().getLatitude(), data.getCoordinate().getLongitude()), 13);
