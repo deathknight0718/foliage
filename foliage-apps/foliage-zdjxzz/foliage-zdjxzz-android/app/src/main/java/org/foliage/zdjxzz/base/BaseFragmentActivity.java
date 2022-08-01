@@ -15,6 +15,7 @@ import org.foliage.zdjxzz.infrastructure.dialog.RippleLoadingDialog;
 import org.foliage.zdjxzz.infrastructure.utils.AppContextUtil;
 import org.foliage.zdjxzz.infrastructure.utils.ToastUtil;
 import org.foliage.zdjxzz.net.RxError;
+
 import com.githang.statusbar.StatusBarCompat;
 
 import org.greenrobot.eventbus.EventBus;
@@ -181,8 +182,12 @@ public abstract class BaseFragmentActivity extends AppCompatActivity {
             ToastUtil.showTextViewPrompt("网络连接异常!");
         } else if (e instanceof HttpException) {
             try {
-                String message = ((HttpException) e).response().errorBody().string();
-                ToastUtil.showTextViewPrompt(message);
+                if (((HttpException) e).code() == 401) {
+                    ToastUtil.showTextViewPrompt("登录失败!");
+                } else {
+                    String message = ((HttpException) e).response().errorBody().string();
+                    ToastUtil.showTextViewPrompt(message);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

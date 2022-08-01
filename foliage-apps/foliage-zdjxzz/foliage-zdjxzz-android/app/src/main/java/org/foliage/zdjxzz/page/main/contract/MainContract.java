@@ -25,6 +25,7 @@ public interface MainContract {
 
         void init();
 
+        boolean needLogin();
     }
 
 }

@@ -1,7 +1,13 @@
 package org.foliage.zdjxzz.net;
 
+import android.text.TextUtils;
+import android.util.Pair;
+
 import org.foliage.zdjxzz.constant.UrlConstants;
+import org.foliage.zdjxzz.infrastructure.cache.CacheManage;
+import org.foliage.zdjxzz.infrastructure.cache.CacheModel;
 import org.foliage.zdjxzz.infrastructure.utils.TimeManager;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +17,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Description：网络接口基类 retrofit2 & RxJava & Http
@@ -28,8 +36,13 @@ public class BaseClient {
         headInterceptor = new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request().newBuilder().addHeader("timestamp", String.valueOf(TimeManager.getInstance().getCurTimeMillis())).addHeader("Authorization", "Basic dG9tY2F0OnNlY3JldA==").build();
-                return chain.proceed(request);
+                String base = CacheManage.getInstance().getCache(CacheModel.LOGIN_KEY);
+                Request.Builder builder = chain.request().newBuilder()
+                        .addHeader("timestamp", String.valueOf(TimeManager.getInstance().getCurTimeMillis()));
+                if (!TextUtils.isEmpty(base)) {
+                    builder.addHeader("Authorization", base);
+                }
+                return chain.proceed(builder.build());
             }
         };
 

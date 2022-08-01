@@ -5,6 +5,9 @@ import android.content.Context;
 
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
+import com.orhanobut.hawk.Hawk;
+import com.orhanobut.hawk.NoEncryption;
+
 import org.foliage.zdjxzz.infrastructure.utils.AppContextUtil;
 import org.foliage.zdjxzz.infrastructure.utils.TimeManager;
 
@@ -32,12 +35,15 @@ public class DzApplication extends Application {
     }
 
     public void initModule() {
+        Hawk.init(this).setEncryption(new NoEncryption()).build();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 TimeManager.getInstance().initLoginTime();
             }
         }).start();
+
         SDKInitializer.setAgreePrivacy(this, true);
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
         SDKInitializer.initialize(this);

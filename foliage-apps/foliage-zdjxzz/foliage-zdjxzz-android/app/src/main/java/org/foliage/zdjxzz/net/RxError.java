@@ -12,10 +12,6 @@ public class RxError extends Exception {
      */
     public String errorCode = "400";
 
-    /**
-     * 错误类型
-     */
-//    public String type = ERROR_TYPE_COMMON;
     public RxError() {
     }
 

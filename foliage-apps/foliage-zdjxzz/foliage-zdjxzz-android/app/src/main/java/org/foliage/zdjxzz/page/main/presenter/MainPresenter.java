@@ -1,5 +1,9 @@
 package org.foliage.zdjxzz.page.main.presenter;
 
+import android.text.TextUtils;
+
+import org.foliage.zdjxzz.infrastructure.cache.CacheManage;
+import org.foliage.zdjxzz.infrastructure.cache.CacheModel;
 import org.foliage.zdjxzz.page.main.contract.MainContract;
 import org.foliage.zdjxzz.page.main.entity.BannerEntity;
 
@@ -53,4 +57,9 @@ public class MainPresenter implements MainContract.Presenter {
         mView.initGrid();
     }
 
+    @Override
+    public boolean needLogin() {
+        String sign = CacheManage.getInstance().getCache(CacheModel.LOGIN_KEY);
+        return TextUtils.isEmpty(sign);
+    }
 }

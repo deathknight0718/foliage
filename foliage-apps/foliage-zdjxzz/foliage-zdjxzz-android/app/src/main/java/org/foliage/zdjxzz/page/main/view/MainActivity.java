@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
 
 import org.foliage.zdjxzz.R;
 import org.foliage.zdjxzz.base.BaseFragmentActivity;
@@ -18,16 +20,13 @@ import org.foliage.zdjxzz.infrastructure.banner.holder.MZViewHolder;
 import org.foliage.zdjxzz.infrastructure.imageloader.DzImageLoader;
 import org.foliage.zdjxzz.infrastructure.utils.IntentTool;
 import org.foliage.zdjxzz.page.device.view.DeviceListActivity;
+import org.foliage.zdjxzz.page.login.view.LoginActivity;
 import org.foliage.zdjxzz.page.main.contract.MainContract;
 import org.foliage.zdjxzz.page.main.entity.BannerEntity;
 import org.foliage.zdjxzz.page.main.entity.GridEntity;
 import org.foliage.zdjxzz.page.main.presenter.MainPresenter;
 import org.foliage.zdjxzz.page.web.WebViewActivity;
 
-import com.malinskiy.materialicons.IconDrawable;
-import com.malinskiy.materialicons.Iconify;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -64,6 +63,10 @@ public class MainActivity extends BaseFragmentActivity implements MainContract.V
 
         mPresenter = new MainPresenter(this);
         mPresenter.init();
+
+        if (mPresenter.needLogin()) {
+            IntentTool.startActivity(mContext, LoginActivity.class, true);
+        }
     }
 
     @Override
