@@ -1,6 +1,7 @@
 package org.foliage.zdjxzz.page.device.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ public class GeoAdapter extends BaseAdapter {
     private final LayoutInflater layoutInflater;
     private List<GeographicDTO.GeographicsByProvinceBean> mGeoList = new ArrayList<>();
 
+    private int checkedPosition = -1;
+
     public GeoAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -42,6 +45,15 @@ public class GeoAdapter extends BaseAdapter {
 
     public void setData(List<GeographicDTO.GeographicsByProvinceBean> mGeoList) {
         this.mGeoList = mGeoList;
+    }
+
+    public void setCheckedPosition(int checkedPosition) {
+        this.checkedPosition = checkedPosition;
+        notifyDataSetChanged();
+    }
+
+    public int getCheckedPosition() {
+        return checkedPosition;
     }
 
     @Override
@@ -81,6 +93,13 @@ public class GeoAdapter extends BaseAdapter {
         viewHolder.deviceName.setText(" - " + getItem(position).getDevice().getName());
         viewHolder.location.setText(getItem(position).getAddress());
 
+        if (checkedPosition != -1) {
+            if (position == checkedPosition) {
+                view.setBackgroundColor(view.getResources().getColor(R.color.c_838383));
+            } else {
+                view.setBackgroundColor(view.getResources().getColor(R.color.white));
+            }
+        }
         return view;
     }
 

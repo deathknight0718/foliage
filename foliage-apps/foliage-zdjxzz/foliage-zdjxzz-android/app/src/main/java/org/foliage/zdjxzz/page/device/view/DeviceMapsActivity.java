@@ -16,6 +16,7 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.orhanobut.dialogplus.DialogPlus;
 
 import org.foliage.zdjxzz.R;
 import org.foliage.zdjxzz.base.BaseFragmentActivity;
@@ -24,8 +25,6 @@ import org.foliage.zdjxzz.page.device.adapter.GeoAdapter;
 import org.foliage.zdjxzz.page.device.contract.DeviceContract;
 import org.foliage.zdjxzz.page.device.dto.GeographicDTO;
 import org.foliage.zdjxzz.page.device.presenter.DeviceMapPresenter;
-
-import com.orhanobut.dialogplus.DialogPlus;
 
 import java.util.List;
 
@@ -137,6 +136,9 @@ public class DeviceMapsActivity extends BaseFragmentActivity implements DeviceCo
                     GeographicDTO.GeographicsByProvinceBean data = mGeoAdapter.getItem(position);
                     MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(new LatLng(data.getCoordinate().getLatitude(), data.getCoordinate().getLongitude()), 13);
                     vMapView.getMap().animateMapStatus(msu);
+
+                    mGeoAdapter.setCheckedPosition(position);
+
                 }).setExpanded(false)  // This will enable the expand feature, (similar to android L share dialog)
                 .create();
         dialog.show();
