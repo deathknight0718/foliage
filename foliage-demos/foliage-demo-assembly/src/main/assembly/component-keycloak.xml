@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.1.1 https://maven.apache.org/xsd/assembly-component-2.1.1.xsd">
+    <dependencySets>
+        <dependencySet>
+            <scope>compile</scope>
+            <outputDirectory>lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <directoryMode>0775</directoryMode>
+            <fileMode>0664</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <includes>
+                <include>org.bouncycastle:bcpkix-jdk15on</include>
+                <include>org.bouncycastle:bcprov-jdk15on</include>
+                <include>commons-codec:commons-codec</include>
+                <include>commons-logging:commons-logging</include>
+                <include>org.apache.httpcomponents:httpclient</include>
+                <include>org.apache.httpcomponents:httpcore</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.sun.activation:jakarta.activation</include>
+                <include>org.jboss.logging:jboss-logging</include>
+                <include>org.keycloak:keycloak-adapter-core</include>
+                <include>org.keycloak:keycloak-adapter-spi</include>
+                <include>org.keycloak:keycloak-authz-client</include>
+                <include>org.keycloak:keycloak-common</include>
+                <include>org.keycloak:keycloak-core</include>
+                <include>org.keycloak:keycloak-tomcat-adapter</include>
+                <include>org.keycloak:keycloak-tomcat-adapter-spi</include>
+                <include>org.keycloak:keycloak-tomcat-core-adapter</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</component>
