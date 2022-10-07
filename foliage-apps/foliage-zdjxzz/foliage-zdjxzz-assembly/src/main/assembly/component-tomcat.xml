@@ -40,24 +40,4 @@
             </includes>
         </dependencySet>
     </dependencySets>
-    <files>
-        <file>
-            <source>${project.basedir}/src/main/resources/server.xml</source>
-            <outputDirectory>conf</outputDirectory>
-            <filtered>true</filtered>
-            <fileMode>0664</fileMode>
-        </file>
-        <file>
-            <source>${project.basedir}/src/main/resources/logback.xml</source>
-            <outputDirectory>conf</outputDirectory>
-            <filtered>true</filtered>
-            <fileMode>0664</fileMode>
-        </file>
-        <file>
-            <source>${project.basedir}/src/main/resources/context.xml</source>
-            <outputDirectory>conf</outputDirectory>
-            <filtered>true</filtered>
-            <fileMode>0664</fileMode>
-        </file>
-    </files>
 </component>

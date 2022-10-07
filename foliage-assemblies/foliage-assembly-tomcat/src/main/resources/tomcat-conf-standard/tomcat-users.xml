@@ -34,5 +34,5 @@
     <role rolename="tomcat" />
     <role rolename="admin-gui"/>
     <role rolename="manager-gui"/>
-    <user username="tomcat" password="secret" roles="tomcat,admin-gui,manager-gui"/>
+    <user username="${assembly.admin.username}" password="${assembly.admin.password}" roles="tomcat,admin-gui,manager-gui"/>
 </tomcat-users>

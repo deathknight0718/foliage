@@ -10,6 +10,10 @@
     <name>Foliage Assembly Tomcat</name>
     <packaging>pom</packaging>
     <properties>
+        <assembly.admin.username>tomcat</assembly.admin.username>
+        <assembly.admin.password>secret</assembly.admin.password>
+        <assembly.project.name>foliage</assembly.project.name>
+        <assembly.keystore.password>secret</assembly.keystore.password>
         <assembly.standard.classifier>standard</assembly.standard.classifier>
         <assembly.standard.name>${project.artifactId}-${project.version}-${assembly.standard.classifier}</assembly.standard.name>
         <assembly.lite.classifier>lite</assembly.lite.classifier>

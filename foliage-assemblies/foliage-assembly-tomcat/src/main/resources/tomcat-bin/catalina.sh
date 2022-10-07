@@ -107,15 +107,6 @@
 #                   case the default is "true"
 # -----------------------------------------------------------------------------
 
-echo ""
-echo "     __________  __    _______   ____________ "
-echo "    / ____/ __ \/ /   /  _/   | / ____/ ____/ "
-echo "   / /_  / / / / /    / // /| |/ / __/ __/    "
-echo "  / __/ / /_/ / /____/ // ___ / /_/ / /___    "
-echo " /_/    \____/_____/___/_/  |_\____/_____/    "
-echo "                                              "
-echo ""
-
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false
 darwin=false
@@ -149,6 +140,8 @@ PRGDIR=`dirname "$PRG"`
 
 # Copy CATALINA_BASE from CATALINA_HOME if not already set
 [ -z "$CATALINA_BASE" ] && CATALINA_BASE="$CATALINA_HOME"
+
+$CATALINA_HOME/bin/catalina-banner.sh
 
 # Ensure that any user defined CLASSPATH variables are not used on startup,
 # but allow them to be specified in setenv.sh, in rare case when it is needed.
@@ -257,7 +250,7 @@ if [ -z "$JSSE_OPTS" ] ; then
 fi
 
 # deathknight0718@qq.com: 添加全局变量（使用 JVM 自带的信任证书库）
-JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Dfoliage.project.home=$CATALINA_HOME -Dfoliage.project.name=${foliage.project.name}"
+JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Dbuild.project.home=$CATALINA_HOME -Dbuild.project.name=${assembly.project.name}"
 
 # Register custom URL handlers
 # Do this here so custom URL handles (specifically 'war:...') can be used in the security policy
