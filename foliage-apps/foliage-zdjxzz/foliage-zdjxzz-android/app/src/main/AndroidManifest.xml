@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.foliage">
+    package="org.foliage.zdjxzz">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -23,7 +23,8 @@
         android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="MpNyH3wiFmYkbt0ltHZikzvXeETB7Opy" />
+            android:value="9ReCHyoNrWzqCGqH5ETuxwQ9Fy4ARsdR" />
+
         <activity
             android:name=".page.main.view.MainActivity"
             android:exported="true"
@@ -33,9 +34,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".page.login.view.LoginActivity"
+            android:theme="@style/Theme.Foliage.NoActionBar" />
         <activity android:name=".page.device.view.DeviceListActivity" />
         <activity android:name=".page.device.view.DeviceDetailActivity" />
         <activity android:name=".page.device.view.DeviceMapsActivity" />
+        <activity android:name=".page.web.WebViewActivity" />
     </application>
 
 </manifest>
