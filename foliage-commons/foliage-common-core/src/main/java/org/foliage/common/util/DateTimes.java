@@ -15,14 +15,12 @@
  ******************************************************************************/
 package org.foliage.common.util;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -37,20 +35,13 @@ public class DateTimes {
 
     public static final LocalDateTime EPOCH = Instant.EPOCH.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-    public static final DateTimeFormatter TIME_FORMATTER_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
+    public static final DateTimeFormatter TIME_FORMATTER_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
 
-    public static final DateTimeFormatter TIME_FORMATTER_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
-
-    public static final DateTimeFormatter TIME_FORMATTER_WITH_T = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss").withZone(ZoneId.systemDefault());
+    public static final DateTimeFormatter TIME_FORMATTER_DATE_TIME = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     // ------------------------------------------------------------------------
 
     public static LocalDateTime toLocalDateTime(Date date) {
-        return toLocalDateTime(date, null);
-    }
-
-    public static LocalDateTime toLocalDateTime(Date date, LocalDateTime defaultTime) {
-        if (date == null) return defaultTime;
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
@@ -82,41 +73,9 @@ public class DateTimes {
         return format(temporal, TIME_FORMATTER_DATE_TIME);
     }
 
-    public static String format(Timestamp temporal) {
-        return format(temporal.toLocalDateTime());
-    }
-
-    public static String format(java.sql.Date temporal) {
-        return format(temporal.toLocalDate());
-    }
-
     public static String format(TemporalAccessor temporal, DateTimeFormatter formatter) {
         if (temporal == null) return null;
         return formatter.format(temporal);
-    }
-
-    // ------------------------------------------------------------------------
-
-    public static Date formatStr2Date(String dateStr, DateTimeFormatter format) {
-        LocalDate localDate = dateOf(dateStr, format);
-        ZoneId zone = ZoneId.systemDefault();
-        Instant instant = localDate.atStartOfDay().atZone(zone).toInstant();
-        Date date = Date.from(instant);
-        return date;
-    }
-
-    public static Date getAddDay(Date date, int n) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(5, n);
-        return cal.getTime();
-    }
-
-    public static Date getAddMonth(Date date, int n) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(2, n);
-        return cal.getTime();
     }
 
 }

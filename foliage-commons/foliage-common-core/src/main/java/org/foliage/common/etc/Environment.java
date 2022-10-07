@@ -69,9 +69,9 @@ public class Environment {
 
     // ------------------------------------------------------------------------
 
-    public static final String PROPERTY_NAME = "foliage.project.name";
+    public static final String PROPERTY_NAME = "build.project.name";
 
-    public static final String PROPERTY_HOME = "foliage.project.home";
+    public static final String PROPERTY_HOME = "build.project.home";
 
     public static final String PROJECT_NAME = System.getProperty(PROPERTY_NAME);
 
@@ -104,7 +104,7 @@ public class Environment {
     // ------------------------------------------------------------------------
 
     static { // 检查 PROJECT_PATH 系统参数是否存在。
-        Preconditions.checkNotNull(PROJECT_PATH, "Error! the environment variable [project].home must not be null.");
+        Preconditions.checkNotNull(PROJECT_PATH, "Error! the environment variable " + PROPERTY_HOME + " must not be null.");
     }
 
     // ------------------------------------------------------------------------
@@ -127,10 +127,8 @@ public class Environment {
 
     public static void logback() throws JoranException, IOException {
         Resource resource = new FileSystemResource(getProjectFile(PROJECT_PATH_OF_LOGBACK));
-        if (!resource.exists())
-            logger.warn("Cannot found logback configuration in: {}", resource);
-        else
-            logback(resource);
+        if (!resource.exists()) logger.warn("Cannot found logback configuration in: {}", resource);
+        else logback(resource);
     }
 
     public static void logback(Resource resource) throws JoranException, IOException {

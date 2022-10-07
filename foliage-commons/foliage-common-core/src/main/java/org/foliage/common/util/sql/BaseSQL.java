@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2020 deathknight0718@qq.com..
+ * Copyright 2022 deathknight0718@qq.com.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy
@@ -13,27 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-/**
- * Copyright 2009-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.foliage.common.util.sql;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.foliage.guava.common.collect.ImmutableList;
 
 /**
  * @author Clinton Begin
@@ -43,15 +31,18 @@ import java.util.List;
  */
 public abstract class BaseSQL<T> {
 
-    private static final String AND = ") \nAND (";
-    private static final String OR = ") \nOR (";
+    // ------------------------------------------------------------------------
+
+    private static final String AND = ") \nAND (", OR = ") \nOR (";
 
     private final SQLStatement sql = new SQLStatement();
 
     public abstract T getSelf();
 
+    // ------------------------------------------------------------------------
+
     public T UPDATE(String table) {
-        sql().statementType = SQLStatement.StatementType.UPDATE;
+        sql().statementType = StatementType.UPDATE;
         sql().tables.add(table);
         return getSelf();
     }
@@ -67,13 +58,13 @@ public abstract class BaseSQL<T> {
     }
 
     public T INSERT_INTO(String tableName) {
-        sql().statementType = SQLStatement.StatementType.INSERT;
+        sql().statementType = StatementType.INSERT;
         sql().tables.add(tableName);
         return getSelf();
     }
 
     public T MERGE_INTO(String tableName) {
-        sql().statementType = SQLStatement.StatementType.MERGE;
+        sql().statementType = StatementType.MERGE;
         sql().tables.add(tableName);
         return getSelf();
     }
@@ -100,13 +91,13 @@ public abstract class BaseSQL<T> {
     }
 
     public T SELECT(String columns) {
-        sql().statementType = SQLStatement.StatementType.SELECT;
+        sql().statementType = StatementType.SELECT;
         sql().select.add(columns);
         return getSelf();
     }
 
     public T SELECT(String... columns) {
-        sql().statementType = SQLStatement.StatementType.SELECT;
+        sql().statementType = StatementType.SELECT;
         sql().select.addAll(Arrays.asList(columns));
         return getSelf();
     }
@@ -123,8 +114,21 @@ public abstract class BaseSQL<T> {
         return getSelf();
     }
 
+    public T WITH_RECURSIVE(String name, BaseSQL<T> statement1, BaseSQL<T> statement2, BaseSQL<T> statement3) {
+        return WITH_RECURSIVE(name, statement1.toString(), statement2.toString(), statement3.toString());
+    }
+
+    public T WITH_RECURSIVE(String name, String expression1, String expression2, String expression3) {
+        sql().statementType = StatementType.RECURSIVE;
+        sql().recursive = name;
+        sql().recursiveExpression1 = expression1;
+        sql().recursiveExpression2 = expression2;
+        sql().recursiveExpression3 = expression3;
+        return getSelf();
+    }
+
     public T DELETE_FROM(String table) {
-        sql().statementType = SQLStatement.StatementType.DELETE;
+        sql().statementType = StatementType.DELETE;
         sql().tables.add(table);
         return getSelf();
     }
@@ -257,16 +261,33 @@ public abstract class BaseSQL<T> {
         sql().onConflict.addAll(Arrays.asList(columns));
         return getSelf();
     }
-    
+
+    public T DO_UPDATE_SET(String... sets) {
+        sql().doUpdateSet.addAll(Arrays.asList(sets));
+        return getSelf();
+    }
+
     public T DO_SOMETHING(String expression) {
         sql().doSomething.add(expression);
         return getSelf();
     }
-    
-    public T ON_CONFLICT_DO_NOTHING(String... columns) {
-        sql().onConflictDoNothing.addAll(Arrays.asList(columns));
+
+    public T DO_NOTHING() {
+        sql().doNothing = true;
         return getSelf();
     }
+
+    public T OFFSET(String symbol) {
+        sql().offset = symbol;
+        return getSelf();
+    }
+
+    public T LIMIT(String symbol) {
+        sql().limit = symbol;
+        return getSelf();
+    }
+
+    // ------------------------------------------------------------------------
 
     private SQLStatement sql() {
         return sql;
@@ -284,9 +305,16 @@ public abstract class BaseSQL<T> {
         return sb.toString();
     }
 
+    public String toNormalizeString() {
+        return StringUtils.normalizeSpace(toString());
+    }
+
+    // ------------------------------------------------------------------------
+
     private static class SafeAppendable {
 
         private final Appendable a;
+
         private boolean empty = true;
 
         public SafeAppendable(Appendable a) {
@@ -312,91 +340,127 @@ public abstract class BaseSQL<T> {
 
     }
 
+    // ------------------------------------------------------------------------
+
+    private static enum StatementType {
+        DELETE, INSERT, SELECT, UPDATE, MERGE, RECURSIVE
+    }
+
+    // ------------------------------------------------------------------------
+
     private static class SQLStatement {
 
-        public enum StatementType {
-            DELETE, INSERT, SELECT, UPDATE, MERGE
-        }
-
         StatementType statementType;
+
         List<String> sets = new ArrayList<String>();
+
         List<String> select = new ArrayList<String>();
+
         List<String> tables = new ArrayList<String>();
+
         List<String> join = new ArrayList<String>();
+
         List<String> innerJoin = new ArrayList<String>();
+
         List<String> outerJoin = new ArrayList<String>();
+
         List<String> leftOuterJoin = new ArrayList<String>();
+
         List<String> rightJoin = new ArrayList<String>();
+
         List<String> rightOuterJoin = new ArrayList<String>();
+
         List<String> where = new ArrayList<String>();
+
         List<String> having = new ArrayList<String>();
+
         List<String> groupBy = new ArrayList<String>();
+
         List<String> orderBy = new ArrayList<String>();
+
         List<String> onConflict = new ArrayList<String>();
+
         List<String> doSomething = new ArrayList<String>();
-        List<String> onConflictDoNothing = new ArrayList<String>();
+
+        List<String> doUpdateSet = new ArrayList<String>();
+
         List<String> lastList = new ArrayList<String>();
+
         List<String> columns = new ArrayList<String>();
+
         List<String> values = new ArrayList<String>();
-        boolean distinct;
+
+        boolean distinct, doNothing;
+
+        String offset, limit;
+
+        String recursive, recursiveExpression1, recursiveExpression2, recursiveExpression3;
 
         public SQLStatement() {
             // Prevent Synthetic Access
         }
 
+        private void sqlClause(SafeAppendable builder, String keyword, String expression) {
+            sqlClause(builder, keyword, ImmutableList.of(expression));
+        }
+
+        private void sqlClause(SafeAppendable builder, String keyword, String expression, String open, String close) {
+            sqlClause(builder, keyword, ImmutableList.of(expression), open, close, "");
+        }
+
+        private void sqlClause(SafeAppendable builder, String keyword, List<String> parts) {
+            sqlClause(builder, keyword, parts, "", "", "");
+        }
+
         private void sqlClause(SafeAppendable builder, String keyword, List<String> parts, String open, String close, String conjunction) {
-            if (!parts.isEmpty()) {
-                if (!builder.isEmpty()) {
-                    builder.append("\n");
+            if (parts.isEmpty()) return;
+            if (!builder.isEmpty()) builder.append("\n");
+            builder.append(keyword);
+            builder.append(" ");
+            builder.append(open);
+            String last = "________";
+            for (int i = 0, n = parts.size(); i < n; i++) {
+                String part = parts.get(i);
+                if (i > 0 && !part.equals(AND) && !part.equals(OR) && !last.equals(AND) && !last.equals(OR)) {
+                    builder.append(conjunction);
                 }
-                builder.append(keyword);
-                builder.append(" ");
-                builder.append(open);
-                String last = "________";
-                for (int i = 0, n = parts.size(); i < n; i++) {
-                    String part = parts.get(i);
-                    if (i > 0 && !part.equals(AND) && !part.equals(OR) && !last.equals(AND) && !last.equals(OR)) {
-                        builder.append(conjunction);
-                    }
-                    builder.append(part);
-                    last = part;
-                }
-                builder.append(close);
+                builder.append(part);
+                last = part;
             }
+            builder.append(close);
+        }
+
+        private String recursiveSQL(SafeAppendable builder) {
+            sqlClause(builder, "WITH RECURSIVE", recursive, "", " AS (");
+            sqlClause(builder, "", recursiveExpression1, "", "");
+            sqlClause(builder, "UNION ALL", "");
+            sqlClause(builder, "", recursiveExpression2, "", "");
+            sqlClause(builder, "", recursiveExpression3, ") ", "");
+            return builder.toString();
         }
 
         private String selectSQL(SafeAppendable builder) {
-            if (distinct) {
-                sqlClause(builder, "SELECT DISTINCT", select, "", "", ", ");
-            } else {
-                sqlClause(builder, "SELECT", select, "", "", ", ");
-            }
-
+            if (distinct) sqlClause(builder, "SELECT DISTINCT", select, "", "", ", ");
+            else sqlClause(builder, "SELECT", select, "", "", ", ");
             sqlClause(builder, "FROM", tables, "", "", ", ");
             joins(builder);
             sqlClause(builder, "WHERE", where, "(", ")", " AND ");
             sqlClause(builder, "GROUP BY", groupBy, "", "", ", ");
             sqlClause(builder, "HAVING", having, "(", ")", " AND ");
             sqlClause(builder, "ORDER BY", orderBy, "", "", ", ");
+            if (offset != null) sqlClause(builder, "OFFSET", offset);
+            if (limit != null) sqlClause(builder, "LIMIT", limit);
             return builder.toString();
-        }
-
-        private void joins(SafeAppendable builder) {
-            sqlClause(builder, "JOIN", join, "", "", "\nJOIN ");
-            sqlClause(builder, "INNER JOIN", innerJoin, "", "", "\nINNER JOIN ");
-            sqlClause(builder, "OUTER JOIN", outerJoin, "", "", "\nOUTER JOIN ");
-            sqlClause(builder, "LEFT OUTER JOIN", leftOuterJoin, "", "", "\nLEFT OUTER JOIN ");
-            sqlClause(builder, "RIGHT JOIN", rightJoin, "", "", "\nRIGHT JOIN ");
-            sqlClause(builder, "RIGHT OUTER JOIN", rightOuterJoin, "", "", "\nRIGHT OUTER JOIN ");
         }
 
         private String insertSQL(SafeAppendable builder) {
             sqlClause(builder, "INSERT INTO", tables, "", "", "");
             sqlClause(builder, "", columns, "(", ")", ", ");
             sqlClause(builder, "VALUES", values, "(", ")", ", ");
-            sqlClause(builder, "ON CONFLICT", onConflictDoNothing, "(", ")\nDO NOTHING", ", ");
             sqlClause(builder, "ON CONFLICT", onConflict, "(", ")", ", ");
-            sqlClause(builder, "DO", doSomething, "", "", "");
+            if (doNothing) sqlClause(builder, "DO", "NOTHING");
+            else if (!doSomething.isEmpty()) sqlClause(builder, "DO", doSomething);
+            else if (!doUpdateSet.isEmpty()) sqlClause(builder, "DO UPDATE SET", doUpdateSet, "", "", ", ");
             return builder.toString();
         }
 
@@ -421,38 +485,44 @@ public abstract class BaseSQL<T> {
             return builder.toString();
         }
 
+        private void joins(SafeAppendable builder) {
+            sqlClause(builder, "JOIN", join, "", "", "\nJOIN ");
+            sqlClause(builder, "INNER JOIN", innerJoin, "", "", "\nINNER JOIN ");
+            sqlClause(builder, "OUTER JOIN", outerJoin, "", "", "\nOUTER JOIN ");
+            sqlClause(builder, "LEFT OUTER JOIN", leftOuterJoin, "", "", "\nLEFT OUTER JOIN ");
+            sqlClause(builder, "RIGHT JOIN", rightJoin, "", "", "\nRIGHT JOIN ");
+            sqlClause(builder, "RIGHT OUTER JOIN", rightOuterJoin, "", "", "\nRIGHT OUTER JOIN ");
+        }
+
         public String sql(Appendable a) {
             SafeAppendable builder = new SafeAppendable(a);
             if (statementType == null) { return null; }
-
             String answer;
-
             switch (statementType) {
             case DELETE:
                 answer = deleteSQL(builder);
                 break;
-
             case INSERT:
                 answer = insertSQL(builder);
                 break;
-
             case MERGE:
                 answer = mergeSQL(builder);
                 break;
-
             case SELECT:
                 answer = selectSQL(builder);
                 break;
-
             case UPDATE:
                 answer = updateSQL(builder);
                 break;
-
+            case RECURSIVE:
+                answer = recursiveSQL(builder);
+                break;
             default:
                 answer = null;
             }
-
             return answer;
         }
+
     }
+
 }
