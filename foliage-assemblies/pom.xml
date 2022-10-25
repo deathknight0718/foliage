@@ -28,6 +28,7 @@
 		<deploy.url>https://maven.pkg.github.com/deathknight0718/foliage/</deploy.url>
 	</properties>
 	<modules>
-		<module>foliage-assembly-tomcat</module>
+		<module>foliage-tomcat</module>
+        <module>foliage-tomcat-keycloak</module>
 	</modules>
 </project>

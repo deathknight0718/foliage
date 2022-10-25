@@ -19,7 +19,6 @@
     <includeBaseDirectory>true</includeBaseDirectory>
     <componentDescriptors>
         <componentDescriptor>src/main/assembly/component-tomcat.xml</componentDescriptor>
-        <componentDescriptor>src/main/assembly/component-keycloak.xml</componentDescriptor>
         <componentDescriptor>src/main/assembly/component-webapp.xml</componentDescriptor>
     </componentDescriptors>
 </assembly>

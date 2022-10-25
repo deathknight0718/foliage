@@ -74,7 +74,7 @@
         <!-- ======================================== -->
         <dependency>
             <groupId>org.foliage</groupId>
-            <artifactId>foliage-assembly-tomcat</artifactId>
+            <artifactId>foliage-tomcat</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
             <type>zip</type>

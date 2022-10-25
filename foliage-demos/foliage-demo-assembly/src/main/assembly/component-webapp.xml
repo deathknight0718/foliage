@@ -13,9 +13,6 @@
                 <include>org.foliage:foliage-demo-web</include>
                 <include>org.foliage:foliage-demo-wicket</include>
             </includes>
-            <excludes>
-                <exclude>org.foliage:foliage-assembly-tomcat</exclude>
-            </excludes>
         </dependencySet>
     </dependencySets>
 </component>
