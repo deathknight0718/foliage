@@ -14,16 +14,23 @@
   the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.foliage</groupId>
-		<artifactId>foliage-apps</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>foliage-zdjxzz</artifactId>
-	<packaging>pom</packaging>
-	<modules>
-		<module>foliage-zdjxzz-web</module>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.foliage</groupId>
+        <artifactId>foliage-apps</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>foliage-zdjxzz</artifactId>
+    <packaging>pom</packaging>
+    <properties>
+        <build.jdbc.jndi>jdbc/h2</build.jdbc.jndi>
+        <build.jdbc.driver.class>org.h2.Driver</build.jdbc.driver.class>
+        <build.jdbc.url>jdbc:h2:./temp/foliage-db</build.jdbc.url>
+        <build.jdbc.username>admin</build.jdbc.username>
+        <build.jdbc.password>secret</build.jdbc.password>
+    </properties>
+    <modules>
+        <module>foliage-zdjxzz-web</module>
         <module>foliage-zdjxzz-assembly</module>
-	</modules>
+    </modules>
 </project>

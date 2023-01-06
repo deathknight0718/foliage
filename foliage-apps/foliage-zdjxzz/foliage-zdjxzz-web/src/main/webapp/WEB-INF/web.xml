@@ -8,10 +8,6 @@
     <!-- Webapp Listeners -->
     <!-- ======================================== -->
     <listener>
-        <description>Logback Listener</description>
-        <listener-class>org.foliage.chinazdjs.listener.LogbackWebappListener</listener-class>
-    </listener>
-    <listener>
         <description>Resteasy Listener</description>
         <listener-class>org.foliage.chinazdjs.listener.ResteasyWebappListener</listener-class>
     </listener>

@@ -13,7 +13,7 @@
                 <include>org.foliage:*</include>
             </includes>
             <excludes>
-                <exclude>org.foliage:foliage-assembly-tomcat</exclude>
+                <exclude>org.foliage:foliage-tomcat</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
@@ -29,4 +29,18 @@
             </includes>
         </dependencySet>
     </dependencySets>
+    <files>
+        <file>
+            <source>${project.basedir}/src/main/resources/tomcat-conf/context.xml</source>
+            <outputDirectory>conf</outputDirectory>
+            <filtered>true</filtered>
+            <fileMode>0664</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/tomcat-conf/tomcat-users.xml</source>
+            <outputDirectory>conf</outputDirectory>
+            <filtered>true</filtered>
+            <fileMode>0664</fileMode>
+        </file>
+    </files>
 </component>
