@@ -157,15 +157,15 @@ public class Environment {
     }
 
     public static void springWithDefault(InstanceProvider provider) {
-        InstanceFactory.defaultProvider(provider);
+        InstanceFactory.provide(provider);
     }
 
     public static void springWithInherited(String key) {
-        InstanceFactory.inheritedProvider(key, SpringProvider.withClassPath(PROJECT_PATH_OF_SPRING_INHERITED));
+        InstanceFactory.provideInherited(key, SpringProvider.withClassPath(PROJECT_PATH_OF_SPRING_INHERITED));
     }
 
     public static void springWithInherited(String key, InstanceProvider provider) {
-        InstanceFactory.inheritedProvider(key, provider);
+        InstanceFactory.provideInherited(key, provider);
     }
 
     // ------------------------------------------------------------------------

@@ -54,28 +54,28 @@ public class InstanceFactory {
     }
 
     public static <T> Map<String, T> getInstancesOfType(Class<T> clazz) {
-        return defaultProvider.getInstanceOfType(clazz);
+        return defaultProvider.getInstances(clazz);
     }
 
     public static Map<String, Object> getInstancesOfAnnotation(Class<? extends Annotation> clazz) {
-        return defaultProvider.getInstanceOfAnnotation(clazz);
+        return defaultProvider.getInstancesByAnnotation(clazz);
     }
 
     public static <T> Map<String, T> getInstancesOfKeyAndType(String key, Class<T> clazz) {
-        return inheritedProviders.get(key).getInstanceOfType(clazz);
+        return inheritedProviders.get(key).getInstances(clazz);
     }
 
     public static Map<String, Object> getInstancesOfKeyAndAnnotation(String key, Class<? extends Annotation> clazz) {
-        return inheritedProviders.get(key).getInstanceOfAnnotation(clazz);
+        return inheritedProviders.get(key).getInstancesByAnnotation(clazz);
     }
 
     // ------------------------------------------------------------------------
 
-    public static void defaultProvider(InstanceProvider provider) {
+    public static void provide(InstanceProvider provider) {
         defaultProvider = provider;
     }
 
-    public static void inheritedProvider(String key, InstanceProvider provider) {
+    public static void provideInherited(String key, InstanceProvider provider) {
         inheritedProviders.put(key, provider);
     }
 

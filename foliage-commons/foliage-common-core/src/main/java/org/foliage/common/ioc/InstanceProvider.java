@@ -32,8 +32,8 @@ public interface InstanceProvider extends AutoCloseable {
 
     <T> T getInstance(String bean, Class<T> clazz);
 
-    <T> Map<String, T> getInstanceOfType(Class<T> clazz);
+    <T> Map<String, T> getInstances(Class<T> clazz);
 
-    Map<String, Object> getInstanceOfAnnotation(Class<? extends Annotation> clazz);
+    Map<String, Object> getInstancesByAnnotation(Class<? extends Annotation> clazz);
 
 }

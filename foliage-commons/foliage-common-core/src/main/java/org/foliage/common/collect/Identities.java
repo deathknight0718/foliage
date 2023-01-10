@@ -127,6 +127,15 @@ public class Identities {
         buffer = Bytes.concat(buffer, String.valueOf(v3).getBytes(), DELIMITER);
         return uuid(buffer);
     }
+    
+    public static UUID uuid(String namespave, Object v1, Object v2, Object v3, Object v4) {
+        byte[] buffer = Bytes.concat(namespave.getBytes(), DELIMITER);
+        buffer = Bytes.concat(buffer, String.valueOf(v1).getBytes(), DELIMITER);
+        buffer = Bytes.concat(buffer, String.valueOf(v2).getBytes(), DELIMITER);
+        buffer = Bytes.concat(buffer, String.valueOf(v3).getBytes(), DELIMITER);
+        buffer = Bytes.concat(buffer, String.valueOf(v4).getBytes(), DELIMITER);
+        return uuid(buffer);
+    }
 
     // ------------------------------------------------------------------------
 

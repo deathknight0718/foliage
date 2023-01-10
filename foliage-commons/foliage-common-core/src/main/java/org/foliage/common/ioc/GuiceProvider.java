@@ -71,12 +71,12 @@ public class GuiceProvider implements InstanceProvider {
     }
 
     @Override
-    public <T> Map<String, T> getInstanceOfType(Class<T> clazz) {
+    public <T> Map<String, T> getInstances(Class<T> clazz) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Map<String, Object> getInstanceOfAnnotation(Class<? extends Annotation> clazz) {
+    public Map<String, Object> getInstancesByAnnotation(Class<? extends Annotation> clazz) {
         throw new UnsupportedOperationException();
     }
 

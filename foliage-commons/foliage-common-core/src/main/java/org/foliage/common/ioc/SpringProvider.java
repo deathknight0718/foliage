@@ -58,12 +58,12 @@ public class SpringProvider implements InstanceProvider {
     }
 
     @Override
-    public <T> Map<String, T> getInstanceOfType(Class<T> clazz) {
+    public <T> Map<String, T> getInstances(Class<T> clazz) {
         return context.getBeansOfType(clazz);
     }
 
     @Override
-    public Map<String, Object> getInstanceOfAnnotation(Class<? extends Annotation> clazz) {
+    public Map<String, Object> getInstancesByAnnotation(Class<? extends Annotation> clazz) {
         return context.getBeansWithAnnotation(clazz);
     }
 
