@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>page.foliage</groupId>
 		<artifactId>foliage-commons</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>foliage-common-core</artifactId>
 	<name>Foliage Common Core</name>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>page.foliage</groupId>
 			<artifactId>foliage-common-guava</artifactId>
-			<version>23.6.1-SNAPSHOT</version>
+			<version>23.6.1</version>
 		</dependency>
         <!-- ======================================== -->
         <!-- Jackson Dependencies -->
