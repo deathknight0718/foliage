@@ -31,7 +31,7 @@
                 </excludes>
             </unpackOptions>
             <includes>
-                <include>org.foliage:foliage-tomcat</include>
+                <include>page.foliage:foliage-tomcat</include>
             </includes>
         </dependencySet>
         <dependencySet>
@@ -50,7 +50,7 @@
                 </includes>
             </unpackOptions>
             <includes>
-                <include>org.foliage:foliage-tomcat</include>
+                <include>page.foliage:foliage-tomcat</include>
             </includes>
         </dependencySet>
     </dependencySets>

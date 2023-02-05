@@ -1,13 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.foliage</groupId>
+    <groupId>page.foliage</groupId>
     <artifactId>foliage</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Foliage Project</name>
-    <url>git@github.com:deathknight0718/foliage.git</url>
+    <description>Repositories for research by deathknight0718@qq.com.</description>
     <properties>
         <foliage.project.name>foliage</foliage.project.name>
+        <deploy.repository.id>foliage.sonatype.snapshots</deploy.repository.id>
+        <deploy.url>https://s01.oss.sonatype.org/content/repositories/snapshots/</deploy.url>
         <pro.encoding>UTF-8</pro.encoding>
         <jdk.version>1.8</jdk.version>
         <lucene.version>7.7.2</lucene.version>
@@ -40,6 +42,19 @@
         <module>foliage-assemblies</module>
         <module>foliage-apps</module>
     </modules>
+    <url>https://github.com/deathknight0718/foliage.git</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/deathknight0718/foliage.git</connection>
+        <developerConnection>scm:git:https://github.com/deathknight0718/foliage.git</developerConnection>
+        <url>https://github.com/deathknight0718/foliage.git</url>
+    </scm>
     <developers>
         <developer>
             <email>deathknight0718@qq.com</email>
@@ -49,8 +64,8 @@
     </developers>
     <distributionManagement>
         <snapshotRepository>
-            <id>foliage.snapshots</id>
-            <url>https://maven.pkg.github.com/deathknight0718/foliage</url>
+            <id>${deploy.repository.id}</id>
+            <url>${deploy.url}</url>
         </snapshotRepository>
     </distributionManagement>
     <repositories>
@@ -59,8 +74,8 @@
             <url>https://maven.aliyun.com/repository/public/</url>
         </repository>
         <repository>
-            <id>foliage.snapshots</id>
-            <url>https://maven.pkg.github.com/deathknight0718/foliage</url>
+            <id>${deploy.repository.id}</id>
+            <url>${deploy.url}</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -176,6 +191,23 @@
                                 <addClasspath>true</addClasspath>
                             </manifest>
                         </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <passphrase>zhouling93</passphrase>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -394,6 +426,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
