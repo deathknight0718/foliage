@@ -23,4 +23,8 @@
 	<artifactId>foliage-assemblies</artifactId>
 	<name>Foliage Assemblies</name>
 	<packaging>pom</packaging>
+    <modules>
+        <module>foliage-tomcat</module>
+        <module>foliage-tomcat-keycloak</module>
+    </modules>
 </project>

@@ -8,8 +8,9 @@
     <description>Repositories for research by deathknight0718@qq.com.</description>
     <properties>
         <foliage.project.name>foliage</foliage.project.name>
-        <deploy.repository.id>foliage.sonatype.snapshots</deploy.repository.id>
-        <deploy.url>https://s01.oss.sonatype.org/content/repositories/snapshots/</deploy.url>
+        <deploy.repository.id>foliage.sonatype</deploy.repository.id>
+        <deploy.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</deploy.url>
+        <!-- deploy.url>https://s01.oss.sonatype.org/content/repositories/snapshots/</deploy.url -->
         <pro.encoding>UTF-8</pro.encoding>
         <jdk.version>1.8</jdk.version>
         <lucene.version>7.7.2</lucene.version>
@@ -51,8 +52,8 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/deathknight0718/foliage.git</connection>
-        <developerConnection>scm:git:https://github.com/deathknight0718/foliage.git</developerConnection>
+        <connection>scm:git:ssh://github.com/deathknight0718/foliage.git</connection>
+        <developerConnection>scm:git:ssh://github.com/deathknight0718/foliage.git</developerConnection>
         <url>https://github.com/deathknight0718/foliage.git</url>
     </scm>
     <developers>
@@ -63,23 +64,15 @@
         </developer>
     </developers>
     <distributionManagement>
-        <snapshotRepository>
+        <repository>
             <id>${deploy.repository.id}</id>
             <url>${deploy.url}</url>
-        </snapshotRepository>
+        </repository>
     </distributionManagement>
     <repositories>
         <repository>
             <id>aliyun.central</id>
             <url>https://maven.aliyun.com/repository/public/</url>
-        </repository>
-        <repository>
-            <id>${deploy.repository.id}</id>
-            <url>${deploy.url}</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -91,6 +84,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
@@ -206,9 +204,6 @@
                             </goals>
                         </execution>
                     </executions>
-                    <configuration>
-                        <passphrase>zhouling93</passphrase>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -417,6 +412,10 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
             <plugin>
@@ -429,7 +428,7 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
+                <artifactId>maven-release-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

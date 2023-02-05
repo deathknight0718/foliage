@@ -26,6 +26,5 @@
 	<modules>
 		<module>foliage-common-core</module>
         <module>foliage-common-jdbc</module>
-        <module>foliage-common-guava</module>
 	</modules>
 </project>

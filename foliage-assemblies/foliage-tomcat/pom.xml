@@ -9,13 +9,6 @@
     <artifactId>foliage-tomcat</artifactId>
     <name>Foliage Assembly Tomcat</name>
     <packaging>pom</packaging>
-    <properties>
-        <assembly.project.name>foliage</assembly.project.name>
-        <assembly.standard.classifier>standard</assembly.standard.classifier>
-        <assembly.standard.name>${project.artifactId}-${project.version}-${assembly.standard.classifier}</assembly.standard.name>
-        <assembly.lite.classifier>lite</assembly.lite.classifier>
-        <assembly.lite.name>${project.artifactId}-${project.version}-${assembly.lite.classifier}</assembly.lite.name>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -28,12 +21,12 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <finalName>${assembly.standard.name}</finalName>
+                            <finalName>${project.artifactId}-${project.version}-standard</finalName>
                             <formats>
                                 <format>zip</format>
                             </formats>
                             <descriptors>
-                                <descriptor>src/main/assembly/assembly-${assembly.standard.classifier}.xml</descriptor>
+                                <descriptor>src/main/assembly/assembly-standard.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -44,12 +37,12 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <finalName>${assembly.lite.name}</finalName>
+                            <finalName>${project.artifactId}-${project.version}-lite</finalName>
                             <formats>
                                 <format>zip</format>
                             </formats>
                             <descriptors>
-                                <descriptor>src/main/assembly/assembly-${assembly.lite.classifier}.xml</descriptor>
+                                <descriptor>src/main/assembly/assembly-lite.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
@@ -65,8 +58,8 @@
                         </goals>
                         <phase>install</phase>
                         <configuration>
-                            <file>${project.build.directory}/${assembly.standard.name}.zip</file>
-                            <classifier>${assembly.standard.classifier}</classifier>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-standard.zip</file>
+                            <classifier>standard</classifier>
                             <packaging>zip</packaging>
                         </configuration>
                     </execution>
@@ -77,8 +70,8 @@
                         </goals>
                         <phase>install</phase>
                         <configuration>
-                            <file>${project.build.directory}/${assembly.lite.name}.zip</file>
-                            <classifier>${assembly.lite.classifier}</classifier>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-lite.zip</file>
+                            <classifier>lite</classifier>
                             <packaging>zip</packaging>
                         </configuration>
                     </execution>
@@ -100,8 +93,8 @@
                         <phase>deploy</phase>
                         <configuration>
                             <generatePom>false</generatePom>
-                            <file>${project.build.directory}/${assembly.standard.name}.zip</file>
-                            <classifier>${assembly.standard.classifier}</classifier>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-standard.zip</file>
+                            <classifier>standard</classifier>
                             <packaging>zip</packaging>
                         </configuration>
                     </execution>
@@ -113,8 +106,8 @@
                         <phase>deploy</phase>
                         <configuration>
                             <generatePom>false</generatePom>
-                            <file>${project.build.directory}/${assembly.lite.name}.zip</file>
-                            <classifier>${assembly.lite.classifier}</classifier>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-lite.zip</file>
+                            <classifier>lite</classifier>
                             <packaging>zip</packaging>
                         </configuration>
                     </execution>
