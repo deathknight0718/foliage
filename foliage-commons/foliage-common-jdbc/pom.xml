@@ -3,7 +3,7 @@
     <parent>
         <groupId>page.foliage</groupId>
         <artifactId>foliage-commons</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-jdbc</artifactId>
     <name>Foliage Common JDBC</name>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-common-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>page.foliage</groupId>
