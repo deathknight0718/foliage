@@ -12,35 +12,17 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>assembly-tomcat-standard</id>
+                        <id>assembly-zip</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
-                        <phase>package</phase>
                         <configuration>
-                            <finalName>${project.artifactId}-${project.version}-standard</finalName>
-                            <formats>
-                                <format>zip</format>
-                            </formats>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly-standard.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>assembly-tomcat-lite</id>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <finalName>${project.artifactId}-${project.version}-lite</finalName>
-                            <formats>
-                                <format>zip</format>
-                            </formats>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
                             <descriptors>
                                 <descriptor>src/main/assembly/assembly-lite.xml</descriptor>
                             </descriptors>
@@ -49,76 +31,33 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>default-install-standard</id>
+                        <id>install-zip</id>
+                        <phase>install</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>
-                        <phase>install</phase>
-                        <configuration>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}-standard.zip</file>
-                            <classifier>standard</classifier>
-                            <packaging>zip</packaging>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-install-lite</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>install</phase>
-                        <configuration>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}-lite.zip</file>
-                            <classifier>lite</classifier>
-                            <packaging>zip</packaging>
-                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>${project.artifactId}</artifactId>
-                    <version>${project.version}</version>
-                </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>default-deploy-standard</id>
-                        <goals>
-                            <goal>deploy-file</goal>
-                        </goals>
+                        <id>gpg-zip</id>
                         <phase>deploy</phase>
-                        <configuration>
-                            <generatePom>false</generatePom>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}-standard.zip</file>
-                            <classifier>standard</classifier>
-                            <packaging>zip</packaging>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-deploy-lite</id>
                         <goals>
-                            <goal>deploy-file</goal>
+                            <goal>sign-and-deploy-file</goal>
                         </goals>
-                        <phase>deploy</phase>
                         <configuration>
-                            <generatePom>false</generatePom>
-                            <file>${project.build.directory}/${project.artifactId}-${project.version}-lite.zip</file>
-                            <classifier>lite</classifier>
-                            <packaging>zip</packaging>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <repositoryId>${deploy.repository.id}</repositoryId>
-                    <url>${deploy.url}</url>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>${project.artifactId}</artifactId>
-                    <version>${project.version}</version>
-                </configuration>
             </plugin>
         </plugins>
     </build>
