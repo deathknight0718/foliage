@@ -4,7 +4,7 @@
     <parent>
         <groupId>page.foliage</groupId>
         <artifactId>foliage-assemblies</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-tomcat</artifactId>
     <name>Foliage Assembly Tomcat</name>
