@@ -96,6 +96,7 @@
                             </goals>
                             <configuration>
                                 <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
+                                <packaging>zip</packaging>
                             </configuration>
                         </execution>
                     </executions>
@@ -122,6 +123,7 @@
                             </goals>
                             <configuration>
                                 <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
+                                <packaging>zip</packaging>
                             </configuration>
                         </execution>
                     </executions>

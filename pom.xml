@@ -23,7 +23,7 @@
         <plg.mdp.version>2.10</plg.mdp.version>
         <plg.mep.version>2.10</plg.mep.version>
         <plg.mgp.version>3.0.1</plg.mgp.version>
-        <plg.mrp.version>2.5.3</plg.mrp.version>
+        <plg.mre.version>2.5.3</plg.mre.version>
         <plg.mer.version>3.0.0-M2</plg.mer.version>
         <plg.mjc.version>1.11.1</plg.mjc.version>
         <plg.mjd.version>3.0.0</plg.mjd.version>
@@ -89,7 +89,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>${plg.mrp.version}</version>
+                    <version>${plg.mre.version}</version>
                     <configuration>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
                     </configuration>

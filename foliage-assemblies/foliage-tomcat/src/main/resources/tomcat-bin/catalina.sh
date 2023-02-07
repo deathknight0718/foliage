@@ -267,7 +267,7 @@ if [ -z "$JSSE_OPTS" ] ; then
 fi
 
 # Deathknight0718@qq.com: Set a global properties.
-JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Dbuild.project.home=$CATALINA_HOME -Dbuild.project.name=${assembly.project.name}"
+JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Dbuild.project.home=$CATALINA_HOME -Dbuild.project.name=${foliage.project.name}"
 
 # Register custom URL handlers
 # Do this here so custom URL handles (specifically 'war:...') can be used in the security policy
