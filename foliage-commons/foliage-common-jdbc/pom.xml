@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>page.foliage</groupId>
-            <artifactId>foliage-common-guava</artifactId>
+            <artifactId>foliage-guava</artifactId>
             <version>23.6.1</version>
         </dependency>
         <dependency>
