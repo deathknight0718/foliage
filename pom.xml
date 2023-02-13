@@ -1688,6 +1688,11 @@
 			<!-- ======================================== -->
 			<!-- Other Dependencies -->
 			<!-- ======================================== -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>3.14.2</version>
+            </dependency>
 			<!-- IPAddress Project -->
             <dependency>
                 <groupId>com.github.seancfoley</groupId>
