@@ -26,6 +26,7 @@ public class TestUtils {
 
     @Test
     private void testNamedPreparedStatement() {
+        
     }
 
 }

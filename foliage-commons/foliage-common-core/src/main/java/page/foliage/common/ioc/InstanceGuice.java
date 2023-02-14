@@ -15,12 +15,9 @@
  ******************************************************************************/
 package page.foliage.common.ioc;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import page.foliage.inject.AbstractModule;
+import page.foliage.inject.Guice;
+import page.foliage.inject.Injector;
 
 /**
  * 
@@ -28,7 +25,7 @@ import com.google.inject.Injector;
  * @author deathknight0718@qq.com.
  * @version 1.0.0
  */
-public class GuiceProvider implements InstanceProvider {
+public class InstanceGuice implements InstanceProvider {
 
     // ------------------------------------------------------------------------
 
@@ -36,21 +33,14 @@ public class GuiceProvider implements InstanceProvider {
 
     // ------------------------------------------------------------------------
 
-    private GuiceProvider(Injector injector) {
+    private InstanceGuice(Injector injector) {
         this.injector = injector;
     }
 
     // ------------------------------------------------------------------------
 
     public static InstanceProvider withModule(AbstractModule... modules) {
-        return new GuiceProvider(Guice.createInjector(modules));
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public void close() throws Exception {
-        // DONOTHING
+        return new InstanceGuice(Guice.createInjector(modules));
     }
 
     // ------------------------------------------------------------------------
@@ -58,26 +48,6 @@ public class GuiceProvider implements InstanceProvider {
     @Override
     public <T> T getInstance(Class<T> clazz) {
         return injector.getInstance(clazz);
-    }
-
-    @Override
-    public <T> T getInstance(Class<T> clazz, Object... arguments) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <T> T getInstance(String bean, Class<T> clazz) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <T> Map<String, T> getInstances(Class<T> clazz) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Map<String, Object> getInstancesByAnnotation(Class<? extends Annotation> clazz) {
-        throw new UnsupportedOperationException();
     }
 
 }

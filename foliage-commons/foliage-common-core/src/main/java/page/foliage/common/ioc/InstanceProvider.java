@@ -15,25 +15,14 @@
  ******************************************************************************/
 package page.foliage.common.ioc;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-
 /**
  * The instance provider interface.
  * 
  * @author deathknight0718@qq.com.
  * @version 1.0.0
  */
-public interface InstanceProvider extends AutoCloseable {
+public interface InstanceProvider {
 
     <T> T getInstance(Class<T> clazz);
-
-    <T> T getInstance(Class<T> clazz, Object... arguments);
-
-    <T> T getInstance(String bean, Class<T> clazz);
-
-    <T> Map<String, T> getInstances(Class<T> clazz);
-
-    Map<String, Object> getInstancesByAnnotation(Class<? extends Annotation> clazz);
 
 }

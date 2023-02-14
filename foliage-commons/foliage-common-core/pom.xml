@@ -82,30 +82,21 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <!-- ======================================== -->
         <!-- Guice Dependencies -->
         <!-- ======================================== -->
         <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <scope>provided</scope>
+            <groupId>page.foliage</groupId>
+            <artifactId>foliage-guice</artifactId>
+            <version>4.1.0</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

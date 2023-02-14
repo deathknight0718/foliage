@@ -16,7 +16,6 @@
 package page.foliage.oidc;
 
 import java.io.IOException;
-import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,6 +29,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import page.foliage.guava.common.base.Preconditions;
+import page.foliage.oidc.OidcConfiguration.GrantType;
 
 /**
  * 
@@ -73,23 +74,25 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
         private OkHttpClient.Builder bean = new OkHttpClient.Builder();
 
-        private ClientCredentialsInterceptor interceptor = new ClientCredentialsInterceptor();
+        private OidcInterceptor interceptor = new OidcInterceptor();
 
-        public Builder oidc(String url) {
-            interceptor.url = url;
+        public Builder oidc(OidcConfiguration configuration) {
+            interceptor.configuration = configuration;
             return this;
         }
 
-        public Builder credentials(String id, String secret) {
-            interceptor.id = id;
-            interceptor.secret = secret;
+        public Builder callTimeout(long timeout, TimeUnit unit) {
+            bean.callTimeout(timeout, unit);
+            return this;
+        }
+
+        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
+            bean.retryOnConnectionFailure(retryOnConnectionFailure);
             return this;
         }
 
         public OidcClient build() {
             bean.addInterceptor(interceptor);
-            bean.callTimeout(30, TimeUnit.SECONDS);
-            bean.retryOnConnectionFailure(false);
             return new OidcClient(bean.build());
         }
 
@@ -97,32 +100,50 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
     // ------------------------------------------------------------------------
 
-    public static class ClientCredentialsInterceptor implements Interceptor {
+    public static class OidcInterceptor implements Interceptor {
 
-        private String url, id, secret;
+        private OidcConfiguration configuration;
+
+        private OidcToken accessToken, refreshToken;
 
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            Response response = token(chain);
-            if (!response.isSuccessful()) return response;
-            JsonNode body = MAPPER.readTree(response.body().byteStream());
-            StringJoiner joiner = new StringJoiner(" ");
-            joiner.add(body.get("token_type").asText());
-            joiner.add(body.get("access_token").asText());
-            request.newBuilder().addHeader("Authorization", joiner.toString());
+            request = request.newBuilder().addHeader(OidcConfiguration.KEY_AUTHORIZATION, access(chain).toTypedString()).build();
             return chain.proceed(request);
         }
 
-        public Response token(Chain chain) throws IOException {
+        public OidcToken access(Chain chain) throws IOException {
+            if (accessToken != null && !refreshToken.isExpired()) return accessToken;
             FormBody.Builder form = new FormBody.Builder();
-            form.add("client_id", id);
-            form.add("client_secret", secret);
-            form.add("grant_type", "client_credentials");
+            if (accessToken == null) {
+                form.add(OidcConfiguration.KEY_CLIENT_ID, configuration.getClientId());
+                form.add(OidcConfiguration.KEY_CLIENT_SECRET, configuration.getClientSecret());
+                form.add(OidcConfiguration.KEY_GRANT_TYPE, configuration.getGrantType().value());
+                if (configuration.getScope() != null) form.add(OidcConfiguration.KEY_SCOPE, configuration.getScope());
+                if (configuration.getGrantType() == GrantType.PASSWORD) {
+                    form.add(OidcConfiguration.KEY_USERNAME, configuration.getUsername());
+                    form.add(OidcConfiguration.KEY_PASSWORD, configuration.getPassword());
+                }
+                Request.Builder builder = new Request.Builder();
+                builder.url(configuration.getEndpoint());
+                builder.post(form.build());
+                try (Response response = chain.proceed(builder.build())) {
+                    Preconditions.checkArgument(response.isSuccessful());
+                    JsonNode body = MAPPER.readTree(response.body().byteStream());
+                    if (configuration.getGrantType() == GrantType.PASSWORD) refreshToken = OidcToken.of(body.path(OidcConfiguration.KEY_REFRESH_TOKEN).textValue());
+                    return accessToken = OidcToken.of(body.path(OidcConfiguration.KEY_ACCESS_TOKEN).textValue());
+                }
+            }
+            form.add(OidcConfiguration.KEY_REFRESH_TOKEN, refreshToken.toString());
+            form.add(OidcConfiguration.KEY_GRANT_TYPE, GrantType.REFRESH_TOKEN.value());
+            if (configuration.getScope() != null) form.add(OidcConfiguration.KEY_SCOPE, configuration.getScope());
             Request.Builder builder = new Request.Builder();
-            builder.url(url);
+            builder.url(configuration.getEndpoint());
             builder.post(form.build());
-            return chain.proceed(builder.build());
+            try (Response response = chain.proceed(builder.build())) {
+                return accessToken;
+            }
         }
 
     }
