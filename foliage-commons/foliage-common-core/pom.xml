@@ -4,7 +4,7 @@
     <parent>
         <groupId>page.foliage</groupId>
         <artifactId>foliage-commons</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-core</artifactId>
     <name>Foliage Common Core</name>
