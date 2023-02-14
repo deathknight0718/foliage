@@ -18,7 +18,7 @@ package page.foliage.oidc;
 /**
  * 
  * @author deathknight0718@qq.com
- * @see https://www.rfc-editor.org/rfc/rfc6749
+ * @see RFC6749
  */
 public class OidcConfiguration {
 
