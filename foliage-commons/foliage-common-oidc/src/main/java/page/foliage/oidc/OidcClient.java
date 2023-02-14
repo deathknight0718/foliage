@@ -129,7 +129,7 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
                 builder.url(configuration.getEndpoint());
                 builder.post(form.build());
                 try (Response response = chain.proceed(builder.build())) {
-                    Preconditions.checkArgument(response.isSuccessful());
+                    Preconditions.checkArgument(response.isSuccessful(), response.code());
                     JsonNode body = MAPPER.readTree(response.body().byteStream());
                     if (configuration.getGrantType() == GrantType.PASSWORD) refreshToken = OidcToken.of(body.path(OidcConfiguration.KEY_REFRESH_TOKEN).textValue());
                     return accessToken = OidcToken.of(body.path(OidcConfiguration.KEY_ACCESS_TOKEN).textValue());

@@ -45,7 +45,7 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-guava</artifactId>
-            <version>23.6.1</version>
+            <version>24.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>

@@ -32,29 +32,42 @@ import page.foliage.oidc.OidcConfiguration.GrantType;
 @Test
 public class TestOidcClient {
 
-    private static OidcConfiguration configuration;
-
-    private static OidcClient client;
-
-    @BeforeClass
-    private void beforeClass() {
-        configuration = OidcConfiguration.builder() //
+    @Test
+    public void testPassword() throws Exception {
+        OidcConfiguration configuration = OidcConfiguration.builder() //
             .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system") //
             .withClient("ngsi", "qBfBqKKUZ2RkE86LElM2BlMmJDYHGYRz") //
             .withGrantType(GrantType.PASSWORD) //
             .withCredential("deathknight0718@qq.com", "Zhouling93") //
             .build();
-        client = OidcClient.builder() //
+        OidcClient client = OidcClient.builder() //
             .oidc(configuration) //
             .retryOnConnectionFailure(false) //
             .callTimeout(30, TimeUnit.SECONDS) //
             .build();
+        HttpUrl url = HttpUrl.get("https://gateway.prod.greenstreet.cloud/context/v2/entities");
+        Request request = new Request.Builder().url(url).get().build();
+        try (Response response = client.newCall(request).execute()) {
+            System.err.println(response.body().string());
+            System.err.println(response.code());
+        }
     }
 
     @Test
     public void testClientCredentials() throws Exception {
+        OidcConfiguration configuration = OidcConfiguration.builder() //
+            .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system") //
+            .withClient("ngsi", "qBfBqKKUZ2RkE86LElM2BlMmJDYHGYRz") //
+            .withGrantType(GrantType.CLIENT_CREDENTIALS) //
+            .build();
+        OidcClient client = OidcClient.builder() //
+            .oidc(configuration) //
+            .retryOnConnectionFailure(false) //
+            .callTimeout(30, TimeUnit.SECONDS) //
+            .build();
         HttpUrl url = HttpUrl.get("https://gateway.prod.greenstreet.cloud/context/v2/entities");
-        try (Response response = client.newCall(new Request.Builder().url(url).get().build()).execute()) {
+        Request request = new Request.Builder().url(url).get().build();
+        try (Response response = client.newCall(request).execute()) {
             System.err.println(response.body().string());
             System.err.println(response.code());
         }
