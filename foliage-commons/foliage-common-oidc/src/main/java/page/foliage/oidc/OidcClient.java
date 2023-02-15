@@ -18,6 +18,9 @@ package page.foliage.oidc;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,6 +42,8 @@ import page.foliage.oidc.OidcConfiguration.GrantType;
 public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
     // ------------------------------------------------------------------------
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(OidcClient.class);
 
     private final static ObjectMapper MAPPER = new ObjectMapper();
 
@@ -104,19 +109,20 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
         private OidcConfiguration configuration;
 
-        private OidcToken accessToken, refreshToken;
+        private transient OidcToken accessToken, refreshToken;
 
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            request = request.newBuilder().addHeader(OidcConfiguration.KEY_AUTHORIZATION, access(chain).toTypedString()).build();
-            return chain.proceed(request);
+            String token = access(chain).toTypedString();
+            Response response = chain.proceed(chain.request().newBuilder().addHeader(OidcConfiguration.KEY_AUTHORIZATION, token).build());
+            if (!response.isSuccessful()) accessToken = null; // compulsory waste
+            return response;
         }
 
         public OidcToken access(Chain chain) throws IOException {
-            if (accessToken != null && !refreshToken.isExpired()) return accessToken;
-            FormBody.Builder form = new FormBody.Builder();
-            if (accessToken == null) {
+            if (accessToken == null || accessToken.isExpired()) {
+                LOGGER.debug("access to oidc token endpoint...");
+                FormBody.Builder form = new FormBody.Builder();
                 form.add(OidcConfiguration.KEY_CLIENT_ID, configuration.getClientId());
                 form.add(OidcConfiguration.KEY_CLIENT_SECRET, configuration.getClientSecret());
                 form.add(OidcConfiguration.KEY_GRANT_TYPE, configuration.getGrantType().value());
@@ -125,25 +131,30 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
                     form.add(OidcConfiguration.KEY_USERNAME, configuration.getUsername());
                     form.add(OidcConfiguration.KEY_PASSWORD, configuration.getPassword());
                 }
-                Request.Builder builder = new Request.Builder();
-                builder.url(configuration.getEndpoint());
-                builder.post(form.build());
-                try (Response response = chain.proceed(builder.build())) {
+                Request request = new Request.Builder().url(configuration.getEndpoint()).post(form.build()).build();
+                try (Response response = chain.proceed(request)) {
                     Preconditions.checkArgument(response.isSuccessful(), response.code());
                     JsonNode body = MAPPER.readTree(response.body().byteStream());
-                    if (configuration.getGrantType() == GrantType.PASSWORD) refreshToken = OidcToken.of(body.path(OidcConfiguration.KEY_REFRESH_TOKEN).textValue());
-                    return accessToken = OidcToken.of(body.path(OidcConfiguration.KEY_ACCESS_TOKEN).textValue());
+                    refreshToken = OidcToken.of(body.path(OidcConfiguration.KEY_REFRESH_TOKEN).textValue());
+                    accessToken = OidcToken.of(body.path(OidcConfiguration.KEY_ACCESS_TOKEN).textValue());
                 }
             }
-            form.add(OidcConfiguration.KEY_REFRESH_TOKEN, refreshToken.toString());
-            form.add(OidcConfiguration.KEY_GRANT_TYPE, GrantType.REFRESH_TOKEN.value());
-            if (configuration.getScope() != null) form.add(OidcConfiguration.KEY_SCOPE, configuration.getScope());
-            Request.Builder builder = new Request.Builder();
-            builder.url(configuration.getEndpoint());
-            builder.post(form.build());
-            try (Response response = chain.proceed(builder.build())) {
-                return accessToken;
+            if (refreshToken != null && refreshToken.isExpired()) {
+                LOGGER.debug("access to oidc refresh token ...");
+                FormBody.Builder form = new FormBody.Builder();
+                form.add(OidcConfiguration.KEY_CLIENT_ID, configuration.getClientId());
+                form.add(OidcConfiguration.KEY_CLIENT_SECRET, configuration.getClientSecret());
+                form.add(OidcConfiguration.KEY_GRANT_TYPE, GrantType.REFRESH_TOKEN.value());
+                if (configuration.getScope() != null) form.add(OidcConfiguration.KEY_SCOPE, configuration.getScope());
+                Request request = new Request.Builder().url(configuration.getEndpoint()).post(form.build()).build();
+                try (Response response = chain.proceed(request)) {
+                    Preconditions.checkArgument(response.isSuccessful(), response.code());
+                    JsonNode body = MAPPER.readTree(response.body().byteStream());
+                    refreshToken = OidcToken.of(body.path(OidcConfiguration.KEY_REFRESH_TOKEN).textValue());
+                    accessToken = OidcToken.of(body.path(OidcConfiguration.KEY_ACCESS_TOKEN).textValue());
+                }
             }
+            return accessToken;
         }
 
     }

@@ -24,9 +24,9 @@ public class OidcConfiguration {
     // ------------------------------------------------------------------------
 
     public static final String KEY_AUTHORIZATION = "Authorization";
-    
+
     public static final String KEY_SCOPE = "scope";
-    
+
     public static final String KEY_CLIENT_ID = "client_id";
 
     public static final String KEY_CLIENT_SECRET = "client_secret";
@@ -131,9 +131,7 @@ public class OidcConfiguration {
 
     public static enum GrantType {
 
-        PASSWORD("password"), //
-        CLIENT_CREDENTIALS("client_credentials"), //
-        REFRESH_TOKEN("refresh_token");
+        PASSWORD("password"), CLIENT_CREDENTIALS("client_credentials"), REFRESH_TOKEN("refresh_token");
 
         private final String value;
 

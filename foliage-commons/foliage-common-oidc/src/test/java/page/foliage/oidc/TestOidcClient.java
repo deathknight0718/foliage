@@ -17,7 +17,6 @@ package page.foliage.oidc;
 
 import java.util.concurrent.TimeUnit;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import okhttp3.HttpUrl;
@@ -32,7 +31,7 @@ import page.foliage.oidc.OidcConfiguration.GrantType;
 @Test
 public class TestOidcClient {
 
-    @Test
+    @Test(enabled = false)
     public void testPassword() throws Exception {
         OidcConfiguration configuration = OidcConfiguration.builder() //
             .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system") //

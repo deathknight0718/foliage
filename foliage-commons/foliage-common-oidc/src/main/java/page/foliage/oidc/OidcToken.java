@@ -47,6 +47,7 @@ public class OidcToken {
     // ------------------------------------------------------------------------
 
     public static OidcToken of(String input) {
+        if (input == null) return null;
         OidcToken token = new OidcToken();
         token.content = input;
         try {
@@ -73,7 +74,7 @@ public class OidcToken {
     public String toString() {
         return content;
     }
-    
+
     public String toTypedString() {
         return payload.path("typ").textValue() + " " + content;
     }
