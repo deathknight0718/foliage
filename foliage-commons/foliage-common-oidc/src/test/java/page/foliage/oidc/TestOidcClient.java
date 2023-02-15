@@ -70,6 +70,10 @@ public class TestOidcClient {
             System.err.println(response.body().string());
             System.err.println(response.code());
         }
+        try (Response response = client.newCall(request).execute()) {
+            System.err.println(response.body().string());
+            System.err.println(response.code());
+        }
     }
 
 }

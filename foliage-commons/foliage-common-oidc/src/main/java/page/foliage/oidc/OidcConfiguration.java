@@ -38,8 +38,12 @@ public class OidcConfiguration {
     public static final String KEY_PASSWORD = "password";
 
     public static final String KEY_REFRESH_TOKEN = "refresh_token";
+    
+    public static final String KEY_REFRESH_EXPIRES_IN = "refresh_expires_in";
 
     public static final String KEY_ACCESS_TOKEN = "access_token";
+    
+    public static final String KEY_ACCESS_EXPIRES_IN = "expires_in";
 
     // ------------------------------------------------------------------------
 

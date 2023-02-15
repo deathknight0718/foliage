@@ -16,13 +16,15 @@
 package page.foliage.oidc;
 
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Base64.Decoder;
+import java.time.temporal.ChronoUnit;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import page.foliage.common.util.CodecUtils;
+import page.foliage.guava.common.base.Preconditions;
 
 /**
  * 
@@ -38,7 +40,9 @@ public class OidcToken {
 
     private JsonNode payload;
 
-    private String content;
+    private String base64Text;
+
+    private Instant expiration;
 
     // ------------------------------------------------------------------------
 
@@ -46,14 +50,16 @@ public class OidcToken {
 
     // ------------------------------------------------------------------------
 
-    public static OidcToken of(String input) {
-        if (input == null) return null;
+    public static OidcToken of(JsonNode body) {
         OidcToken token = new OidcToken();
-        token.content = input;
         try {
-            Decoder decoder = Base64.getDecoder();
-            String segment = StringUtils.split(token.content, ".")[1];
-            token.payload = MAPPER.readTree(decoder.decode(segment));
+            JsonNode node = body.path(OidcConfiguration.KEY_ACCESS_TOKEN);
+            Preconditions.checkArgument(node.isTextual(), "Error! cannot found the access token.");
+            token.base64Text = node.textValue();
+            token.payload = MAPPER.readTree(CodecUtils.decodeBase64(StringUtils.split(token.base64Text, ".")[1]));
+            token.expiration = Instant.ofEpochSecond(token.payload.path("exp").longValue() - 30);
+            node = body.path(OidcConfiguration.KEY_ACCESS_EXPIRES_IN);
+            if (node.isNumber()) token.expiration = Instant.now().plus(node.longValue() - 30, ChronoUnit.SECONDS);
             return token;
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -62,21 +68,13 @@ public class OidcToken {
 
     // ------------------------------------------------------------------------
 
-    public boolean isExpired() {
-        return Instant.now().getEpochSecond() > payload.path("exp").longValue();
-    }
-
-    public String getIssuor() {
-        return payload.path("iss").textValue();
+    public boolean isAccessable() {
+        return expiration.isAfter(Instant.now());
     }
 
     @Override
     public String toString() {
-        return content;
-    }
-
-    public String toTypedString() {
-        return payload.path("typ").textValue() + " " + content;
+        return payload.path("typ").textValue() + " " + base64Text;
     }
 
 }
