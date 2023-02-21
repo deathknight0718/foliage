@@ -15,6 +15,8 @@
  */
 package page.foliage.oidc;
 
+import okhttp3.HttpUrl;
+
 /**
  * 
  * @author deathknight0718@qq.com
@@ -38,16 +40,16 @@ public class OidcConfiguration {
     public static final String KEY_PASSWORD = "password";
 
     public static final String KEY_REFRESH_TOKEN = "refresh_token";
-    
+
     public static final String KEY_REFRESH_EXPIRES_IN = "refresh_expires_in";
 
     public static final String KEY_ACCESS_TOKEN = "access_token";
-    
+
     public static final String KEY_ACCESS_EXPIRES_IN = "expires_in";
 
     // ------------------------------------------------------------------------
 
-    private String endpoint;
+    private HttpUrl endpoint;
 
     private String clientId, clientSecret;
 
@@ -69,7 +71,7 @@ public class OidcConfiguration {
 
     // ------------------------------------------------------------------------
 
-    public String getEndpoint() {
+    public HttpUrl getEndpoint() {
         return endpoint;
     }
 
@@ -104,7 +106,11 @@ public class OidcConfiguration {
         private OidcConfiguration bean = new OidcConfiguration();
 
         public Builder withEndpoint(String endpoint) {
-            bean.endpoint = endpoint + "/protocol/openid-connect/token";
+            return withEndpoint(HttpUrl.get(endpoint));
+        }
+
+        public Builder withEndpoint(HttpUrl endpoint) {
+            bean.endpoint = endpoint; // @see: https://www.rfc-editor.org/rfc/rfc6749
             return this;
         }
 

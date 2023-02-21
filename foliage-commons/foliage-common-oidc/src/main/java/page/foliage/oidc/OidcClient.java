@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -49,16 +50,29 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
     private final OkHttpClient delegate;
 
+    private HttpUrl baseUrl;
+
     // ------------------------------------------------------------------------
 
-    private OidcClient(OkHttpClient delegate) {
+    private OidcClient(OkHttpClient delegate, HttpUrl baseUrl) {
         this.delegate = delegate;
+        this.baseUrl = baseUrl;
     }
 
     // ------------------------------------------------------------------------
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    // ------------------------------------------------------------------------
+
+    public okhttp3.HttpUrl.Builder httpUrl() {
+        return baseUrl.newBuilder();
+    }
+    
+    public okhttp3.HttpUrl.Builder httpUrl(String link) {
+        return baseUrl.newBuilder(link);
     }
 
     // ------------------------------------------------------------------------
@@ -81,6 +95,13 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
         private OidcInterceptor interceptor = new OidcInterceptor();
 
+        private HttpUrl baseUrl;
+
+        public Builder base(String baseUrl) {
+            this.baseUrl = HttpUrl.get(baseUrl);
+            return this;
+        }
+
         public Builder oidc(OidcConfiguration configuration) {
             interceptor.configuration = configuration;
             return this;
@@ -98,7 +119,7 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
         public OidcClient build() {
             bean.addInterceptor(interceptor);
-            return new OidcClient(bean.build());
+            return new OidcClient(bean.build(), baseUrl);
         }
 
     }
@@ -113,7 +134,9 @@ public class OidcClient implements Cloneable, Call.Factory, WebSocket.Factory {
 
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Response response = chain.proceed(chain.request().newBuilder().addHeader(OidcConfiguration.KEY_AUTHORIZATION, access(chain).toString()).build());
+            String tokenText = access(chain).toString();
+            LOGGER.debug(tokenText);
+            Response response = chain.proceed(chain.request().newBuilder().addHeader(OidcConfiguration.KEY_AUTHORIZATION, tokenText).build());
             if (!response.isSuccessful()) token = null; // compulsory waste
             return response;
         }

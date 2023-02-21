@@ -34,7 +34,7 @@ public class TestOidcClient {
     @Test(enabled = false)
     public void testPassword() throws Exception {
         OidcConfiguration configuration = OidcConfiguration.builder() //
-            .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system") //
+            .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system/protocol/openid-connect/token") //
             .withClient("ngsi", "qBfBqKKUZ2RkE86LElM2BlMmJDYHGYRz") //
             .withGrantType(GrantType.PASSWORD) //
             .withCredential("deathknight0718@qq.com", "Zhouling93") //
@@ -55,7 +55,7 @@ public class TestOidcClient {
     @Test
     public void testClientCredentials() throws Exception {
         OidcConfiguration configuration = OidcConfiguration.builder() //
-            .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system") //
+            .withEndpoint("https://auth.prod.greenstreet.cloud/realms/system/protocol/openid-connect/token") //
             .withClient("ngsi", "qBfBqKKUZ2RkE86LElM2BlMmJDYHGYRz") //
             .withGrantType(GrantType.CLIENT_CREDENTIALS) //
             .build();
