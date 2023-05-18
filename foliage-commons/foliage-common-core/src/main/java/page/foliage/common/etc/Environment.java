@@ -36,17 +36,13 @@ public class Environment {
 
     // ------------------------------------------------------------------------
 
-    public static final String PROPERTY_NAME = "build.project.name";
-
-    public static final String PROPERTY_HOME = "build.project.home";
-
-    public static final String PROJECT_NAME = System.getProperty(PROPERTY_NAME);
+    public static final String PROPERTY_HOME = "foliage.project.home";
 
     public static final String PROJECT_PATH = System.getProperty(PROPERTY_HOME);
 
     // ------------------------------------------------------------------------
 
-    static { // 检查 PROJECT_PATH 系统参数是否存在。
+    static {
         Preconditions.checkNotNull(PROJECT_PATH, "Error! the environment variable " + PROPERTY_HOME + " must not be null.");
     }
 

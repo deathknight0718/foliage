@@ -157,8 +157,8 @@ PRGDIR=`dirname "$PRG"`
 # Copy CATALINA_BASE from CATALINA_HOME if not already set
 [ -z "$CATALINA_BASE" ] && CATALINA_BASE="$CATALINA_HOME"
 
-# Deathknight0718@qq.com: Add a banner.
-$CATALINA_HOME/bin/catalina-banner.sh
+# foliage.develop@gmail.com: Add a banner.
+$CATALINA_HOME/bin/banner.sh
 
 # Ensure that any user defined CLASSPATH variables are not used on startup,
 # but allow them to be specified in setenv.sh, in rare case when it is needed.
@@ -266,8 +266,8 @@ if [ -z "$JSSE_OPTS" ] ; then
   JSSE_OPTS="-Djdk.tls.ephemeralDHKeySize=2048"
 fi
 
-# Deathknight0718@qq.com: Set a global properties.
-JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Dbuild.project.home=$CATALINA_HOME -Dbuild.project.name=${foliage.project.name}"
+# foliage.develop@gmail.com: Set a global properties.
+JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Dfoliage.project.home=$CATALINA_HOME"
 
 # Register custom URL handlers
 # Do this here so custom URL handles (specifically 'war:...') can be used in the security policy
