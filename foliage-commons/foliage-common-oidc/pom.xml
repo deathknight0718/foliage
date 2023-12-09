@@ -3,7 +3,7 @@
     <parent>
         <groupId>page.foliage</groupId>
         <artifactId>foliage-commons</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-oidc</artifactId>
     <name>Foliage Common OIDC</name>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-common-core</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
