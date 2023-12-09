@@ -1,2 +1,6 @@
 # foliage
 Foliage Project
+
+```
+mvn 
+```

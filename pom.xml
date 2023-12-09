@@ -5,19 +5,19 @@
     <version>1.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Foliage Project</name>
-    <description>Repositories for research by deathknight0718@qq.com.</description>
+    <description>Repositories for research by foliage.develop@gmail.com.</description>
     <properties>
         <deploy.repository.id>foliage.sonatype</deploy.repository.id>
         <deploy.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</deploy.url>
         <pro.encoding>UTF-8</pro.encoding>
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>11</jdk.version>
         <lucene.version>7.7.2</lucene.version>
         <plg.ant.version>1.8</plg.ant.version>
         <plg.apt.version>8.5.82</plg.apt.version>
         <plg.jmp.version>2.3.1</plg.jmp.version>
         <plg.jty.version>9.4.12.v20180830</plg.jty.version>
         <plg.map.version>3.6.0</plg.map.version>
-        <plg.mcp.version>3.2</plg.mcp.version>
+        <plg.mmp.version>3.11.0</plg.mmp.version>
         <plg.mde.version>2.8.2</plg.mde.version>
         <plg.mdp.version>2.10</plg.mdp.version>
         <plg.mep.version>2.10</plg.mep.version>
@@ -27,14 +27,15 @@
         <plg.mjc.version>1.11.1</plg.mjc.version>
         <plg.mjd.version>3.0.0</plg.mjd.version>
         <plg.mjp.version>0.13.1</plg.mjp.version>
-        <plg.mjr.version>2.4</plg.mjr.version>
+        <plg.mjr.version>3.2.2</plg.mjr.version>
         <plg.mis.version>2.4</plg.mis.version>
         <plg.mpp.version>3.6.0</plg.mpp.version>
         <plg.mrp.version>2.7</plg.mrp.version>
         <plg.msa.version>3.1.0</plg.msa.version>
         <plg.mso.version>3.0.1</plg.mso.version>
         <plg.msp.version>2.4.3</plg.msp.version>
-        <plg.mwr.version>2.4</plg.mwr.version>
+        <plg.mcp.version>3.2.0</plg.mcp.version>
+        <plg.mwr.version>3.2.2</plg.mwr.version>
         <plg.pmp.version>1.0.0</plg.pmp.version>
         <plg.scm.version>1.9.5</plg.scm.version>
     </properties>
@@ -59,7 +60,7 @@
     </scm>
     <developers>
         <developer>
-            <email>deathknight0718@qq.com</email>
+            <email>foliage.develop@gmail.com</email>
             <name>刘正</name>
             <id>Deathknight0718</id>
         </developer>
@@ -101,10 +102,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${plg.mcp.version}</version>
+                    <version>${plg.mmp.version}</version>
                     <configuration>
-                        <source>${jdk.version}</source>
-                        <target>${jdk.version}</target>
+                        <release>${jdk.version}</release>
                         <encoding>${pro.encoding}</encoding>
                     </configuration>
                 </plugin>
@@ -185,7 +185,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>${plg.mwr.version}</version>
+                    <version>${plg.mcp.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -391,14 +391,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>
-	<!-- deathknight0718@qq.com -->
+	<!-- foliage.develop@gmail.com -->
 	<!-- Dependency Management Configuration for All -->
     <dependencyManagement>
         <dependencies>
