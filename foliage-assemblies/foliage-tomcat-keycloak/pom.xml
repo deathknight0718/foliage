@@ -4,7 +4,7 @@
     <parent>
         <groupId>page.foliage</groupId>
         <artifactId>foliage-assemblies</artifactId>
-        <version>1.0.7-SNAPSHOT</version>
+        <version>1.0.7</version>
     </parent>
     <artifactId>foliage-tomcat-keycloak</artifactId>
     <name>Foliage Assembly Tomcat Keycloak</name>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-tomcat</artifactId>
-            <version>1.0.7-SNAPSHOT</version>
+            <version>1.0.7</version>
             <type>zip</type>
         </dependency>
         <!-- ======================================== -->
