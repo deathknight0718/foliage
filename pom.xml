@@ -7,9 +7,11 @@
     <name>Foliage Project</name>
     <description>Repositories for research by foliage.develop@gmail.com.</description>
     <properties>
+        <pro.encoding>UTF-8</pro.encoding>
+        <project.build.sourceEncoding>${pro.encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${pro.encoding}</project.reporting.outputEncoding>
         <deploy.repository.id>foliage.sonatype</deploy.repository.id>
         <deploy.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</deploy.url>
-        <pro.encoding>UTF-8</pro.encoding>
         <jdk.version>11</jdk.version>
         <lucene.version>7.7.2</lucene.version>
         <plg.ant.version>1.8</plg.ant.version>
@@ -394,14 +396,14 @@
             </plugin>
         </plugins>
     </build>
-	<!-- foliage.develop@gmail.com -->
-	<!-- Dependency Management Configuration for All -->
+    <!-- foliage.develop@gmail.com -->
+    <!-- Dependency Management Configuration for All -->
     <dependencyManagement>
         <dependencies>
-			<!-- ======================================== -->
-			<!-- Apache Software Dependencies -->
-			<!-- ======================================== -->
-			<!-- Apache Tomecat -->
+            <!-- ======================================== -->
+            <!-- Apache Software Dependencies -->
+            <!-- ======================================== -->
+            <!-- Apache Tomecat -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-annotations-api</artifactId>
@@ -532,7 +534,7 @@
                 <artifactId>tomcat-websocket-api</artifactId>
                 <version>${plg.apt.version}</version>
             </dependency>
-			<!-- Apache MetaModel -->
+            <!-- Apache MetaModel -->
             <dependency>
                 <groupId>org.apache.metamodel</groupId>
                 <artifactId>MetaModel-full</artifactId>
@@ -548,7 +550,7 @@
                 <artifactId>MetaModel-jdbc</artifactId>
                 <version>5.3.0</version>
             </dependency>
-			<!-- Apache Curator -->
+            <!-- Apache Curator -->
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-client</artifactId>
@@ -564,8 +566,8 @@
                 <artifactId>curator-recipes</artifactId>
                 <version>4.0.1</version>
             </dependency>
-			<!-- Apache Shiro -->
-			<!-- https://shiro.apache.org/index.html -->
+            <!-- Apache Shiro -->
+            <!-- https://shiro.apache.org/index.html -->
             <dependency>
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-core</artifactId>
@@ -586,7 +588,7 @@
                 <artifactId>shiro-jaxrs</artifactId>
                 <version>1.4.0-RC2</version>
             </dependency>
-			<!-- Apache Lucene -->
+            <!-- Apache Lucene -->
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>
@@ -612,7 +614,7 @@
                 <artifactId>lucene-analyzers-icu</artifactId>
                 <version>${lucene.version}</version>
             </dependency>
-			<!-- Apache Bval -->
+            <!-- Apache Bval -->
             <dependency>
                 <groupId>org.apache.bval</groupId>
                 <artifactId>bval-core</artifactId>
@@ -623,13 +625,13 @@
                 <artifactId>bval-jsr</artifactId>
                 <version>1.1.2</version>
             </dependency>
-			<!-- Apache FOP -->
+            <!-- Apache FOP -->
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
                 <version>2.2</version>
             </dependency>
-			<!-- Apache Xalan -->
+            <!-- Apache Xalan -->
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
@@ -640,13 +642,13 @@
                 <artifactId>serializer</artifactId>
                 <version>2.7.2</version>
             </dependency>
-			<!-- Apache Dubbo -->
+            <!-- Apache Dubbo -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo</artifactId>
                 <version>2.7.3</version>
             </dependency>
-			<!-- Apache Commons -->
+            <!-- Apache Commons -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
@@ -781,7 +783,7 @@
                 <artifactId>commons-jexl3</artifactId>
                 <version>3.1</version>
             </dependency>
-			<!-- Apache HTTP Components -->
+            <!-- Apache HTTP Components -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
@@ -797,13 +799,13 @@
                 <artifactId>httpclient</artifactId>
                 <version>4.5.5</version>
             </dependency>
-			<!-- Apache Maven -->
+            <!-- Apache Maven -->
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-embedder</artifactId>
                 <version>3.0.4</version>
             </dependency>
-			<!-- Apache Wink -->
+            <!-- Apache Wink -->
             <dependency>
                 <groupId>org.apache.wink</groupId>
                 <artifactId>wink-server</artifactId>
@@ -814,7 +816,7 @@
                 <artifactId>wink-spring-support</artifactId>
                 <version>1.4</version>
             </dependency>
-			<!-- Apache Geronimo -->
+            <!-- Apache Geronimo -->
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jms_1.1_spec</artifactId>
@@ -855,7 +857,7 @@
                 <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
                 <version>1.1.1</version>
             </dependency>
-			<!-- Apache Struts -->
+            <!-- Apache Struts -->
             <dependency>
                 <groupId>org.apache.struts</groupId>
                 <artifactId>struts2-core</artifactId>
@@ -871,19 +873,19 @@
                 <artifactId>struts2-json-plugin</artifactId>
                 <version>2.3.24</version>
             </dependency>
-			<!-- Apache SSHD -->
+            <!-- Apache SSHD -->
             <dependency>
                 <groupId>org.apache.sshd</groupId>
                 <artifactId>sshd-core</artifactId>
                 <version>0.14.0</version>
             </dependency>
-			<!-- Apache Mina -->
+            <!-- Apache Mina -->
             <dependency>
                 <groupId>org.apache.mina</groupId>
                 <artifactId>mina-core</artifactId>
                 <version>2.0.7</version>
             </dependency>
-			<!-- Apache Kafka -->
+            <!-- Apache Kafka -->
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
@@ -909,7 +911,7 @@
                 <artifactId>connect-file</artifactId>
                 <version>2.1.1</version>
             </dependency>
-			<!-- Apache ActiveMQ -->
+            <!-- Apache ActiveMQ -->
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>activemq-broker</artifactId>
@@ -950,13 +952,13 @@
                 <artifactId>xbean-spring</artifactId>
                 <version>4.2</version>
             </dependency>
-			<!-- Apache Freemarker -->
+            <!-- Apache Freemarker -->
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>
                 <version>2.3.23</version>
             </dependency>
-			<!-- Elastic Search Dependencies -->
+            <!-- Elastic Search Dependencies -->
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
@@ -982,9 +984,9 @@
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
                 <version>6.8.8</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Spring Software Dependencies -->
-			<!-- ======================================== -->
+            <!-- ======================================== -->
+            <!-- Spring Software Dependencies -->
+            <!-- ======================================== -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
@@ -1056,28 +1058,28 @@
                 <artifactId>spring-security-web</artifactId>
                 <version>4.2.17.RELEASE</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Google Software Dependencies -->
-			<!-- ======================================== -->
-			<!-- Google Gson -->
+            <!-- ======================================== -->
+            <!-- Google Software Dependencies -->
+            <!-- ======================================== -->
+            <!-- Google Gson -->
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>2.8.2</version>
             </dependency>
-			<!-- Google Guava -->
+            <!-- Google Guava -->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>23.6.1-jre</version>
             </dependency>
-			<!-- Google Guice -->
+            <!-- Google Guice -->
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
                 <version>4.1.0</version>
             </dependency>
-			<!-- Google JCEF Project -->
+            <!-- Google JCEF Project -->
             <dependency>
                 <groupId>org.bitbucket</groupId>
                 <artifactId>jogl-all</artifactId>
@@ -1103,10 +1105,10 @@
                 <artifactId>jcef</artifactId>
                 <version>1.0.0</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Eclipse Software Dependencies -->
-			<!-- ======================================== -->
-			<!-- Eclipse JDT -->
+            <!-- ======================================== -->
+            <!-- Eclipse Software Dependencies -->
+            <!-- ======================================== -->
+            <!-- Eclipse JDT -->
             <dependency>
                 <groupId>org.eclipse.jdt.core.compiler</groupId>
                 <artifactId>ecj</artifactId>
@@ -1117,7 +1119,7 @@
                 <artifactId>ecj</artifactId>
                 <version>3.12.3</version>
             </dependency>
-			<!-- Eclipse Jetty -->
+            <!-- Eclipse Jetty -->
             <dependency>
                 <groupId>org.eclipse.jetty.websocket</groupId>
                 <artifactId>websocket-client</artifactId>
@@ -1208,16 +1210,16 @@
                 <artifactId>jetty-schemas</artifactId>
                 <version>4.0.3</version>
             </dependency>
-			<!-- Eclipse Moxy Project -->
+            <!-- Eclipse Moxy Project -->
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.moxy</artifactId>
                 <version>2.5.2-M1</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- JBoss Software Dependencies -->
-			<!-- ======================================== -->
-			<!-- JBoss Resteasy -->
+            <!-- ======================================== -->
+            <!-- JBoss Software Dependencies -->
+            <!-- ======================================== -->
+            <!-- JBoss Resteasy -->
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
@@ -1258,10 +1260,10 @@
                 <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
                 <version>1.0.1.Beta1</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Codehaus Software Dependencies -->
-			<!-- ======================================== -->
-			<!-- Plexus -->
+            <!-- ======================================== -->
+            <!-- Codehaus Software Dependencies -->
+            <!-- ======================================== -->
+            <!-- Plexus -->
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-classworlds</artifactId>
@@ -1277,13 +1279,13 @@
                 <artifactId>plexus-component-annotations</artifactId>
                 <version>1.5.5</version>
             </dependency>
-			<!-- Stax -->
+            <!-- Stax -->
             <dependency>
                 <groupId>stax</groupId>
                 <artifactId>stax-api</artifactId>
                 <version>1.0.1</version>
             </dependency>
-			<!-- Woodstox -->
+            <!-- Woodstox -->
             <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>
@@ -1294,9 +1296,9 @@
                 <artifactId>woodstox-core-asl</artifactId>
                 <version>4.4.1</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Sonatype Software Dependencies -->
-			<!-- ======================================== -->
+            <!-- ======================================== -->
+            <!-- Sonatype Software Dependencies -->
+            <!-- ======================================== -->
             <dependency>
                 <groupId>org.sonatype.plexus</groupId>
                 <artifactId>plexus-sec-dispatcher</artifactId>
@@ -1312,9 +1314,9 @@
                 <artifactId>sisu-inject-plexus</artifactId>
                 <version>2.3.0</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Bouncycastle Software Dependencies -->
-			<!-- ======================================== -->
+            <!-- ======================================== -->
+            <!-- Bouncycastle Software Dependencies -->
+            <!-- ======================================== -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
@@ -1340,10 +1342,10 @@
                 <artifactId>bctsp-jdk15on</artifactId>
                 <version>1.46</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Github Software Dependencies -->
-			<!-- ======================================== -->
-			<!-- Java Faker -->
+            <!-- ======================================== -->
+            <!-- Github Software Dependencies -->
+            <!-- ======================================== -->
+            <!-- Java Faker -->
             <dependency>
                 <groupId>com.github.javafaker</groupId>
                 <artifactId>javafaker</artifactId>
@@ -1354,10 +1356,10 @@
                 <artifactId>kaptcha</artifactId>
                 <version>2.3.2</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- JSR API Dependencies -->
-			<!-- ======================================== -->
-			<!-- Servlet -->
+            <!-- ======================================== -->
+            <!-- JSR API Dependencies -->
+            <!-- ======================================== -->
+            <!-- Servlet -->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
@@ -1370,21 +1372,21 @@
                 <version>3.1.0</version>
                 <scope>provided</scope>
             </dependency>
-			<!-- EJB -->
+            <!-- EJB -->
             <dependency>
                 <groupId>javax.ejb</groupId>
                 <artifactId>ejb-api</artifactId>
                 <version>3.0</version>
                 <scope>provided</scope>
             </dependency>
-			<!-- JMS -->
+            <!-- JMS -->
             <dependency>
                 <groupId>javax.jms</groupId>
                 <artifactId>jms-api</artifactId>
                 <version>1.1-rev-1</version>
                 <scope>provided</scope>
             </dependency>
-			<!-- Mail -->
+            <!-- Mail -->
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>javax.mail-api</artifactId>
@@ -1395,16 +1397,16 @@
                 <artifactId>mail</artifactId>
                 <version>1.4.5 </version>
             </dependency>
-			<!-- Activation -->
+            <!-- Activation -->
             <dependency>
                 <groupId>javax.activation</groupId>
                 <artifactId>activation</artifactId>
                 <version>1.1.1</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Serialization System Dependencies -->
-			<!-- ======================================== -->
-			<!-- Protocol Buffers -->
+            <!-- ======================================== -->
+            <!-- Serialization System Dependencies -->
+            <!-- ======================================== -->
+            <!-- Protocol Buffers -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
@@ -1420,13 +1422,13 @@
                 <artifactId>snappy-java</artifactId>
                 <version>1.1.7.2</version>
             </dependency>
-			<!-- JAXB -->
+            <!-- JAXB -->
             <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
                 <artifactId>jaxb2-basics-runtime</artifactId>
                 <version>1.11.1</version>
             </dependency>
-			<!-- Kryo -->
+            <!-- Kryo -->
             <dependency>
                 <groupId>com.esotericsoftware</groupId>
                 <artifactId>kryo</artifactId>
@@ -1437,7 +1439,7 @@
                 <artifactId>kryo-shaded</artifactId>
                 <version>4.0.2</version>
             </dependency>
-			<!-- Jackson -->
+            <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -1518,21 +1520,21 @@
                 <artifactId>jackson-jaxrs-json-provider</artifactId>
                 <version>2.11.3</version>
             </dependency>
-			<!-- Config -->
+            <!-- Config -->
             <dependency>
                 <groupId>com.typesafe</groupId>
                 <artifactId>config</artifactId>
                 <version>1.3.2</version>
             </dependency>
-			<!-- Ini4J -->
+            <!-- Ini4J -->
             <dependency>
                 <groupId>org.ini4j</groupId>
                 <artifactId>ini4j</artifactId>
                 <version>0.5.4</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Cache System Dependencies -->
-			<!-- ======================================== -->
+            <!-- ======================================== -->
+            <!-- Cache System Dependencies -->
+            <!-- ======================================== -->
             <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-jcache</artifactId>
@@ -1543,10 +1545,10 @@
                 <artifactId>infinispan-multimap</artifactId>
                 <version>9.4.8.Final</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Event System Dependencies -->
-			<!-- ======================================== -->
-			<!-- Quartz -->
+            <!-- ======================================== -->
+            <!-- Event System Dependencies -->
+            <!-- ======================================== -->
+            <!-- Quartz -->
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
@@ -1557,25 +1559,25 @@
                 <artifactId>quartz-jobs</artifactId>
                 <version>2.3.2</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- CAS System Dependencies -->
-			<!-- ======================================== -->
+            <!-- ======================================== -->
+            <!-- CAS System Dependencies -->
+            <!-- ======================================== -->
             <dependency>
                 <groupId>org.jasig.cas.client</groupId>
                 <artifactId>cas-client-core</artifactId>
                 <version>3.4.1</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Unit Test System Dependencies -->
-			<!-- ======================================== -->
-			<!-- JUnit -->
+            <!-- ======================================== -->
+            <!-- Unit Test System Dependencies -->
+            <!-- ======================================== -->
+            <!-- JUnit -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
-			<!-- TestNG -->
+            <!-- TestNG -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -1588,14 +1590,14 @@
                 <version>2.13.5</version>
                 <scope>test</scope>
             </dependency>
-			<!-- EasyMock -->
+            <!-- EasyMock -->
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
                 <version>4.0.2</version>
                 <scope>test</scope>
             </dependency>
-			<!-- Mockito -->
+            <!-- Mockito -->
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
@@ -1615,19 +1617,19 @@
                 <scope>test</scope>
             </dependency>
 
-			<!-- ======================================== -->
-			<!-- Reflection System Dependencies -->
-			<!-- ======================================== -->
-			<!-- Reflections -->
+            <!-- ======================================== -->
+            <!-- Reflection System Dependencies -->
+            <!-- ======================================== -->
+            <!-- Reflections -->
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.11</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Logging System Dependencies -->
-			<!-- ======================================== -->
-			<!-- Logback -->
+            <!-- ======================================== -->
+            <!-- Logging System Dependencies -->
+            <!-- ======================================== -->
+            <!-- Logback -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
@@ -1643,7 +1645,7 @@
                 <artifactId>logback-ext-spring</artifactId>
                 <version>0.1.4</version>
             </dependency>
-			<!-- Log4j -->
+            <!-- Log4j -->
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
@@ -1659,7 +1661,7 @@
                 <artifactId>log4j-1.2-api</artifactId>
                 <version>2.16.0</version>
             </dependency>
-			<!-- Slf4j -->
+            <!-- Slf4j -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
@@ -1685,69 +1687,69 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.25</version>
             </dependency>
-			<!-- ======================================== -->
-			<!-- Other Dependencies -->
-			<!-- ======================================== -->
+            <!-- ======================================== -->
+            <!-- Other Dependencies -->
+            <!-- ======================================== -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>3.14.2</version>
             </dependency>
-			<!-- IPAddress Project -->
+            <!-- IPAddress Project -->
             <dependency>
                 <groupId>com.github.seancfoley</groupId>
                 <artifactId>ipaddress</artifactId>
                 <version>5.0.2</version>
             </dependency>
-			<!-- JCIFS Project -->
+            <!-- JCIFS Project -->
             <dependency>
                 <groupId>jcifs</groupId>
                 <artifactId>jcifs</artifactId>
                 <version>1.3.17</version>
             </dependency>
-			<!-- MongoDB Java Project -->
+            <!-- MongoDB Java Project -->
             <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongo-java-driver</artifactId>
                 <version>3.7.1</version>
             </dependency>
-			<!-- IBM ICU4J Project -->
+            <!-- IBM ICU4J Project -->
             <dependency>
                 <groupId>com.ibm.icu</groupId>
                 <artifactId>icu4j</artifactId>
                 <version>56.1</version>
             </dependency>
-			<!-- ASCII Table -->
+            <!-- ASCII Table -->
             <dependency>
                 <groupId>de.vandermeer</groupId>
                 <artifactId>asciitable</artifactId>
                 <version>0.3.2</version>
             </dependency>
-			<!-- Thymeleaf -->
+            <!-- Thymeleaf -->
             <dependency>
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf</artifactId>
                 <version>3.0.9.RELEASE</version>
             </dependency>
-			<!-- OpenHFT Affinity -->
+            <!-- OpenHFT Affinity -->
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>affinity</artifactId>
                 <version>3.1.6</version>
             </dependency>
-			<!-- Mchange c3p0 -->
+            <!-- Mchange c3p0 -->
             <dependency>
                 <groupId>com.mchange</groupId>
                 <artifactId>c3p0</artifactId>
                 <version>0.9.5.2</version>
             </dependency>
-			<!-- Sun Istack -->
+            <!-- Sun Istack -->
             <dependency>
                 <groupId>com.sun.istack</groupId>
                 <artifactId>istack-commons-runtime</artifactId>
                 <version>2.24</version>
             </dependency>
-			<!-- Mybatis Project -->
+            <!-- Mybatis Project -->
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
@@ -1773,31 +1775,31 @@
                 <artifactId>postgresql</artifactId>
                 <version>42.3.2</version>
             </dependency>
-			<!-- Hibernate Project -->
+            <!-- Hibernate Project -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.4.3.Final</version>
             </dependency>
-			<!-- MapDB Project -->
+            <!-- MapDB Project -->
             <dependency>
                 <groupId>org.mapdb</groupId>
                 <artifactId>mapdb</artifactId>
                 <version>3.0.7</version>
             </dependency>
-			<!-- Jodatime -->
+            <!-- Jodatime -->
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.9.9</version>
             </dependency>
-			<!-- Java EL -->
+            <!-- Java EL -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.el</artifactId>
                 <version>3.0.1-b08</version>
             </dependency>
-			<!-- Antlr Project -->
+            <!-- Antlr Project -->
             <dependency>
                 <groupId>org.antlr</groupId>
                 <artifactId>stringtemplate</artifactId>
@@ -1808,19 +1810,19 @@
                 <artifactId>antlr4</artifactId>
                 <version>4.7.2</version>
             </dependency>
-			<!-- JCraft JSCH -->
+            <!-- JCraft JSCH -->
             <dependency>
                 <groupId>com.jcraft</groupId>
                 <artifactId>jsch</artifactId>
                 <version>0.1.54</version>
             </dependency>
-			<!-- Jblas -->
+            <!-- Jblas -->
             <dependency>
                 <groupId>org.jblas</groupId>
                 <artifactId>jblas</artifactId>
                 <version>1.2.4</version>
             </dependency>
-			<!-- Open Html To PDF -->
+            <!-- Open Html To PDF -->
             <dependency>
                 <groupId>com.openhtmltopdf</groupId>
                 <artifactId>openhtmltopdf-core</artifactId>
@@ -1861,13 +1863,13 @@
                 <artifactId>openhtmltopdf-svg-support</artifactId>
                 <version>0.0.1-RC11</version>
             </dependency>
-			<!-- JSoup -->
+            <!-- JSoup -->
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>1.9.2</version>
             </dependency>
-			<!-- IText -->
+            <!-- IText -->
             <dependency>
                 <groupId>com.lowagie</groupId>
                 <artifactId>itext</artifactId>
@@ -1887,7 +1889,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-			<!-- Weka -->
+            <!-- Weka -->
             <dependency>
                 <groupId>nz.ac.waikato.cms.weka</groupId>
                 <artifactId>weka-dev</artifactId>
@@ -1898,37 +1900,37 @@
                 <artifactId>weka-stable</artifactId>
                 <version>3.8.3</version>
             </dependency>
-			<!-- JBcrypt -->
+            <!-- JBcrypt -->
             <dependency>
                 <groupId>org.mindrot</groupId>
                 <artifactId>jbcrypt</artifactId>
                 <version>0.4</version>
             </dependency>
-			<!-- Xebialabs -->
+            <!-- Xebialabs -->
             <dependency>
                 <groupId>com.xebialabs.overthere</groupId>
                 <artifactId>overthere</artifactId>
                 <version>5.0.2</version>
             </dependency>
-			<!-- XHTML Renderer -->
+            <!-- XHTML Renderer -->
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
                 <artifactId>flying-saucer-pdf</artifactId>
                 <version>9.1.15</version>
             </dependency>
-			<!-- True license -->
+            <!-- True license -->
             <dependency>
                 <groupId>de.schlichtherle.truelicense</groupId>
                 <artifactId>truelicense-core</artifactId>
                 <version>1.32</version>
             </dependency>
-			<!-- Document Converter -->
+            <!-- Document Converter -->
             <dependency>
                 <groupId>org.jodconverter</groupId>
                 <artifactId>jodconverter-local</artifactId>
                 <version>4.2.2</version>
             </dependency>
-			<!-- Xml operation -->
+            <!-- Xml operation -->
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
@@ -1939,13 +1941,13 @@
                 <artifactId>dom4j</artifactId>
                 <version>1.6.1</version>
             </dependency>
-			<!-- Cache -->
+            <!-- Cache -->
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>2.6.2</version>
             </dependency>
-			<!-- Spec Libraries -->
+            <!-- Spec Libraries -->
             <dependency>
                 <groupId>javax.json</groupId>
                 <artifactId>javax.json-api</artifactId>
@@ -1997,7 +1999,7 @@
                 <artifactId>mvel2</artifactId>
                 <version>2.4.12.Final</version>
             </dependency>
-			<!-- Swagger 2.0 -->
+            <!-- Swagger 2.0 -->
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
@@ -2018,13 +2020,13 @@
                 <artifactId>zero-allocation-hashing</artifactId>
                 <version>0.15</version>
             </dependency>
-			<!-- MinIO -->
+            <!-- MinIO -->
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>5.0.6</version>
             </dependency>
-			<!-- Hibernate -->
+            <!-- Hibernate -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
@@ -2080,7 +2082,7 @@
                 <artifactId>disruptor</artifactId>
                 <version>3.4.4</version>
             </dependency>
-			<!-- Keycloak SSO -->
+            <!-- Keycloak SSO -->
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-common</artifactId>
@@ -2137,14 +2139,14 @@
                 <artifactId>keycloak-servlet-filter-adapter</artifactId>
                 <version>16.0.0</version>
             </dependency>
-			<!-- Lombom -->
+            <!-- Lombom -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.22</version>
                 <scope>provided</scope>
             </dependency>
-			<!-- tools -->
+            <!-- tools -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-core</artifactId>
@@ -2155,7 +2157,7 @@
                 <artifactId>hutool-http</artifactId>
                 <version>5.7.17</version>
             </dependency>
-			<!-- Infinispan -->
+            <!-- Infinispan -->
             <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-core</artifactId>
@@ -2166,7 +2168,7 @@
                 <artifactId>infinispan-commons</artifactId>
                 <version>8.2.12.Final</version>
             </dependency>
-			<!-- Jboss -->
+            <!-- Jboss -->
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-cdi</artifactId>
@@ -2190,9 +2192,9 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-		<!-- ======================================== -->
-		<!-- Logging System Dependencies For All Modules -->
-		<!-- ======================================== -->
+        <!-- ======================================== -->
+        <!-- Logging System Dependencies For All Modules -->
+        <!-- ======================================== -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
