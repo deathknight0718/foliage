@@ -17,9 +17,12 @@ package page.foliage.common.collect;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.guava.common.collect.LinkedListMultimap;
 import page.foliage.guava.common.collect.Multimap;
 
@@ -127,6 +130,16 @@ public class QueryParams {
 
     public String get(String key, String defaultValue) {
         return containsKey(key) ? get(key) : defaultValue;
+    }
+
+    public Set<String> split(String key) {
+        if (!containsKey(key)) return null;
+        String text = delegate.get(key).iterator().next();
+        ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+        for (String item : StringUtils.split(text, ",")) {
+            builder.add(StringUtils.trim(item));
+        }
+        return builder.build();
     }
 
 }
