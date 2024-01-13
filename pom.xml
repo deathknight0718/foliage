@@ -12,6 +12,8 @@
         <project.reporting.outputEncoding>${pro.encoding}</project.reporting.outputEncoding>
         <deploy.repository.id>foliage.sonatype</deploy.repository.id>
         <deploy.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</deploy.url>
+        <deploy.snapshot.repository.id>foliage.snapshot</deploy.snapshot.repository.id>
+        <deploy.snapshot.url>https://portal.cecdat.dev:5001/repository/foliage-snapshots/</deploy.snapshot.url>
         <jdk.version>11</jdk.version>
         <lucene.version>7.7.2</lucene.version>
         <plg.ant.version>1.8</plg.ant.version>
@@ -43,7 +45,6 @@
     </properties>
     <modules>
         <module>foliage-commons</module>
-        <module>foliage-assemblies</module>
         <module>foliage-apps</module>
     </modules>
     <url>https://github.com/deathknight0718/foliage.git</url>
@@ -72,6 +73,10 @@
             <id>${deploy.repository.id}</id>
             <url>${deploy.url}</url>
         </repository>
+        <snapshotRepository>
+            <id>${deploy.snapshot.repository.id}</id>
+            <url>${deploy.snapshot.url}</url>
+        </snapshotRepository>
     </distributionManagement>
     <repositories>
         <repository>
