@@ -23,23 +23,19 @@ import page.foliage.guava.common.base.Preconditions;
  * @author deathknight0718@qq.com.
  * @version 1.0.0
  */
-public class Snowflake {
+public class Jsonflake {
 
     // ------------------------------------------------------------------------
 
     private final static long START_MILLIS = 170406720000L;
 
-    private final static long BIT_SEQUENCE = 12;
+    private final static long BIT_SEQUENCE = 3;
 
-    private final static long BIT_MACHINE = 4;
+    private final static long BIT_MACHINE = 0;
 
-    private final static long BIT_DATACENTER = 2;
+    private final static long BIT_DATACENTER = 0;
 
     private final static long MAX_SEQUENCE = -1L ^ (-1L << BIT_SEQUENCE);
-
-    private final static long MAX_MACHINE_NUM = -1L ^ (-1L << BIT_MACHINE);
-
-    private final static long MAX_DATACENTER_NUM = -1L ^ (-1L << BIT_DATACENTER);
 
     private final static long LEFT_MACHINE = BIT_SEQUENCE;
 
@@ -47,16 +43,11 @@ public class Snowflake {
 
     private final static long LEFT_TIMESTMP = LEFT_DATACENTER + BIT_DATACENTER;
 
-    private long did, mid, sequence = 0L, lastMillis = -1L;
+    private long did = 0L, mid = 0L, sequence = 0L, lastMillis = -1L;
 
     // ------------------------------------------------------------------------
 
-    public Snowflake(long did, long mid) {
-        Preconditions.checkArgument(did <= MAX_DATACENTER_NUM && did >= 0, "Error! datacenter id can't be greater than MAX_DATACENTER_NUM or less than 0");
-        Preconditions.checkArgument(mid <= MAX_MACHINE_NUM && mid >= 0, "Error! machine id can't be greater than MAX_MACHINE_NUM or less than 0");
-        this.did = did;
-        this.mid = mid;
-    }
+    public Jsonflake() {}
 
     public synchronized long next() {
         long millis = millis();

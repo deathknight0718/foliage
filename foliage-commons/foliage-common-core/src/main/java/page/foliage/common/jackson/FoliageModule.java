@@ -15,6 +15,7 @@
  ******************************************************************************/
 package page.foliage.common.jackson;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -51,6 +52,7 @@ public class FoliageModule extends Module {
         serializers.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
         serializers.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
         serializers.addSerializer(LocalDate.class, new LocalDateSerializer());
+        serializers.addSerializer(Duration.class, new DurationSecondSerializer());
         deserializers.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
         deserializers.addDeserializer(ZonedDateTime.class, new ZonedDateTimeDeserializer());
         deserializers.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());

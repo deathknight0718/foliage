@@ -15,14 +15,14 @@
         <deploy.snapshot.repository.id>foliage.snapshot</deploy.snapshot.repository.id>
         <deploy.snapshot.url>https://portal.cecdat.dev:5001/repository/foliage-snapshots/</deploy.snapshot.url>
         <jdk.version>11</jdk.version>
-        <lucene.version>7.7.2</lucene.version>
+        <lucene.version>9.10.0</lucene.version>
         <plg.ant.version>1.8</plg.ant.version>
         <plg.apt.version>8.5.82</plg.apt.version>
         <plg.jmp.version>2.3.1</plg.jmp.version>
         <plg.jty.version>9.4.12.v20180830</plg.jty.version>
         <plg.map.version>3.6.0</plg.map.version>
         <plg.mmp.version>3.11.0</plg.mmp.version>
-        <plg.mde.version>2.8.2</plg.mde.version>
+        <plg.mde.version>3.1.1</plg.mde.version>
         <plg.mdp.version>2.10</plg.mdp.version>
         <plg.mep.version>2.10</plg.mep.version>
         <plg.mgp.version>3.0.1</plg.mgp.version>
@@ -599,26 +599,6 @@
                 <artifactId>lucene-core</artifactId>
                 <version>${lucene.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.solr</groupId>
-                <artifactId>solr-core</artifactId>
-                <version>${lucene.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.solr</groupId>
-                <artifactId>solr-solrj</artifactId>
-                <version>${lucene.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.solr</groupId>
-                <artifactId>solr-dataimporthandler</artifactId>
-                <version>${lucene.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-analyzers-icu</artifactId>
-                <version>${lucene.version}</version>
-            </dependency>
             <!-- Apache Bval -->
             <dependency>
                 <groupId>org.apache.bval</groupId>
@@ -692,12 +672,12 @@
             <dependency>
                 <groupId>commons-cli</groupId>
                 <artifactId>commons-cli</artifactId>
-                <version>1.3.1</version>
+                <version>1.7.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.9</version>
+                <version>1.16.1</version>
             </dependency>
             <dependency>
                 <groupId>commons-configuration</groupId>
@@ -731,7 +711,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-exec</artifactId>
-                <version>1.3</version>
+                <version>1.4.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -1415,7 +1395,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.7.1</version>
+                <version>3.19.6</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.avro</groupId>

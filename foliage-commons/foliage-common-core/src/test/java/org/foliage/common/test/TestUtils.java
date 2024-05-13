@@ -15,7 +15,11 @@
  */
 package org.foliage.common.test;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.testng.annotations.Test;
+
+import page.foliage.common.collect.Identities;
 
 /**
  * 
@@ -24,9 +28,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestUtils {
 
-    @Test
-    private void testNamedPreparedStatement() {
-        
+    @Test(invocationCount = 10)
+    private void testNamedPreparedStatement() throws NoSuchAlgorithmException {
+        System.err.println(Identities.uuidv3("test", "test".getBytes()));
     }
 
 }

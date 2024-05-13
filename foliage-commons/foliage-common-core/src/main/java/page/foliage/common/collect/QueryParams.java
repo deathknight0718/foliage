@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import page.foliage.guava.common.collect.ImmutableMultimap;
 import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.guava.common.collect.LinkedListMultimap;
 import page.foliage.guava.common.collect.Multimap;
@@ -31,22 +32,34 @@ import page.foliage.guava.common.collect.Multimap;
  * @author deathknight0718@qq.com
  */
 public class QueryParams {
+    
+    // ------------------------------------------------------------------------
+
+    private final static String KEYWORD_OFFSET = "offset";
+
+    private final static String KEYWORD_LIMIT = "limit";
+
+    private final static int VALUE_DEFAULT_OFFSET = 0;
+
+    private final static int VALUE_DEFAULT_LIMIT = 20;
 
     // ------------------------------------------------------------------------
 
-    private final Multimap<String, String> delegate = LinkedListMultimap.create();
+    public final static QueryParams ALL = new QueryParams(ImmutableMultimap.of(KEYWORD_OFFSET, "0", KEYWORD_LIMIT, "65535"));
+
+    private final Multimap<String, String> delegate;
 
     // ------------------------------------------------------------------------
 
-    private QueryParams() {}
-
-    // ------------------------------------------------------------------------
-
-    public static QueryParams all() {
-        QueryParams bean = new QueryParams();
-        bean.delegate.put("limit", "65535");
-        return bean;
+    private QueryParams() {
+        delegate = LinkedListMultimap.create();
     }
+
+    private QueryParams(Multimap<String, String> delegate) {
+        this.delegate = delegate;
+    }
+
+    // ------------------------------------------------------------------------
 
     public static QueryParams of() {
         return new QueryParams();
@@ -84,13 +97,13 @@ public class QueryParams {
     // ------------------------------------------------------------------------
 
     public Integer offset() {
-        if (containsKey("offset")) return Integer.valueOf(get("offset"));
-        return 0;
+        if (containsKey(KEYWORD_OFFSET)) return Integer.valueOf(get(KEYWORD_OFFSET));
+        return VALUE_DEFAULT_OFFSET;
     }
 
     public Integer limit() {
-        if (containsKey("limit")) return Integer.valueOf(get("limit"));
-        return 20;
+        if (containsKey(KEYWORD_LIMIT)) return Integer.valueOf(get(KEYWORD_LIMIT));
+        return VALUE_DEFAULT_LIMIT;
     }
 
     // ------------------------------------------------------------------------
