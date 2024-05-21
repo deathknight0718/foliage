@@ -33,7 +33,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>${plg.map.version}</version>
                     <configuration>
                         <attach>false</attach>
                         <appendAssemblyId>false</appendAssemblyId>
@@ -79,7 +78,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>${plg.mis.version}</version>
                     <configuration>
                         <generatePom>false</generatePom>
                         <pomFile>pom.xml</pomFile>
@@ -104,7 +102,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${plg.mgp.version}</version>
                     <configuration>
                         <generatePom>false</generatePom>
                         <pomFile>pom.xml</pomFile>
