@@ -112,7 +112,6 @@ public class Identities {
      * 
      * @see UUID#nameUUIDFromBytes(byte[])
      */
-    @Deprecated
     public static UUID uuid(byte[] bytes) {
         return UUID.nameUUIDFromBytes(bytes);
     }
@@ -122,7 +121,6 @@ public class Identities {
      *
      * @see UUID#randomUUID()
      */
-    @Deprecated
     public static UUID uuid() {
         return UUID.randomUUID();
     }
@@ -132,7 +130,6 @@ public class Identities {
      * 
      * @see UUID#nameUUIDFromBytes(byte[])
      */
-    @Deprecated
     public static UUID uuid(UUID namespace, byte[]... values) {
         UUID uuid = namespace;
         MessageDigest md;
@@ -163,7 +160,6 @@ public class Identities {
      * 
      * @see UUID#nameUUIDFromBytes(byte[])
      */
-
     public static UUID uuid(String namespace, Object v1) {
         byte[] buffer = Bytes.concat(namespace.getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v1).getBytes(), DELIMITER);
