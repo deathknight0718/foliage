@@ -43,8 +43,9 @@ public class InstanceClosingCheck extends Thread {
         }
     }
 
-    public static void hook(AutoCloseable instance) {
+    public static <T extends AutoCloseable> T hook(T instance) {
         Runtime.getRuntime().addShutdownHook(new InstanceClosingCheck(instance));
+        return instance;
     }
 
 }
