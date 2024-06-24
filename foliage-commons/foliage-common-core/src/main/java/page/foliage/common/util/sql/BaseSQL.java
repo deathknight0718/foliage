@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 
 import page.foliage.guava.common.collect.ImmutableList;
 
@@ -308,6 +309,10 @@ public abstract class BaseSQL<T> {
 
     public String toNormalizeString() {
         return StringUtils.normalizeSpace(toString());
+    }
+
+    public String toTemplatedString(StringSubstitutor substitutor) {
+        return substitutor.replace(StringUtils.normalizeSpace(toString()));
     }
 
     // ------------------------------------------------------------------------
