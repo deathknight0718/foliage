@@ -16,6 +16,7 @@
 package page.foliage.common.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -59,9 +60,13 @@ public class JsonNodes {
     public static JsonNode asNode(String json) throws JsonProcessingException {
         return MAPPER.readTree(json);
     }
-    
+
     public static JsonNode asNode(byte[] bytes) throws IOException {
         return MAPPER.readTree(bytes);
+    }
+
+    public static JsonNode asNode(InputStream is) throws IOException {
+        return MAPPER.readTree(is);
     }
 
     public static <T extends JsonNode> T toNode(Object value) {
