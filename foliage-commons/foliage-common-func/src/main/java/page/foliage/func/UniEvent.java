@@ -15,22 +15,18 @@
  */
 package page.foliage.func;
 
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
-import io.reactivex.rxjava3.core.Flowable;
+import io.smallrye.mutiny.Uni;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public interface Event<T extends Event<?>> extends Callable<T> {
+public interface UniEvent<T> extends Supplier<T> {
 
-    default <E extends Event<?>> Flowable<E> next() {
-        return Flowable.empty();
-    }
-
-    default Flowable<T> callable() {
-        return Flowable.fromCallable(this);
+    default Uni<T> callable() {
+        return Uni.createFrom().item(this);
     }
 
 }
