@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" id="Definitions_1gajtcz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.3.0">
+  <bpmn:process id="repository-contract-submit" name="共享合约 - 合约申请" isExecutable="true">
+    <bpmn:startEvent id="Event_09or18u" name="流程发起" flowable:formKey="contract-submit">
+      <bpmn:outgoing>Flow_18o3ey2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_1lq9nsp" name="内容审查" flowable:candidateGroups="DOMAIN_ADMIN">
+      <bpmn:incoming>Flow_18o3ey2</bpmn:incoming>
+      <bpmn:incoming>Flow_04xptst</bpmn:incoming>
+      <bpmn:outgoing>Flow_02g0053</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_18o3ey2" sourceRef="Event_09or18u" targetRef="Activity_1lq9nsp" />
+    <bpmn:sequenceFlow id="Flow_02g0053" sourceRef="Activity_1lq9nsp" targetRef="Activity_0dn77kn" />
+    <bpmn:serviceTask id="Activity_0dn77kn" name="跨机构提交" flowable:class="page.foliage.flow.cmd.DomainProcessSubmit">
+      <bpmn:incoming>Flow_02g0053</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hf1lo7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0hf1lo7" sourceRef="Activity_0dn77kn" targetRef="Event_0cg31pj" />
+    <bpmn:intermediateCatchEvent id="Event_0cg31pj" name="等待反馈">
+      <bpmn:incoming>Flow_0hf1lo7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ngabht</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0i2n9sb" flowable:messageExpression="${_submitMessageId}" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1ngabht" sourceRef="Event_0cg31pj" targetRef="Activity_1denl7r" />
+    <bpmn:endEvent id="Event_0s5zlu9" name="流程结束">
+      <bpmn:incoming>Flow_1jwxmej</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1denl7r" name="流程通知" flowable:class="page.foliage.flow.cmd.Notification">
+      <bpmn:incoming>Flow_1ngabht</bpmn:incoming>
+      <bpmn:outgoing>Flow_03bs4yg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1gfdedu" name="审查结果" default="Flow_1jwxmej">
+      <bpmn:incoming>Flow_03bs4yg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jwxmej</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04xptst</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_03bs4yg" sourceRef="Activity_1denl7r" targetRef="Gateway_1gfdedu" />
+    <bpmn:sequenceFlow id="Flow_1jwxmej" sourceRef="Gateway_1gfdedu" targetRef="Event_0s5zlu9" />
+    <bpmn:sequenceFlow id="Flow_04xptst" sourceRef="Gateway_1gfdedu" targetRef="Activity_1lq9nsp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${_status == 'REJECTED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="repository-contract-submit">
+      <bpmndi:BPMNShape id="Event_09or18u_di" bpmnElement="Event_09or18u">
+        <dc:Bounds x="292" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="288" y="205" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08r9gkn_di" bpmnElement="Activity_1lq9nsp">
+        <dc:Bounds x="390" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0219q5h_di" bpmnElement="Activity_0dn77kn">
+        <dc:Bounds x="560" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ci0ftd_di" bpmnElement="Event_0cg31pj">
+        <dc:Bounds x="732" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="728" y="205" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0s5zlu9_di" bpmnElement="Event_0s5zlu9">
+        <dc:Bounds x="1132" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1128" y="205" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0h7q0g3_di" bpmnElement="Activity_1denl7r">
+        <dc:Bounds x="830" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1gfdedu_di" bpmnElement="Gateway_1gfdedu" isMarkerVisible="true">
+        <dc:Bounds x="995" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="998" y="212" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_18o3ey2_di" bpmnElement="Flow_18o3ey2">
+        <di:waypoint x="328" y="180" />
+        <di:waypoint x="390" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02g0053_di" bpmnElement="Flow_02g0053">
+        <di:waypoint x="490" y="180" />
+        <di:waypoint x="560" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hf1lo7_di" bpmnElement="Flow_0hf1lo7">
+        <di:waypoint x="660" y="180" />
+        <di:waypoint x="732" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ngabht_di" bpmnElement="Flow_1ngabht">
+        <di:waypoint x="768" y="180" />
+        <di:waypoint x="830" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03bs4yg_di" bpmnElement="Flow_03bs4yg">
+        <di:waypoint x="930" y="180" />
+        <di:waypoint x="995" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jwxmej_di" bpmnElement="Flow_1jwxmej">
+        <di:waypoint x="1045" y="180" />
+        <di:waypoint x="1132" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04xptst_di" bpmnElement="Flow_04xptst">
+        <di:waypoint x="1020" y="155" />
+        <di:waypoint x="1020" y="60" />
+        <di:waypoint x="440" y="60" />
+        <di:waypoint x="440" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

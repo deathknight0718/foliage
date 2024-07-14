@@ -1,0 +1,18 @@
+{
+  "schema": {
+    "title": "流程审核",
+    "description": "流程审核通用模板",
+    "type": "object",
+    "required": [ "assigneeId", "assigneeName", "description" ],
+    "properties": {
+      "assigneeId": { "type": "number", "default": ${access.user.id} },
+      "assigneeName": { "type": "string", "title": "审核人", "default": "${access.user.displayName}" },
+      "description": { "type": "string", "title": "审核备注" }
+    }
+  },
+  "uiSchema": {
+    "assigneeId": { "ui:readonly": true, "ui:widget": "hidden" },
+    "assigneeName": { "ui:readonly": true },
+    "description": { "ui:widget": "textarea" }
+  }
+}

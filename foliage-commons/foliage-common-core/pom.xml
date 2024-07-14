@@ -7,7 +7,7 @@
         <version>1.0.9-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-core</artifactId>
-    <name>Foliage Common Core</name>
+    <name>FOLIAGE COMMON CORE</name>
     <build>
         <plugins>
             <plugin>

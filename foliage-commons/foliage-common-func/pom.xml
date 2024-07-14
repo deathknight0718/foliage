@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -5,22 +6,10 @@
         <artifactId>foliage-commons</artifactId>
         <version>1.0.9-SNAPSHOT</version>
     </parent>
-    <artifactId>foliage-common-jdbc</artifactId>
-    <name>FOLIAGE COMMON JDBC</name>
+    <artifactId>foliage-common-func</artifactId>
+    <name>FOLIAGE COMMON FUNC</name>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>antlr4</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -37,14 +26,20 @@
         </plugins>
     </build>
     <dependencies>
+        <!-- ======================================== -->
+        <!-- Local Project Dependencies -->
+        <!-- ======================================== -->
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-common-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4</artifactId>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>3.1.8</version>
         </dependency>
     </dependencies>
+
 </project>

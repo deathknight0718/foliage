@@ -27,5 +27,9 @@
 		<module>foliage-common-core</module>
         <module>foliage-common-jdbc</module>
         <module>foliage-common-oidc</module>
+        <module>foliage-common-ldap</module>
+        <module>foliage-common-file</module>
+        <module>foliage-common-flow</module>
+        <module>foliage-common-func</module>
 	</modules>
 </project>
