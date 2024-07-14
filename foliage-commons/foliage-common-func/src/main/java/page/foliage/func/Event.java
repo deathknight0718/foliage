@@ -23,7 +23,7 @@ import io.smallrye.mutiny.Uni;
  * 
  * @author deathknight0718@qq.com
  */
-public interface UniEvent<T> extends Supplier<T> {
+public interface Event<T> extends Supplier<T> {
 
     default Uni<T> callable() {
         return Uni.createFrom().item(this);
