@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>page.foliage</groupId>
+        <artifactId>foliage</artifactId>
+        <version>1.0.9-SNAPSHOT</version>
+    </parent>
+    <artifactId>foliage-ai</artifactId>
+    <name>FOLIAGE AI</name>
+    <packaging>jar</packaging>
+    <dependencies>
+        <!-- ======================================== -->
+        <!-- Foliage Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>page.foliage</groupId>
+            <artifactId>foliage-common-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Lucene Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>9.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analysis-common</artifactId>
+            <version>9.10.0</version>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Elastic Search Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <version>8.14.3</version>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Compute Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>ai.djl.huggingface</groupId>
+            <artifactId>tokenizers</artifactId>
+            <version>0.28.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime_gpu</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.7.0-0</version>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Test Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>page.foliage</groupId>
+            <artifactId>foliage-guice</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

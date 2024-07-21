@@ -1,0 +1,32 @@
+{
+  "index_patterns": ["intents-*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "index.number_of_replicas": 0
+    },
+    "mappings": {
+      "properties": {
+        "instruction": {
+          "type": "text",
+          "store": true
+        },
+        "instruction_embeddings": {
+          "type": "dense_vector",
+          "dims": 384
+        },
+        "content": {
+          "type": "text",
+          "store": true
+        },
+        "content_embeddings": {
+          "type": "dense_vector",
+          "dims": 384
+        },
+        "@timestamp": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}

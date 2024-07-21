@@ -28,6 +28,7 @@
     <modules>
         <module>foliage-commons</module>
         <module>foliage-apps</module>
+        <module>foliage-ai</module>
     </modules>
     <url>https://github.com/deathknight0718/foliage.git</url>
     <licenses>
