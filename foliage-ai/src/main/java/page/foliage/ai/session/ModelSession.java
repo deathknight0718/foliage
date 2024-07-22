@@ -23,7 +23,7 @@ import page.foliage.ai.Result;
  * 
  * @author deathknight0718@qq.com
  */
-public interface BertSession extends AutoCloseable {
+public interface ModelSession extends AutoCloseable {
 
     Result run(File file) throws Exception;
 

@@ -20,6 +20,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
@@ -35,9 +43,13 @@ import page.foliage.guava.common.base.Preconditions;
  * 
  * @author deathknight0718@qq.com
  */
-public class BertSessionFactory implements AutoCloseable {
+public class ModelSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelSessionFactory.class);
+
+    private static final int MAX_SIZE = 4;
 
     private Path path;
 
@@ -45,11 +57,13 @@ public class BertSessionFactory implements AutoCloseable {
 
     private OrtEnvironment environment = OrtEnvironment.getEnvironment();
 
-    private volatile PooledSession sessionPooled;
+    private final ArrayBlockingQueue<ModelSession> pool = new ArrayBlockingQueue<>(MAX_SIZE);
+
+    private final AtomicInteger count = new AtomicInteger(0);
 
     // ------------------------------------------------------------------------
 
-    private BertSessionFactory() {}
+    private ModelSessionFactory() {}
 
     // ------------------------------------------------------------------------
 
@@ -61,31 +75,40 @@ public class BertSessionFactory implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (sessionPooled != null) sessionPooled.close();
+        synchronized (this) {
+            List<ModelSession> list = new ArrayList<>(4);
+            pool.drainTo(list);
+            LOGGER.debug("close all object: {}", list.size());
+            list.stream().forEach(ResourceUtils::safeClose);
+        }
     }
 
     // ------------------------------------------------------------------------
 
-    public BertSession openPooledSession(int gpuId) throws Exception {
-        PooledSession result = sessionPooled;
-        if (result == null) {
+    public ModelSession openPooledSession(int gpuId) throws Exception {
+        LOGGER.debug("count of session is {}, pool size is {}", count.get(), pool.size());
+        if (count.get() < MAX_SIZE) {
             synchronized (this) {
-                if ((result = sessionPooled) == null) sessionPooled = result = new PooledSession(openSession(gpuId));
+                if (count.get() < MAX_SIZE) {
+                    ModelSession instance = openSession(gpuId);
+                    count.incrementAndGet();
+                    return new PooledSession(instance);
+                }
             }
         }
-        return result;
+        return new PooledSession(pool.poll(30, TimeUnit.SECONDS));
     }
 
     // ------------------------------------------------------------------------
 
-    public BertSession openSession(int gpuId) throws Exception {
+    public ModelSession openSession(int gpuId) throws Exception {
         OrtSession.SessionOptions options = new OrtSession.SessionOptions();
         options.addCUDA(0);
         OrtSession session = environment.createSession(path.toString(), options);
         return new InternalSession(options, session);
     }
 
-    public BertSession openSession() throws Exception {
+    public ModelSession openSession() throws Exception {
         OrtSession.SessionOptions options = new OrtSession.SessionOptions();
         OrtSession session = environment.createSession(path.toString(), options);
         return new InternalSession(options, session);
@@ -93,16 +116,18 @@ public class BertSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public class PooledSession implements BertSession {
+    public class PooledSession implements ModelSession {
 
-        private final BertSession delegate;
+        private final ModelSession delegate;
 
-        public PooledSession(BertSession delegate) {
+        public PooledSession(ModelSession delegate) {
             this.delegate = delegate;
         }
 
         @Override
-        public void close() throws Exception {}
+        public void close() throws Exception {
+            pool.put(delegate);
+        }
 
         public Result run(File file) throws Exception {
             return delegate.run(file);
@@ -116,7 +141,7 @@ public class BertSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public class InternalSession implements BertSession {
+    public class InternalSession implements ModelSession {
 
         private final OrtSession.SessionOptions options;
 
@@ -173,7 +198,7 @@ public class BertSessionFactory implements AutoCloseable {
 
     public static class Builder {
 
-        private BertSessionFactory bean = new BertSessionFactory();
+        private ModelSessionFactory bean = new ModelSessionFactory();
 
         public Builder withDirectory(Path path) {
             return withDirectory(path.toFile());
@@ -210,7 +235,7 @@ public class BertSessionFactory implements AutoCloseable {
             return this;
         }
 
-        public BertSessionFactory build() {
+        public ModelSessionFactory build() {
             Preconditions.checkNotNull(bean.path);
             Preconditions.checkNotNull(bean.tokenizer);
             return bean;

@@ -36,9 +36,8 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import page.foliage.ai.Intent;
 import page.foliage.ai.Result;
-import page.foliage.ai.session.BertSession;
-import page.foliage.ai.session.BertSessionFactory;
-import page.foliage.ai.tokenizers.NativeTokenizer;
+import page.foliage.ai.session.ModelSession;
+import page.foliage.ai.session.ModelSessionFactory;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.util.JsonNodes;
@@ -62,7 +61,7 @@ public class TestElasticSearch {
 
     private static ElasticsearchClient client;
 
-    private static BertSessionFactory factory;
+    private static ModelSessionFactory factory;
 
     @BeforeClass
     public static void beforeClass() {
@@ -71,14 +70,14 @@ public class TestElasticSearch {
             .build();
         ElasticsearchTransport transport = new RestClientTransport(rest, new JacksonJsonpMapper());
         client = new ElasticsearchClient(transport);
-        BertSessionFactory.Builder builder = BertSessionFactory.builder();
+        ModelSessionFactory.Builder builder = ModelSessionFactory.builder();
         factory = builder.withDirectory(mpath).build();
         InstanceClosingCheck.hook(factory);
     }
 
     @Test
     private void testIndex() throws Exception {
-        try (BertSession session = factory.openSession(0)) {
+        try (ModelSession session = factory.openSession(0)) {
             try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -104,7 +103,7 @@ public class TestElasticSearch {
     @Test
     private void testSearch() throws Exception {
         String input = "我想找一家治疗糖尿病比较好的医院";
-        try (BertSession session = factory.openSession(0)) {
+        try (ModelSession session = factory.openSession(0)) {
             try (Result result = session.run(input)) {
                 float[] embeddings = result.embeddings()[0];
                 JsonNode node = JsonNodes.asNode(Files.readString(spath));
