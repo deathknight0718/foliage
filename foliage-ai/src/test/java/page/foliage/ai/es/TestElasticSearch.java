@@ -56,9 +56,7 @@ public class TestElasticSearch {
 
     private static Path path = Paths.get("/home/foliage/fork/Huatuo26M-Lite/format_data.jsonl");
 
-    private static Path mpath = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2/model.onnx");
-
-    private static Path tpath = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2/tokenizer.json");
+    private static Path mpath = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
 
     private static Path spath = Paths.get("target/test-classes/searchs/hybird-intents.json");
 
@@ -74,9 +72,7 @@ public class TestElasticSearch {
         ElasticsearchTransport transport = new RestClientTransport(rest, new JacksonJsonpMapper());
         client = new ElasticsearchClient(transport);
         BertSessionFactory.Builder builder = BertSessionFactory.builder();
-        builder.withModel(mpath);
-        builder.withTokenizer(NativeTokenizer.builder().withPath(tpath).build());
-        factory = builder.build();
+        factory = builder.withDirectory(mpath).build();
         InstanceClosingCheck.hook(factory);
     }
 

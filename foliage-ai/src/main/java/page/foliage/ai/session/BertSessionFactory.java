@@ -27,7 +27,9 @@ import ai.onnxruntime.OrtSession;
 import page.foliage.ai.Result;
 import page.foliage.ai.Tokenizer;
 import page.foliage.ai.func.SpaceFunctions;
+import page.foliage.ai.tokenizers.NativeTokenizer;
 import page.foliage.common.util.ResourceUtils;
+import page.foliage.guava.common.base.Preconditions;
 
 /**
  * 
@@ -173,9 +175,34 @@ public class BertSessionFactory implements AutoCloseable {
 
         private BertSessionFactory bean = new BertSessionFactory();
 
+        public Builder withDirectory(Path path) {
+            return withDirectory(path.toFile());
+        }
+
+        public Builder withDirectory(File file) {
+            Preconditions.checkArgument(file.isDirectory());
+            for (File children : file.listFiles()) {
+                if (children.getName().toLowerCase().endsWith(".onnx")) withModel(children);
+                if (children.getName().toLowerCase().equals("tokenizer.json")) withTokenizer(children);
+            }
+            return this;
+        }
+
+        public Builder withModel(File file) {
+            return withModel(file.toPath());
+        }
+
         public Builder withModel(Path path) {
             bean.path = path;
             return this;
+        }
+
+        public Builder withTokenizer(File file) {
+            return withTokenizer(file.toPath());
+        }
+
+        public Builder withTokenizer(Path path) {
+            return withTokenizer(NativeTokenizer.builder().withPath(path).build());
         }
 
         public Builder withTokenizer(Tokenizer tokenizer) {
@@ -184,6 +211,8 @@ public class BertSessionFactory implements AutoCloseable {
         }
 
         public BertSessionFactory build() {
+            Preconditions.checkNotNull(bean.path);
+            Preconditions.checkNotNull(bean.tokenizer);
             return bean;
         }
 
