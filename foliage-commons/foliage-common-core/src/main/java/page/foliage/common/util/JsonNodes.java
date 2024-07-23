@@ -57,8 +57,88 @@ public class JsonNodes {
 
     // ------------------------------------------------------------------------
 
-    public static JsonNode asNode(String json) throws JsonProcessingException {
-        return MAPPER.readTree(json);
+    public static ObjectNode asObject(String value) throws JsonProcessingException {
+        return (ObjectNode) asNode(value);
+    }
+
+    public static ObjectNode asObject(byte[] bytes) throws IOException {
+        return (ObjectNode) asNode(bytes);
+    }
+
+    public static ObjectNode asObject(InputStream is) throws IOException {
+        return (ObjectNode) asNode(is);
+    }
+
+    // ------------------------------------------------------------------------
+
+    public static ArrayNode asArray(float[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(double[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(boolean[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(byte[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(char[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(short[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(int[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    public static ArrayNode asArray(long[] values) {
+        ArrayNode node = createArrayNode();
+        for (int i = 0; i < values.length; i++) {
+            node.add(values[i]);
+        }
+        return node;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public static JsonNode asNode(String value) throws JsonProcessingException {
+        return MAPPER.readTree(value);
     }
 
     public static JsonNode asNode(byte[] bytes) throws IOException {

@@ -17,7 +17,6 @@ package page.foliage.ai.es;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -106,7 +105,7 @@ public class TestElasticSearch {
         try (ModelSession session = factory.openSession(0)) {
             try (Result result = session.run(input)) {
                 float[] embeddings = result.embeddings()[0];
-                JsonNode node = JsonNodes.asNode(Files.readString(spath));
+                System.err.println();
             }
         }
     }
