@@ -76,6 +76,16 @@ public class NativeTokenizer implements Tokenizer {
             return this;
         }
 
+        public Builder withPadding(boolean padding) {
+            builder.optPadding(padding);
+            return this;
+        }
+
+        public Builder withTruncation(boolean truncation) {
+            builder.optTruncation(truncation);
+            return this;
+        }
+
         public NativeTokenizer build() {
             NativeTokenizer bean = new NativeTokenizer();
             try {
