@@ -67,7 +67,7 @@ public class StatelessAccess implements Access {
 
     // ------------------------------------------------------------------------
 
-    public static StatelessAccess get(String email) {
+    public static StatelessAccess fromEmail(String email) {
         try (IdentitySession session = openJdbcSession()) {
             StatelessAccess bean = new StatelessAccess();
             bean.user = session.userSelectByEmail(email);

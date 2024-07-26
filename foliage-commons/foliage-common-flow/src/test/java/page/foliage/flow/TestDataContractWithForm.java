@@ -83,25 +83,25 @@ public class TestDataContractWithForm extends TestBase {
     // ------------------------------------------------------------------------
 
     private static FormResource buildFormResource(String email, String key, String name, String classpath) {
-        return FormResource.builder().key(key).name(name).access(StatelessAccess.get(email)).resource(classpath).build();
+        return FormResource.builder().key(key).name(name).access(StatelessAccess.fromEmail(email)).resource(classpath).build();
     }
 
     private static FlowDeployment buildFlowResource(String email, String key, String name, String classpath) {
-        return FlowDeployment.builder(StatelessAccess.get(email).getDomain()).key(key).name(name).addResource(classpath).deploy();
+        return FlowDeployment.builder(StatelessAccess.fromEmail(email).getDomain()).key(key).name(name).addResource(classpath).deploy();
     }
 
     // ------------------------------------------------------------------------
 
     @Test(enabled = true)
     private void testFlowProcessStart() throws InterruptedException {
-        Access access = StatelessAccess.get(EMAILS[1]);
+        Access access = StatelessAccess.fromEmail(EMAILS[1]);
         FlowDefinition definition = FlowDefinition.latest(PARAMS[2][0], access.getDomain());
         definition.starter(access.getUser()).name("TestDataContract").payload(RESOURCES[2].express(access)).start();
     }
 
     @Test(enabled = true, dependsOnMethods = { "testFlowProcessStart" })
     private void testFlowUserTaskSubmit01() throws InterruptedException {
-        Access access = StatelessAccess.get(EMAILS[1]);
+        Access access = StatelessAccess.fromEmail(EMAILS[1]);
         FlowTask task = FlowTask.list(QueryParams.ALL, access.getUser()).iterator().next();
         Assert.assertEquals(task.getName(), "内容审查");
         task.submitter(access.getUser()).payload(task.resource().express(access)).complete();
@@ -109,7 +109,7 @@ public class TestDataContractWithForm extends TestBase {
 
     @Test(enabled = true, dependsOnMethods = { "testFlowUserTaskSubmit01" })
     private void testFlowUserTaskSubmit02() throws InterruptedException {
-        Access access = StatelessAccess.get(EMAILS[0]);
+        Access access = StatelessAccess.fromEmail(EMAILS[0]);
         FlowTask task = FlowTask.list(QueryParams.ALL, Domain.SYSTEM).iterator().next();
         Assert.assertEquals(task.getName(), "合约审查");
         task.submitter(access.getUser()).payload(RESOURCES[1].express(access)) //

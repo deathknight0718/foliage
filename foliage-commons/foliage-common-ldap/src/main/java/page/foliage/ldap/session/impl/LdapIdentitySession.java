@@ -150,6 +150,18 @@ public class LdapIdentitySession implements IdentitySession {
         return bean;
     }
 
+    @Override
+    public User userSelectByName(String name) throws Exception {
+        String filter = MessageFormat.format("(cn={0})", name);
+        LdapEntry entry = connection.selectOne(filter);
+        User bean = User.create(entry.get("uid").asLong());
+        bean.setDisplayName(entry.get("displayName").asText());
+        bean.setEmail(entry.get("mail").asText());
+        bean.setName(entry.get("cn").asText());
+        bean.setDomainId(connection.reverse(entry, 2).get("uniqueIdentifier").asLong());
+        return bean;
+    }
+
     // ------------------------------------------------------------------------
 
     @Override

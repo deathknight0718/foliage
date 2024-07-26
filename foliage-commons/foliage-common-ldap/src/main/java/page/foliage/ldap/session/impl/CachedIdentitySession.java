@@ -88,6 +88,11 @@ public class CachedIdentitySession implements IdentitySession {
     public User userSelectByEmail(String email) throws Exception {
         return (User) cache.get(Identities.uuid("userSelectByEmail", email), () -> delegate.userSelectByEmail(email));
     }
+    
+    @Override
+    public User userSelectByName(String name) throws Exception {
+        return (User) cache.get(Identities.uuid("userSelectByName", name), () -> delegate.userSelectByName(name));
+    }
 
     @Override
     @SuppressWarnings("unchecked")

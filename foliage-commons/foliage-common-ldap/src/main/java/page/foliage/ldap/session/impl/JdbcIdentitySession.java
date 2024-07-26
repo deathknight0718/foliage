@@ -110,6 +110,11 @@ public class JdbcIdentitySession implements IdentitySession {
     public User userSelectByEmail(String email) throws Exception {
         return delegate.userSelectByEmail(email);
     }
+    
+    @Override
+    public User userSelectByName(String name) throws Exception {
+        return delegate.userSelectByName(name);
+    }
 
     // ------------------------------------------------------------------------
 

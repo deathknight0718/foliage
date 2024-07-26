@@ -19,11 +19,11 @@ import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.ldap.Contract;
 import page.foliage.ldap.Dashboard;
+import page.foliage.ldap.Dashboard.Builder;
 import page.foliage.ldap.Domain;
 import page.foliage.ldap.Repository;
 import page.foliage.ldap.Role;
 import page.foliage.ldap.User;
-import page.foliage.ldap.Dashboard.Builder;
 
 /**
  * 
@@ -42,6 +42,8 @@ public interface IdentitySession extends AutoCloseable {
     User userSelectById(Long id) throws Exception;
 
     User userSelectByEmail(String email) throws Exception;
+    
+    User userSelectByName(String name) throws Exception;
 
     PaginList<Repository> repositoriesSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception;
 

@@ -66,9 +66,17 @@ public class User {
         }
     }
 
-    public static User get(String email) {
+    public static User fromEmail(String email) {
         try (IdentitySession session = openSession()) {
             return session.userSelectByEmail(email);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    
+    public static User fromName(String name) {
+        try (IdentitySession session = openSession()) {
+            return session.userSelectByName(name);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }

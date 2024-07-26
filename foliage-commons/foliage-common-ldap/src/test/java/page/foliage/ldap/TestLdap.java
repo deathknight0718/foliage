@@ -64,7 +64,7 @@ public class TestLdap {
 
     @Test
     private void testContractBuild() throws Exception {
-        Contract.Builder builder = Contract.builder(StatelessAccess.get("domain1admin1@cecdat.com"));
+        Contract.Builder builder = Contract.builder(StatelessAccess.fromEmail("domain1admin1@cecdat.com"));
         builder.name("repo1contract2").domainId(800003L).repositoryId(800002001L).expiration(LocalDateTime.now().plusYears(1));
         Contract contract = builder.build();
         contract.remove();
