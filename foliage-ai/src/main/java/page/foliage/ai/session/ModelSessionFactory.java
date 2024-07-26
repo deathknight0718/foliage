@@ -76,7 +76,7 @@ public class ModelSessionFactory implements AutoCloseable {
     @Override
     public void close() throws Exception {
         synchronized (this) {
-            List<ModelSession> list = new ArrayList<>(4);
+            List<ModelSession> list = new ArrayList<>(MAX_SIZE);
             pool.drainTo(list);
             LOGGER.debug("close all object: {}", list.size());
             list.stream().forEach(ResourceUtils::safeClose);
