@@ -6,7 +6,7 @@
         <version>1.0.9-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-ldap</artifactId>
-    <name>FOLIAGE PACS LDAP</name>
+    <name>FOLIAGE COMMON LDAP</name>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
