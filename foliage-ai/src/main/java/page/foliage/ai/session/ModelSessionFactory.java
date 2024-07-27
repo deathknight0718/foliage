@@ -49,7 +49,9 @@ public class ModelSessionFactory implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelSessionFactory.class);
 
-    private static final int MAX_SIZE = 4;
+    private static final int DEFAULT_MAX_SIZE = 4;
+
+    private int size = DEFAULT_MAX_SIZE;
 
     private Path path;
 
@@ -57,9 +59,9 @@ public class ModelSessionFactory implements AutoCloseable {
 
     private OrtEnvironment environment = OrtEnvironment.getEnvironment();
 
-    private final ArrayBlockingQueue<ModelSession> pool = new ArrayBlockingQueue<>(MAX_SIZE);
-
     private final AtomicInteger count = new AtomicInteger(0);
+
+    private volatile ArrayBlockingQueue<ModelSession> pool;
 
     // ------------------------------------------------------------------------
 
@@ -76,7 +78,7 @@ public class ModelSessionFactory implements AutoCloseable {
     @Override
     public void close() throws Exception {
         synchronized (this) {
-            List<ModelSession> list = new ArrayList<>(MAX_SIZE);
+            List<ModelSession> list = new ArrayList<>(size);
             pool.drainTo(list);
             LOGGER.debug("close all object: {}", list.size());
             list.stream().forEach(ResourceUtils::safeClose);
@@ -87,9 +89,9 @@ public class ModelSessionFactory implements AutoCloseable {
 
     public ModelSession openPooledSession(int gpuId) throws Exception {
         LOGGER.debug("count of session is {}, pool size is {}", count.get(), pool.size());
-        if (count.get() < MAX_SIZE) {
+        if (count.get() < size) {
             synchronized (this) {
-                if (count.get() < MAX_SIZE) {
+                if (count.get() < size) {
                     ModelSession instance = openSession(gpuId);
                     count.incrementAndGet();
                     return new PooledSession(instance);
@@ -235,9 +237,15 @@ public class ModelSessionFactory implements AutoCloseable {
             return this;
         }
 
+        public Builder withPoolSize(int size) {
+            bean.size = size;
+            return this;
+        }
+
         public ModelSessionFactory build() {
             Preconditions.checkNotNull(bean.path);
             Preconditions.checkNotNull(bean.tokenizer);
+            bean.pool = new ArrayBlockingQueue<ModelSession>(bean.size);
             return bean;
         }
 
