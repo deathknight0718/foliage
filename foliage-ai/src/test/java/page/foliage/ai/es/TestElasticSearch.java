@@ -16,7 +16,10 @@
 package page.foliage.ai.es;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,12 +27,20 @@ import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -47,6 +58,8 @@ import page.foliage.common.util.JsonNodes;
  */
 @Test
 public class TestElasticSearch {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestElasticSearch.class);
 
     private static final String ENDPOINT = "https://portal.cecdat.dev:9200";
 
@@ -105,7 +118,17 @@ public class TestElasticSearch {
         try (ModelSession session = factory.openSession(0)) {
             try (Result result = session.run(input)) {
                 float[] embeddings = result.embeddings()[0];
-                System.err.println();
+                ObjectNode node = JsonNodes.asObject(Files.readString(spath));
+                ((ObjectNode) node.at(JsonPointer.compile("/knn/filter/bool/must/multi_match"))).set("query", TextNode.valueOf(input));
+                ((ObjectNode) node.at(JsonPointer.compile("/knn"))).set("query_vector", JsonNodes.asArray(embeddings));
+                SearchRequest.Builder builder = new SearchRequest.Builder();
+                try (InputStream is = new ByteArrayInputStream(node.toString().getBytes())) {
+                    SearchRequest request = builder.index("intents-1").withJson(is).build();
+                    SearchResponse<Intent> response = client.search(request, Intent.class);
+                    for (Hit<Intent> hit : response.hits().hits()) {
+                        LOGGER.info("hit {}", hit);
+                    }
+                }
             }
         }
     }
