@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.tokenizers;
+package page.foliage.ai.ort;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 
-import ai.djl.huggingface.tokenizers.Encoding;
-import ai.djl.huggingface.tokenizers.HuggingFaceTokenizer;
-import ai.onnxruntime.OnnxTensor;
-import ai.onnxruntime.OrtEnvironment;
-import ai.onnxruntime.OrtException;
 import page.foliage.ai.Tokenizer;
-import page.foliage.guava.common.collect.ImmutableMap;
+import page.foliage.ai.candle.CandleEncoding;
+import page.foliage.ai.candle.CandleTokenizer;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class NativeTokenizer implements Tokenizer {
+public class OrtTokenizer implements Tokenizer {
 
     // ------------------------------------------------------------------------
 
-    private HuggingFaceTokenizer delegate;
-
-    private OrtEnvironment environment = OrtEnvironment.getEnvironment();
+    private CandleTokenizer delegate;
 
     // ------------------------------------------------------------------------
 
@@ -47,20 +38,15 @@ public class NativeTokenizer implements Tokenizer {
     }
 
     @Override
-    public List<String> tokenize(String text) {
+    public String[] tokenize(String text) {
         return delegate.tokenize(text);
     }
 
     @Override
-    public Map<String, OnnxTensor> encode(String text) {
-        Encoding encoding = delegate.encode(text);
-        try {
-            ImmutableMap.Builder<String, OnnxTensor> builder = ImmutableMap.builder();
-            builder.put(INPUT_NAMES[0], OnnxTensor.createTensor(environment, new long[][] { encoding.getIds() }));
-            builder.put(INPUT_NAMES[1], OnnxTensor.createTensor(environment, new long[][] { encoding.getAttentionMask() }));
-            builder.put(INPUT_NAMES[2], OnnxTensor.createTensor(environment, new long[][] { encoding.getTypeIds() }));
-            return builder.build();
-        } catch (OrtException e) {
+    public OrtEncoding encode(String text) {
+        try (CandleEncoding encoding = delegate.encode(text)) {
+            return OrtEncoding.create(encoding);
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -69,28 +55,28 @@ public class NativeTokenizer implements Tokenizer {
 
     public static class Builder {
 
-        private HuggingFaceTokenizer.Builder builder = HuggingFaceTokenizer.builder();
+        private CandleTokenizer.Builder builder = CandleTokenizer.builder();
 
         public Builder withPath(Path path) {
-            builder.optTokenizerPath(path);
+            builder.withPath(path);
             return this;
         }
 
         public Builder withPadding(boolean padding) {
-            builder.optPadding(padding);
+            builder.withPadding(padding);
             return this;
         }
 
         public Builder withTruncation(boolean truncation) {
-            builder.optTruncation(truncation);
+            builder.withTruncation(truncation);
             return this;
         }
 
-        public NativeTokenizer build() {
-            NativeTokenizer bean = new NativeTokenizer();
+        public OrtTokenizer build() {
+            OrtTokenizer bean = new OrtTokenizer();
             try {
                 bean.delegate = builder.build();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new IllegalArgumentException(e);
             }
             return bean;

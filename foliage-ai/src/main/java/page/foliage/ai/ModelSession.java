@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.session;
+package page.foliage.ai;
 
-import java.nio.file.Path;
-
-import page.foliage.ai.Result;
+import java.io.File;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public interface SegmentSession extends AutoCloseable {
-    
-    Result run(Path path) throws Exception;
+public interface ModelSession extends AutoCloseable {
+
+    Result run(File file) throws Exception;
+
+    Result run(String text) throws Exception;
 
 }

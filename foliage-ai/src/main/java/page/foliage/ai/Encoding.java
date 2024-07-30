@@ -19,12 +19,14 @@ package page.foliage.ai;
  * 
  * @author deathknight0718@qq.com
  */
-public interface Tokenizer {
+public interface Encoding {
 
-    String[] INPUT_NAMES = new String[] { "input_ids", "attention_mask", "token_type_ids" };
+    String[] getTokens();
 
-    String[] tokenize(String text);
+    long[] getTokenIds();
 
-    Encoding encode(String text);
+    long[] getTokenTypeIds();
+
+    long[] getAttentionMask();
 
 }

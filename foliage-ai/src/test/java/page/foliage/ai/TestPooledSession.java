@@ -30,8 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
-import page.foliage.ai.session.ModelSession;
-import page.foliage.ai.session.ModelSessionFactory;
+import page.foliage.ai.ort.OrtSessionFactory;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.util.JsonNodes;
@@ -49,11 +48,11 @@ public class TestPooledSession {
 
     private static Path mpath = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
 
-    private static ModelSessionFactory factory;
+    private static OrtSessionFactory factory;
 
     @BeforeClass
     public static void beforeClass() {
-        ModelSessionFactory.Builder builder = ModelSessionFactory.builder();
+        OrtSessionFactory.Builder builder = OrtSessionFactory.builder();
         factory = builder.withDirectory(mpath).build();
         InstanceClosingCheck.hook(factory);
     }

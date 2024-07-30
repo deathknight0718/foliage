@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.func;
+package page.foliage.ai;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class SpaceFunctions {
+public class Functions {
 
     public static float[][] mean(float[][][] space, int dim) {
         int dims0 = space.length;

@@ -45,9 +45,9 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import page.foliage.ai.Intent;
+import page.foliage.ai.ModelSession;
 import page.foliage.ai.Result;
-import page.foliage.ai.session.ModelSession;
-import page.foliage.ai.session.ModelSessionFactory;
+import page.foliage.ai.ort.OrtSessionFactory;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.util.JsonNodes;
@@ -73,7 +73,7 @@ public class TestElasticSearch {
 
     private static ElasticsearchClient client;
 
-    private static ModelSessionFactory factory;
+    private static OrtSessionFactory factory;
 
     @BeforeClass
     public static void beforeClass() {
@@ -82,7 +82,7 @@ public class TestElasticSearch {
             .build();
         ElasticsearchTransport transport = new RestClientTransport(rest, new JacksonJsonpMapper());
         client = new ElasticsearchClient(transport);
-        ModelSessionFactory.Builder builder = ModelSessionFactory.builder();
+        OrtSessionFactory.Builder builder = OrtSessionFactory.builder();
         factory = builder.withDirectory(mpath).build();
         InstanceClosingCheck.hook(factory);
     }

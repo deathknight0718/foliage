@@ -8,6 +8,29 @@
     <artifactId>foliage-ai</artifactId>
     <name>FOLIAGE AI</name>
     <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.questdb</groupId>
+                <artifactId>rust-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <executions>
+                    <execution>
+                        <id>native-build</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <path>src/main/rust/native</path>
+                            <copyTo>${project.build.directory}/classes/native/lib</copyTo>
+                            <copyWithPlatformDir>true</copyWithPlatformDir>
+                            <release>true</release>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <!-- ======================================== -->
         <!-- Foliage Dependencies -->
@@ -45,11 +68,6 @@
         <!-- ======================================== -->
         <!-- Compute Dependencies -->
         <!-- ======================================== -->
-        <dependency>
-            <groupId>ai.djl.huggingface</groupId>
-            <artifactId>tokenizers</artifactId>
-            <version>0.28.0</version>
-        </dependency>
         <dependency>
             <groupId>com.microsoft.onnxruntime</groupId>
             <artifactId>onnxruntime_gpu</artifactId>

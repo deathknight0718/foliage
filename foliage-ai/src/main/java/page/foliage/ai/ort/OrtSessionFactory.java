@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.session;
+package page.foliage.ai.ort;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +32,9 @@ import org.slf4j.LoggerFactory;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
+import page.foliage.ai.Functions;
+import page.foliage.ai.ModelSession;
 import page.foliage.ai.Result;
-import page.foliage.ai.Tokenizer;
-import page.foliage.ai.func.SpaceFunctions;
-import page.foliage.ai.tokenizers.NativeTokenizer;
 import page.foliage.common.util.ResourceUtils;
 import page.foliage.guava.common.base.Preconditions;
 
@@ -43,11 +42,11 @@ import page.foliage.guava.common.base.Preconditions;
  * 
  * @author deathknight0718@qq.com
  */
-public class ModelSessionFactory implements AutoCloseable {
+public class OrtSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModelSessionFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrtSessionFactory.class);
 
     private static final int DEFAULT_MAX_SIZE = 4;
 
@@ -55,7 +54,7 @@ public class ModelSessionFactory implements AutoCloseable {
 
     private Path path;
 
-    private Tokenizer tokenizer;
+    private OrtTokenizer tokenizer;
 
     private OrtEnvironment environment = OrtEnvironment.getEnvironment();
 
@@ -65,7 +64,7 @@ public class ModelSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private ModelSessionFactory() {}
+    private OrtSessionFactory() {}
 
     // ------------------------------------------------------------------------
 
@@ -191,7 +190,7 @@ public class ModelSessionFactory implements AutoCloseable {
 
         @Override
         public float[][] embeddings() throws Exception {
-            return SpaceFunctions.mean(lastHiddenState(), 1);
+            return Functions.mean(lastHiddenState(), 1);
         }
 
     }
@@ -200,7 +199,7 @@ public class ModelSessionFactory implements AutoCloseable {
 
     public static class Builder {
 
-        private ModelSessionFactory bean = new ModelSessionFactory();
+        private OrtSessionFactory bean = new OrtSessionFactory();
 
         public Builder withDirectory(Path path) {
             return withDirectory(path.toFile());
@@ -208,9 +207,9 @@ public class ModelSessionFactory implements AutoCloseable {
 
         public Builder withDirectory(File file) {
             Preconditions.checkArgument(file.isDirectory());
+            withTokenizer(file);
             for (File children : file.listFiles()) {
                 if (children.getName().toLowerCase().endsWith(".onnx")) withModel(children);
-                if (children.getName().toLowerCase().equals("tokenizer.json")) withTokenizer(children);
             }
             return this;
         }
@@ -229,10 +228,10 @@ public class ModelSessionFactory implements AutoCloseable {
         }
 
         public Builder withTokenizer(Path path) {
-            return withTokenizer(NativeTokenizer.builder().withPath(path).build());
+            return withTokenizer(OrtTokenizer.builder().withPath(path).build());
         }
 
-        public Builder withTokenizer(Tokenizer tokenizer) {
+        public Builder withTokenizer(OrtTokenizer tokenizer) {
             bean.tokenizer = tokenizer;
             return this;
         }
@@ -242,7 +241,7 @@ public class ModelSessionFactory implements AutoCloseable {
             return this;
         }
 
-        public ModelSessionFactory build() {
+        public OrtSessionFactory build() {
             Preconditions.checkNotNull(bean.path);
             Preconditions.checkNotNull(bean.tokenizer);
             bean.pool = new ArrayBlockingQueue<ModelSession>(bean.size);

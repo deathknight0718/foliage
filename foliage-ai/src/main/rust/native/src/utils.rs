@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.session;
 
-import java.io.File;
+pub fn box_and_return_id<T: 'static>(val: T) -> i64 {
+    return Box::into_raw(Box::new(val)) as i64;
+}
 
-import page.foliage.ai.Result;
+pub fn box_select_by_id<T>(handle: i64) -> &'static mut T {
+    assert_ne!(handle, 0, "Invalid handle value");
+    let ptr = handle as *mut T;
+    return unsafe { &mut *ptr };
+}
 
-/**
- * 
- * @author deathknight0718@qq.com
- */
-public interface ModelSession extends AutoCloseable {
-
-    Result run(File file) throws Exception;
-
-    Result run(String text) throws Exception;
-
+pub fn box_delete_by_id<T: 'static>(handle: i64) {
+    unsafe {
+        let _ = Box::from_raw(handle as *mut T);
+    }
 }

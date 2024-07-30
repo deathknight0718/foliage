@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
+package page.foliage.ai.candle;
+
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public interface Tokenizer {
-
-    String[] INPUT_NAMES = new String[] { "input_ids", "attention_mask", "token_type_ids" };
-
-    String[] tokenize(String text);
-
-    Encoding encode(String text);
+public class CandleSessionFactory {
 
 }
