@@ -48,6 +48,8 @@ public class OrtSessionFactory implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrtSessionFactory.class);
 
+    private static final OrtEnvironment environment = OrtEnvironment.getEnvironment();
+
     private static final int DEFAULT_MAX_SIZE = 4;
 
     private int size = DEFAULT_MAX_SIZE;
@@ -55,8 +57,6 @@ public class OrtSessionFactory implements AutoCloseable {
     private Path path;
 
     private OrtTokenizer tokenizer;
-
-    private OrtEnvironment environment = OrtEnvironment.getEnvironment();
 
     private final AtomicInteger count = new AtomicInteger(0);
 
@@ -81,6 +81,7 @@ public class OrtSessionFactory implements AutoCloseable {
             pool.drainTo(list);
             LOGGER.debug("close all object: {}", list.size());
             list.stream().forEach(ResourceUtils::safeClose);
+            ResourceUtils.safeClose(tokenizer);
         }
     }
 
@@ -228,11 +229,11 @@ public class OrtSessionFactory implements AutoCloseable {
         }
 
         public Builder withTokenizer(Path path) {
-            return withTokenizer(OrtTokenizer.builder().withPath(path).build());
+            return withTokenizer(OrtTokenizer.builder().withPath(path));
         }
 
-        public Builder withTokenizer(OrtTokenizer tokenizer) {
-            bean.tokenizer = tokenizer;
+        public Builder withTokenizer(OrtTokenizer.Builder builder) {
+            bean.tokenizer = builder.build();
             return this;
         }
 
