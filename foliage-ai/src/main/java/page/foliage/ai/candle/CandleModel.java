@@ -50,18 +50,19 @@ public class CandleModel implements AutoCloseable {
     @Override
     public void close() throws Exception {
         LIBRARY.modelDelete(id);
+        tokenizer.close();
     }
 
     // ------------------------------------------------------------------------
 
-    public CandleTensor embeddings(String text) throws Exception {
+    public CandleResult embeddings(String text) throws Exception {
         try (CandleEncoding encoding = tokenizer.encode(text)) {
             return embeddings(encoding);
         }
     }
 
-    public CandleTensor embeddings(CandleEncoding encoding) {
-        return new CandleTensor(LIBRARY.embeddingsCreate(id, encoding.getId()));
+    public CandleResult embeddings(CandleEncoding encoding) {
+        return new CandleResult(LIBRARY.embeddingsCreate(id, encoding.getId()));
     }
 
     // ------------------------------------------------------------------------
@@ -70,13 +71,26 @@ public class CandleModel implements AutoCloseable {
 
         private CandleModel bean = new CandleModel();
 
+        private CandleTokenizer.Builder builder = CandleTokenizer.builder();
+
+        public Builder withFile(File file) {
+            return withPath(file.toPath());
+        }
+
         public Builder withPath(Path path) {
-            bean.path = path;
+            Preconditions.checkArgument(Files.isDirectory(path));
+            bean.path = path.toAbsolutePath();
+            builder.withPath(bean.path);
             return this;
         }
 
-        public Builder withFile(File file) {
-            bean.path = file.toPath();
+        public Builder withPadding(boolean padding) {
+            builder.withPadding(padding);
+            return this;
+        }
+
+        public Builder withTruncation(boolean truncation) {
+            builder.withTruncation(truncation);
             return this;
         }
 
@@ -85,14 +99,9 @@ public class CandleModel implements AutoCloseable {
             return this;
         }
 
-        public Builder withTokenizer(CandleTokenizer tokenizer) {
-            bean.tokenizer = tokenizer;
-            return this;
-        }
-
         public CandleModel build() {
             try {
-                Preconditions.checkArgument(Files.isDirectory(bean.path));
+                bean.tokenizer = builder.build();
                 bean.id = LIBRARY.modelCreate(bean.gpuId, bean.path.toAbsolutePath().toString());
                 return bean;
             } catch (Exception e) {

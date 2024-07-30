@@ -201,6 +201,8 @@ public class OrtSessionFactory implements AutoCloseable {
     public static class Builder {
 
         private OrtSessionFactory bean = new OrtSessionFactory();
+        
+        private OrtTokenizer.Builder builder;
 
         public Builder withDirectory(Path path) {
             return withDirectory(path.toFile());
@@ -220,7 +222,7 @@ public class OrtSessionFactory implements AutoCloseable {
         }
 
         public Builder withModel(Path path) {
-            bean.path = path;
+            bean.path = path.toAbsolutePath();
             return this;
         }
 
@@ -233,7 +235,7 @@ public class OrtSessionFactory implements AutoCloseable {
         }
 
         public Builder withTokenizer(OrtTokenizer.Builder builder) {
-            bean.tokenizer = builder.build();
+            this.builder = builder;
             return this;
         }
 
@@ -244,7 +246,8 @@ public class OrtSessionFactory implements AutoCloseable {
 
         public OrtSessionFactory build() {
             Preconditions.checkNotNull(bean.path);
-            Preconditions.checkNotNull(bean.tokenizer);
+            Preconditions.checkNotNull(builder);
+            bean.tokenizer = builder.build();
             bean.pool = new ArrayBlockingQueue<ModelSession>(bean.size);
             return bean;
         }

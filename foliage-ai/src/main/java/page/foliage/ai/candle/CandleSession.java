@@ -15,16 +15,44 @@
  */
 package page.foliage.ai.candle;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+import page.foliage.ai.ModelSession;
+import page.foliage.ai.Result;
+
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleSession implements AutoCloseable {
+public class CandleSession implements ModelSession {
+
+    // ------------------------------------------------------------------------
+
+    private final CandleModel model;
+
+    // ------------------------------------------------------------------------
+
+    public CandleSession(CandleModel model) {
+        this.model = model;
+    }
+
+    // ------------------------------------------------------------------------
 
     @Override
     public void close() throws Exception {
-        // TODO Auto-generated method stub
+        model.close();
+    }
 
+    @Override
+    public Result run(File file) throws Exception {
+        return run(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public Result run(String text) throws Exception {
+        return model.embeddings(text);
     }
 
 }

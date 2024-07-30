@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 
 import page.foliage.ai.candle.CandleEncoding;
 import page.foliage.ai.candle.CandleModel;
-import page.foliage.ai.candle.CandleTensor;
+import page.foliage.ai.candle.CandleResult;
 import page.foliage.ai.candle.CandleTokenizer;
 
 /**
@@ -50,12 +50,11 @@ public class TestCandle {
 
     @Test
     private void test2() throws Exception {
-        try ( //
-            CandleTokenizer tokenizer = CandleTokenizer.builder().withPath(path).build(); //
-            CandleModel model = CandleModel.builder().withPath(path).withGpuId(0).withTokenizer(tokenizer).build(); //
-        ) {
-            try (CandleTensor tensor = model.embeddings("床前明月光")) {
-                LOGGER.info(Arrays.toString(tensor.getPooledeEmbeddings()[0]));
+        try (CandleModel model = CandleModel.builder().withPath(path).withGpuId(0).build()) {
+            try (CandleResult result = model.embeddings("床前明月光")) {
+                LOGGER.info(Arrays.toString(result.lastHiddenState()[0][0]));
+                LOGGER.info(Arrays.toString(result.embeddings()[0]));
+                LOGGER.info(Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
             }
         }
     }

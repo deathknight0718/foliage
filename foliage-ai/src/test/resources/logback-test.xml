@@ -24,8 +24,8 @@
         </encoder>
     </appender>
     <logger name="org.apache" level="WARN" />
-    <logger name="page.foliage.ai" level="DEBUG" />
-    <logger name="page.foliage.session" level="DEBUG" />
+    <logger name="page.foliage.ai" level="INFO" />
+    <logger name="page.foliage.session" level="INFO" />
     <root level="WARN">
         <appender-ref ref="TEST" />
     </root>

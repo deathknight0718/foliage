@@ -15,11 +15,13 @@
  */
 package page.foliage.ai.candle;
 
+import page.foliage.ai.Result;
+
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleTensor implements AutoCloseable {
+public class CandleResult implements Result {
 
     // ------------------------------------------------------------------------
 
@@ -29,7 +31,7 @@ public class CandleTensor implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public CandleTensor(long id) {
+    public CandleResult(long id) {
         this.id = id;
     }
 
@@ -42,12 +44,20 @@ public class CandleTensor implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public long getId() {
-        return id;
+    @Override
+    public float[][][] lastHiddenState() throws Exception {
+        return (float[][][]) LIBRARY.embeddingsLastHiddenState(id);
     }
 
-    public float[][] getPooledeEmbeddings() {
+    @Override
+    public float[][] embeddings() throws Exception {
         return (float[][]) LIBRARY.embeddings(id);
+    }
+
+    // ------------------------------------------------------------------------
+
+    public long getId() {
+        return id;
     }
 
 }

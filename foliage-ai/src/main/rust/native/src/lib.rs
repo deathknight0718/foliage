@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-mod utils;
+mod util;
 
 use std::str::FromStr;
 
@@ -22,6 +22,7 @@ use candle::{Device, Tensor};
 use candle_nn::VarBuilder;
 use candle_transformers::models::bert::{BertModel, Config, DTYPE};
 
+use jni::errors::Error;
 use jni::objects::{JFloatArray, JLongArray, JObject, JObjectArray, JString, JValue, ReleaseMode};
 use jni::sys::{jboolean, jint, jlong, jobject, jsize, JNI_FALSE, JNI_TRUE};
 use jni::JNIEnv;
@@ -31,7 +32,7 @@ use tokenizers::utils::padding::{PaddingParams, PaddingStrategy};
 use tokenizers::utils::truncation::{TruncationParams, TruncationStrategy};
 use tokenizers::Tokenizer;
 
-use utils::*;
+use util::*;
 
 // ----------------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerCreate
     let data: String = env.get_string(&json).expect("Couldn't get java json data!").into();
     let tokenizer = Tokenizer::from_str(&data);
     match tokenizer {
-        Ok(out) => box_and_return_id(out),
+        Ok(out) => box_and_return_id(out).unwrap(),
         Err(err) => {
             env.throw(err.to_string()).unwrap();
             return 0;
@@ -56,13 +57,16 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerCreate
 }
 
 #[no_mangle]
-pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerDelete(_: JNIEnv, _: JObject, tokenizer_id: jlong) {
-    box_delete_by_id::<Tokenizer>(tokenizer_id);
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerDelete(mut env: JNIEnv, _: JObject, tokenizer_id: jlong) {
+    let result = box_delete_by_id::<Tokenizer>(tokenizer_id);
+    if let Err(e) = result {
+        env.throw(e.to_string()).unwrap();
+    }
 }
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerMaxLength(_: JNIEnv, _: JObject, tokenizer_id: jlong) -> jint {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let truncation = tokenizer.get_truncation();
     let mut max_length = match truncation {
         Some(val) => val.max_length as jint,
@@ -83,7 +87,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerMaxLen
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerStride(_: JNIEnv, _: JObject, tokenizer_id: jlong) -> jint {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let truncation = tokenizer.get_truncation();
     let ret = match truncation {
         Some(val) => val.stride,
@@ -94,7 +98,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerStride
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerPadToMultipleOf(_: JNIEnv, _: JObject, tokenizer_id: jlong) -> jint {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let padding = tokenizer.get_padding();
     let ret = match padding {
         Some(val) => val.pad_to_multiple_of.unwrap_or(0),
@@ -105,7 +109,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerPadToM
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerPaddingStrategy<'local>(env: JNIEnv<'local>, _: JObject, tokenizer_id: jlong) -> JString<'local> {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let padding = tokenizer.get_padding();
     let strategy = match padding {
         Some(val) => match val.strategy {
@@ -131,7 +135,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerPaddin
         0 => None,
         val => Some(val),
     };
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     if let Some(padding_params) = tokenizer.get_padding_mut() {
         padding_params.strategy = ref_strategy.unwrap();
         padding_params.pad_to_multiple_of = ref_pad_to_multiple_of;
@@ -147,13 +151,13 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerPaddin
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerPaddingDisable(_: JNIEnv, _: JObject, tokenizer_id: jlong) {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     tokenizer.with_padding(None);
 }
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerTruncationStrategy<'local>(env: JNIEnv<'local>, _: JObject, tokenizer_id: jlong) -> JString<'local> {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let truncation = tokenizer.get_truncation();
     let strategy = match truncation {
         Some(val) => val.strategy.as_ref(),
@@ -172,7 +176,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerTrunca
         "ONLY_SECOND" => Ok(TruncationStrategy::OnlySecond),
         _ => Err("strategy must be one of [longest_first, only_first, only_second]"),
     };
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     if let Some(truncation_params) = tokenizer.get_truncation_mut() {
         truncation_params.strategy = ref_strategy.unwrap();
         truncation_params.stride = truncation_stride as usize;
@@ -190,7 +194,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerTrunca
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerTruncationDisable(_: JNIEnv, _: JObject, tokenizer_id: jlong) {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let _ = tokenizer.with_truncation(None);
 }
 
@@ -198,7 +202,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenizerTrunca
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encode<'local>(mut env: JNIEnv<'local>, _: JObject, tokenizer_id: jlong, input: JString, add_special_tokens: jboolean) -> jobject {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let sequence: String = env.get_string(&input).expect("Couldn't get java string!").into();
     let input_sequence = tokenizers::InputSequence::from(sequence);
     let encoded_input = EncodeInput::Single(input_sequence);
@@ -286,13 +290,13 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encode<'local>(
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingCreate<'local>(mut env: JNIEnv<'local>, _: JObject, tokenizer_id: jlong, input: JString, add_special_tokens: jboolean) -> jlong {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let sequence: String = env.get_string(&input).expect("Couldn't get java string!").into();
     let input_sequence = tokenizers::InputSequence::from(sequence);
     let encoded_input = EncodeInput::Single(input_sequence);
     let encoding = tokenizer.encode_char_offsets(encoded_input, add_special_tokens == JNI_TRUE);
     match encoding {
-        Ok(out) => box_and_return_id(out),
+        Ok(out) => box_and_return_id(out).unwrap(),
         Err(err) => {
             env.throw(err.to_string()).unwrap();
             return 0;
@@ -301,13 +305,16 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingCreate<
 }
 
 #[no_mangle]
-pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingDelete(_: JNIEnv, _: JObject, encoding_id: jlong) {
-    box_delete_by_id::<Encoding>(encoding_id);
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingDelete(mut env: JNIEnv, _: JObject, encoding_id: jlong) {
+    let result = box_delete_by_id::<Encoding>(encoding_id);
+    if let Err(e) = result {
+        env.throw(e.to_string()).unwrap();
+    }
 }
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokensGet<'local>(mut env: JNIEnv<'local>, _: JObject, encoding_id: jlong) -> JObjectArray<'local> {
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let tokens = encoding.get_tokens();
     let len = tokens.len() as jsize;
     let array = env.new_object_array(len, "java/lang/String", JObject::null()).unwrap();
@@ -320,7 +327,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokensGet<'loca
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenIdsGet<'local>(env: JNIEnv<'local>, _: JObject, encoding_id: jlong) -> JLongArray<'local> {
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let ids = encoding.get_ids();
     let len = ids.len() as jsize;
     let mut long_ids: Vec<jlong> = Vec::new();
@@ -335,7 +342,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenIdsGet<'lo
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenTypeIdsGet<'local>(env: JNIEnv<'local>, _: JObject, encoding_id: jlong) -> JLongArray<'local> {
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let type_ids = encoding.get_type_ids();
     let len = type_ids.len() as jsize;
     let mut long_ids: Vec<jlong> = Vec::new();
@@ -349,7 +356,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenTypeIdsGet
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenWordIdsGet<'local>(env: JNIEnv<'local>, _: JObject, encoding_id: jlong) -> JLongArray<'local> {
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let word_ids = encoding.get_word_ids();
     let len = word_ids.len() as jsize;
     let mut long_ids: Vec<jlong> = Vec::new();
@@ -367,7 +374,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_tokenWordIdsGet
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_attentionMaskGet<'local>(env: JNIEnv<'local>, _: JObject, encoding_id: jlong) -> JLongArray<'local> {
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let attention_masks = encoding.get_attention_mask();
     let len = attention_masks.len() as jsize;
     let mut long_ids: Vec<jlong> = Vec::new();
@@ -381,7 +388,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_attentionMaskGe
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_specialTokenMaskGet<'local>(env: JNIEnv<'local>, _: JObject, encoding_id: jlong) -> JLongArray<'local> {
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let special_token_masks = encoding.get_special_tokens_mask();
     let len = special_token_masks.len() as jsize;
     let mut long_ids: Vec<jlong> = Vec::new();
@@ -397,7 +404,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_specialTokenMas
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_decode<'local>(mut env: JNIEnv<'local>, _: JObject, tokenizer_id: jlong, token_ids: JLongArray<'local>, skip_special_tokens: jboolean) -> JString<'local> {
-    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id);
+    let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id).unwrap();
     let long_ids = unsafe { env.get_array_elements(&token_ids, ReleaseMode::NoCopyBack) }.unwrap();
     let long_ids_ptr = long_ids.as_ptr();
     let len = long_ids.len();
@@ -425,45 +432,170 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_modelCreate<'lo
     let config: Config = serde_json::from_str(&data_config).unwrap();
     let vb = VarBuilder::from_pth(file_weights, DTYPE, &device).unwrap();
     let model = BertModel::load(vb, &config);
-    return model.map(box_and_return_id).map_err(|e| env.throw(e.to_string()).unwrap()).unwrap_or(0);
+    return model.map(box_and_return_id).map_err(|e| env.throw(e.to_string()).unwrap()).unwrap().unwrap_or(0);
 }
 
 #[no_mangle]
-pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_modelDelete(_: JNIEnv, _: JObject, model_id: jlong) {
-    box_delete_by_id::<BertModel>(model_id);
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_modelDelete(mut env: JNIEnv, _: JObject, model_id: jlong) {
+    let result = box_delete_by_id::<BertModel>(model_id);
+    if let Err(e) = result {
+        env.throw(e.to_string()).unwrap();
+    }
 }
 
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddingsCreate<'local>(mut env: JNIEnv<'local>, _: JObject, model_id: jlong, encoding_id: jlong) -> jlong {
-    let model = box_select_by_id::<BertModel>(model_id);
-    let encoding = box_select_by_id::<Encoding>(encoding_id);
+    let model = box_select_by_id::<BertModel>(model_id).unwrap();
+    let encoding = box_select_by_id::<Encoding>(encoding_id).unwrap();
     let tokens = encoding.get_ids().to_vec();
     let token_ids = Tensor::new(&tokens[..], &model.device).unwrap().unsqueeze(0).unwrap();
     let token_type_ids = token_ids.zeros_like().unwrap();
     let embeddings = model.forward(&token_ids, &token_type_ids);
-    return embeddings.map(box_and_return_id).map_err(|e| env.throw(e.to_string())).unwrap_or(0);
+    return embeddings.map(box_and_return_id).map_err(|e| env.throw(e.to_string())).unwrap().unwrap_or(0);
 }
 
 #[no_mangle]
-pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddingsDelete(_: JNIEnv, _: JObject, embeddings_id: jlong) {
-    box_delete_by_id::<Tensor>(embeddings_id);
-}
-
-#[no_mangle]
-pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddings<'local>(mut env: JNIEnv<'local>, _: JObject, embeddings_id: jlong) -> JObjectArray<'local> {
-    let embeddings = box_select_by_id::<Tensor>(embeddings_id);
-    let (_n_sentence, n_tokens, _hidden_size) = embeddings.dims3().unwrap();
-    let embeddings = (embeddings.sum(1).unwrap() / (n_tokens as f64)).unwrap();
-    let vectors: Vec<Vec<f32>> = embeddings.to_vec2::<f32>().unwrap();
-    let length = vectors.len() as jsize;
-    let float_array_class = env.find_class("[F").expect("Failed to find float array class!");
-    let jarray: JObjectArray = env.new_object_array(length, float_array_class, JObject::null()).unwrap();
-    for (i, vec) in vectors.iter().enumerate() {
-        let jvec: JFloatArray = env.new_float_array(vec.len() as jsize).unwrap();
-        env.set_float_array_region(&jvec, 0, &vec).unwrap();
-        env.set_object_array_element(&jarray, i as jsize, jvec).unwrap();
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddingsDelete(mut env: JNIEnv, _: JObject, embeddings_id: jlong) {
+    let result = box_delete_by_id::<Tensor>(embeddings_id);
+    if let Err(e) = result {
+        env.throw(e.to_string()).unwrap();
     }
-    return jarray;
+}
+
+#[no_mangle]
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddingsLastHiddenState<'local>(mut env: JNIEnv<'local>, _: JObject, embeddings_id: jlong) -> JObject<'local> {
+    let embeddings = box_select_by_id::<Tensor>(embeddings_id).unwrap();
+    let result = embeddings
+        .to_vec3()
+        .map_err(|_| Error::ThrowFailed(0)) //
+        .and_then(|vec_3d| {
+            let float_2d_class = env.find_class("[F")?;
+            let float_3d_class = env.find_class("[[F")?;
+            let array_3d: JObjectArray = env.new_object_array(vec_3d.len() as jsize, float_3d_class, JObject::null())?;
+            for (i_2d, vec_2d) in vec_3d.iter().enumerate() {
+                let array_2d: JObjectArray = env.new_object_array(vec_2d.len() as jsize, &float_2d_class, JObject::null())?;
+                for (i_1d, vec_1d) in vec_2d.iter().enumerate() {
+                    let array_1d: JFloatArray = env.new_float_array(vec_1d.len() as jsize)?;
+                    env.set_float_array_region(&array_1d, 0, &vec_1d)?;
+                    env.set_object_array_element(&array_2d, i_1d as jsize, array_1d)?;
+                }
+                env.set_object_array_element(&array_3d, i_2d as jsize, array_2d)?;
+            }
+            return Ok(array_3d);
+        });
+    match result {
+        Ok(out) => JObject::from(out),
+        Err(err) => {
+            env.throw(err.to_string()).unwrap();
+            return JObject::null();
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddings<'local>(mut env: JNIEnv<'local>, _: JObject, embeddings_id: jlong) -> JObject<'local> {
+    let embeddings = box_select_by_id::<Tensor>(embeddings_id).unwrap();
+    let result = embeddings
+        .dims3()
+        .and_then(|(_n_sentence, n_tokens, _hidden_size)| {
+            let mean_pool = (embeddings.sum(1)? / (n_tokens as f64))?;
+            let vec_2d: Vec<Vec<f32>> = mean_pool.to_vec2::<f32>()?;
+            return Ok(vec_2d);
+        })
+        .map_err(|_| Error::ThrowFailed(0))
+        .and_then(|vectors| {
+            let len_2d = vectors.len() as jsize;
+            let float_2d_class = env.find_class("[F")?;
+            let array_2d: JObjectArray = env.new_object_array(len_2d, float_2d_class, JObject::null())?;
+            for (i_id, vec_1d) in vectors.iter().enumerate() {
+                let array_1d: JFloatArray = env.new_float_array(vec_1d.len() as jsize)?;
+                env.set_float_array_region(&array_1d, 0, &vec_1d)?;
+                env.set_object_array_element(&array_2d, i_id as jsize, array_1d)?;
+            }
+            return Ok(array_2d);
+        });
+    match result {
+        Ok(out) => JObject::from(out),
+        Err(err) => {
+            env.throw(err.to_string()).unwrap();
+            return JObject::null();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+    use candle::Tensor;
+    use candle::{Device, Error};
+    use candle_nn::VarBuilder;
+    use candle_transformers::models::bert::{BertModel, Config, DTYPE};
+    use tokenizers::Tokenizer;
+
+    use crate::{box_and_return_id, box_delete_by_id};
+
+    fn model_create(gpu_id: i32, path: String) -> Result<BertModel, Error> {
+        let device = if gpu_id >= 0 { Device::new_cuda(gpu_id as usize)? } else { Device::Cpu };
+        let file_config = format!("{}/config.json", path);
+        let file_weights = format!("{}/pytorch_model.bin", path);
+        let data_config = std::fs::read_to_string(file_config).unwrap();
+        let config: Config = serde_json::from_str(&data_config).unwrap();
+        let vb = VarBuilder::from_pth(file_weights, DTYPE, &device).unwrap();
+        return BertModel::load(vb, &config);
+    }
+
+    #[test]
+    fn it_works_batch() {
+        let result = model_create(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2".to_string());
+        assert!(result.is_ok());
+        let model = result.expect("Couldn't create model!");
+        let tokenizer = Tokenizer::from_file("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2/tokenizer.json").unwrap();
+        let sentences = ["床前明月光", "举头望明月"];
+        let tokens = tokenizer.encode_batch(sentences.to_vec(), true).unwrap();
+        let token_ids = tokens.iter().map(|tokens| Ok(Tensor::new(tokens.get_ids().to_vec().as_slice(), &model.device)?)).collect::<Result<Vec<_>>>().unwrap();
+        let token_ids = Tensor::stack(&token_ids, 0).unwrap();
+        let token_type_ids = token_ids.zeros_like().unwrap();
+        let embeddings = model.forward(&token_ids, &token_type_ids).unwrap();
+        let (_n_sentence, n_tokens, _hidden_size) = embeddings.dims3().unwrap();
+        let embeddings = (embeddings.sum(1).unwrap() / (n_tokens as f64)).unwrap();
+        println!("pooled embeddings {:?}", embeddings.to_vec2::<f32>());
+    }
+
+    #[test]
+    fn it_works_single() {
+        let result = model_create(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2".to_string());
+        assert!(result.is_ok());
+        let model = result.expect("Couldn't create model!");
+        let tokenizer = Tokenizer::from_file("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2/tokenizer.json").unwrap();
+        let tokens = tokenizer.encode("床前明月光", true).unwrap().get_ids().to_vec();
+        let token_ids = Tensor::new(&tokens[..], &model.device).unwrap().unsqueeze(0).unwrap();
+        let token_type_ids = token_ids.zeros_like().unwrap();
+        let embeddings = model.forward(&token_ids, &token_type_ids).unwrap();
+        let (_n_sentence, n_tokens, _hidden_size) = embeddings.dims3().unwrap();
+        let embeddings = (embeddings.sum(1).unwrap() / (n_tokens as f64)).unwrap();
+        println!("embeddings {:?}", embeddings.to_vec2::<f32>());
+    }
+
+    #[test]
+    fn it_works() {
+        let result = model_create(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2".to_string());
+        assert!(result.is_ok());
+        let model = result.expect("Couldn't create model!");
+        let tokenizer = Tokenizer::from_file("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2/tokenizer.json").unwrap();
+        let tokens = tokenizer.encode("床前明月光", true).unwrap().get_ids().to_vec();
+        let token_ids = Tensor::new(&tokens[..], &model.device).unwrap().unsqueeze(0).unwrap();
+        let token_type_ids = token_ids.zeros_like().unwrap();
+        let embeddings = model.forward(&token_ids, &token_type_ids).unwrap();
+        println!("embeddings {:?}", embeddings.to_vec3::<f32>());
+    }
+
+    #[test]
+    fn it_works_point() {
+        let result: BertModel = model_create(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2".to_string()).unwrap();
+        let pointer = box_and_return_id(result).unwrap();
+        box_delete_by_id::<BertModel>(pointer).unwrap();
+        box_delete_by_id::<BertModel>(pointer).expect("test");
+    }
+}

@@ -133,6 +133,8 @@ public class CandleLibrary {
     
     public native void embeddingsDelete(long embeddingsId);
     
-    public native Object[] embeddings(long embeddingsId);
+    public native Object embeddingsLastHiddenState(long embeddingsId);
+    
+    public native Object embeddings(long embeddingsId);
 
 }

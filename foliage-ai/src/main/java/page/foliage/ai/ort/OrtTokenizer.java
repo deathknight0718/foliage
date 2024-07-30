@@ -25,7 +25,7 @@ import page.foliage.ai.candle.CandleTokenizer;
  * 
  * @author deathknight0718@qq.com
  */
-public class OrtTokenizer implements Tokenizer {
+public class OrtTokenizer implements Tokenizer, AutoCloseable {
 
     // ------------------------------------------------------------------------
 
@@ -49,6 +49,13 @@ public class OrtTokenizer implements Tokenizer {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    // ------------------------------------------------------------------------
+
+    @Override
+    public void close() throws Exception {
+        delegate.close();
     }
 
     // ------------------------------------------------------------------------

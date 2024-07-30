@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
+import page.foliage.ai.candle.CandleSessionFactory;
 import page.foliage.ai.ort.OrtSessionFactory;
-import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.util.JsonNodes;
 
@@ -48,41 +49,71 @@ public class TestPooledSession {
 
     private static Path mpath = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
 
-    private static OrtSessionFactory factory;
+    private static CandleSessionFactory factory1;
+
+    private static OrtSessionFactory factory2;
 
     @BeforeClass
     public static void beforeClass() {
-        OrtSessionFactory.Builder builder = OrtSessionFactory.builder();
-        factory = builder.withDirectory(mpath).build();
-        InstanceClosingCheck.hook(factory);
+        factory1 = CandleSessionFactory.builder().withPath(mpath).withGpuId(0).build();
+        InstanceClosingCheck.hook(factory1);
+        factory2 = OrtSessionFactory.builder().withDirectory(mpath).build();
+        InstanceClosingCheck.hook(factory2);
     }
 
     @Test
-    public void testMulti() {
+    public void testMulti1() {
         Multi.createFrom().items(1, 2, 3, 4, 5, 6) //
             .onItem() //
-            .transformToUniAndMerge(i -> Uni.createFrom().item(() -> consume(i)).runSubscriptionOn(Infrastructure.getDefaultExecutor())) //
+            .transformToUniAndMerge(i -> Uni.createFrom().item(() -> consume1(i)).runSubscriptionOn(Infrastructure.getDefaultExecutor())) //
             .collect().asList().await().indefinitely();
     }
 
-    private static boolean consume(int i) {
+    private static boolean consume1(int i) {
         try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
             String line = null;
-            while ((line = reader.readLine()) != null) {
+            int index = 0;
+            while ((line = reader.readLine()) != null && index < 100) {
                 JsonNode node = JsonNodes.asNode(line);
-                Intent.Builder builder = Intent.builder();
-                builder.withId(Identities.uuid());
-                builder.withInstruction(node.path("question").asText());
-                builder.withContent(node.path("answer").asText());
-                try (ModelSession session = factory.openPooledSession(0)) {
-                    LOGGER.info("pooled session opened");
+                try (ModelSession session = factory1.openPooledSession(0)) {
                     try (Result result = session.run(node.path("question").asText())) {
-                        builder.withInstructionEmbeddings(result.embeddings()[0]);
+                        LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
                     }
                     try (Result result = session.run(node.path("answer").asText())) {
-                        builder.withContentEmbeddings(result.embeddings()[0]);
+                        LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
                     }
                 }
+                index++;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Test
+    public void testMulti2() {
+        Multi.createFrom().items(1, 2, 3, 4, 5, 6) //
+            .onItem() //
+            .transformToUniAndMerge(i -> Uni.createFrom().item(() -> consume2(i)).runSubscriptionOn(Infrastructure.getDefaultExecutor())) //
+            .collect().asList().await().indefinitely();
+    }
+
+    private static boolean consume2(int i) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
+            String line = null;
+            int index = 0;
+            while ((line = reader.readLine()) != null && index < 100) {
+                JsonNode node = JsonNodes.asNode(line);
+                try (ModelSession session = factory2.openPooledSession(0)) {
+                    try (Result result = session.run(node.path("question").asText())) {
+                        LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
+                    }
+                    try (Result result = session.run(node.path("answer").asText())) {
+                        LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
+                    }
+                }
+                index++;
             }
         } catch (Exception e) {
             return false;
