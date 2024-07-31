@@ -16,6 +16,7 @@
 package page.foliage.ai.candle;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import page.foliage.ai.Tokenizer;
 
@@ -62,6 +63,10 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
     @Override
     public CandleEncoding encode(String text) {
         return new CandleEncoding(LIBRARY.encodingCreate(id, text, true));
+    }
+
+    public CandleEncodingVector encodes(String[] texts) {
+        return new CandleEncodingVector(LIBRARY.encodingsCreate(id, texts, true));
     }
 
     // ------------------------------------------------------------------------

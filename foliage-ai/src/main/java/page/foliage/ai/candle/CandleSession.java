@@ -54,5 +54,9 @@ public class CandleSession implements ModelSession {
     public Result run(String text) throws Exception {
         return model.embeddings(text);
     }
+    
+    public Result run(String[] texts) throws Exception {
+        return model.embeddings(texts);
+    }
 
 }

@@ -101,9 +101,13 @@ public class CandleLibrary {
 
     // ------------------------------------------------------------------------
 
-    public native long encodingCreate(long tokenizerId, String text, boolean addSpecialTokens);
+    public native long encodingCreate(long tokenizerId, String input, boolean addSpecialTokens);
+
+    public native long encodingsCreate(long tokenizerId, String[] inputs, boolean addSpecialTokens);
 
     public native void encodingDelete(long encodingId);
+
+    public native void encodingsDelete(long encodingsId);
 
     // ------------------------------------------------------------------------
 
@@ -124,17 +128,19 @@ public class CandleLibrary {
     public native String decode(long tokenizerId, long[] tokenIds, boolean addSpecialTokens);
 
     // ------------------------------------------------------------------------
-    
+
     public native long modelCreate(int gpuId, String path);
-    
+
     public native void modelDelete(long modelId);
-    
+
     public native long embeddingsCreate(long modelId, long encodingId);
-    
+
+    public native long embeddingsCreateInBatch(long modelId, long encodingsId);
+
     public native void embeddingsDelete(long embeddingsId);
-    
-    public native Object embeddingsLastHiddenState(long embeddingsId);
-    
-    public native Object embeddings(long embeddingsId);
+
+    public native float[][][] embeddingsLastHiddenState(long embeddingsId);
+
+    public native float[][] embeddings(long embeddingsId);
 
 }

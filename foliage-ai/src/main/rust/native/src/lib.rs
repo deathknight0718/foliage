@@ -51,6 +51,9 @@ pub enum Error {
 
     #[error("Error! operation failed: ENUM")]
     ENUM(),
+
+    #[error("Error! operation failed: MODEL")]
+    MODEL(),
 }
 
 // ----------------------------------------------------------------------------
@@ -234,8 +237,28 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingCreate<
         let sequence: String = env.get_string(&input)?.into();
         let encode_sequence = EncodeInput::Single(tokenizers::InputSequence::from(sequence));
         let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id)?;
-        let encoding = tokenizer.encode_char_offsets(encode_sequence, add_special_tokens == JNI_TRUE).unwrap();
+        let encoding = tokenizer.encode_char_offsets(encode_sequence, add_special_tokens == JNI_TRUE).map_err(|_| Error::MODEL())?;
         return box_and_return_id(encoding);
+    })();
+    result.unwrap_or_else(|e| {
+        env.throw(e.to_string()).unwrap();
+        return 0;
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingsCreate<'local>(mut env: JNIEnv<'local>, _: JObject, tokenizer_id: jlong, inputs: JObjectArray, add_special_tokens: jboolean) -> jlong {
+    let result: Result<jlong, Error> = (|| {
+        let tokenizer = box_select_by_id::<Tokenizer>(tokenizer_id)?;
+        let len = env.get_array_length(&inputs)?;
+        let mut vector: Vec<String> = Vec::new();
+        for i in 0..len {
+            let item = env.get_object_array_element(&inputs, i)?.into();
+            let value: String = env.get_string(&item)?.into();
+            vector.push(value);
+        }
+        let encodings = tokenizer.encode_batch_char_offsets(vector, add_special_tokens == JNI_TRUE).map_err(|_| Error::MODEL())?;
+        return Ok(box_and_return_id(encodings)?);
     })();
     result.unwrap_or_else(|e| {
         env.throw(e.to_string()).unwrap();
@@ -246,6 +269,13 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingCreate<
 #[no_mangle]
 pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingDelete(mut env: JNIEnv, _: JObject, encoding_id: jlong) {
     if let Err(e) = box_delete_by_id::<Encoding>(encoding_id) {
+        env.throw(e.to_string()).unwrap();
+    }
+}
+
+#[no_mangle]
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_encodingsDelete(mut env: JNIEnv, _: JObject, encodings_id: jlong) {
+    if let Err(e) = box_delete_by_id::<Vec<Encoding>>(encodings_id) {
         env.throw(e.to_string()).unwrap();
     }
 }
@@ -390,7 +420,7 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_decode<'local>(
                 decode_ids.push(*val as u32);
             }
         }
-        let decoding: String = tokenizer.decode(&*decode_ids, skip_special_tokens == JNI_TRUE).unwrap();
+        let decoding: String = tokenizer.decode(&*decode_ids, skip_special_tokens == JNI_TRUE).map_err(|_| Error::MODEL())?;
         return Ok(env.new_string(&decoding)?);
     })();
     result.unwrap_or_else(|e| {
@@ -433,8 +463,26 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddingsCreat
         let tokens = encoding.get_ids().to_vec();
         let token_ids = Tensor::new(&tokens[..], &model.device)?.unsqueeze(0)?;
         let token_type_ids = token_ids.zeros_like()?;
-        let embeddings = model.forward(&token_ids, &token_type_ids)?;
-        return box_and_return_id(embeddings);
+        return box_and_return_id(model.forward(&token_ids, &token_type_ids)?);
+    })();
+    result.unwrap_or_else(|e| {
+        env.throw(e.to_string()).unwrap();
+        return 0;
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddingsCreateInBatch<'local>(mut env: JNIEnv<'local>, _: JObject, model_id: jlong, encodings_id: jlong) -> jlong {
+    let result: Result<jlong, Error> = (|| {
+        let model = box_select_by_id::<BertModel>(model_id)?;
+        let encodings: &mut Vec<Encoding> = box_select_by_id::<Vec<Encoding>>(encodings_id)?;
+        let mut token_ids: Vec<Tensor> = Vec::new();
+        for (_, encoding) in encodings.iter().enumerate() {
+            token_ids.push(Tensor::new(encoding.get_ids().to_vec().as_slice(), &model.device)?)
+        }
+        let token_ids = Tensor::stack(&token_ids, 0)?;
+        let token_type_ids = token_ids.zeros_like()?;
+        return box_and_return_id(model.forward(&token_ids, &token_type_ids)?);
     })();
     result.unwrap_or_else(|e| {
         env.throw(e.to_string()).unwrap();
@@ -501,9 +549,10 @@ pub extern "system" fn Java_page_foliage_ai_candle_CandleLibrary_embeddings<'loc
 
 #[cfg(test)]
 mod tests {
+    use crate::Error;
     use anyhow::Result;
+    use candle::Device;
     use candle::Tensor;
-    use candle::{Device, Error};
     use candle_nn::VarBuilder;
     use candle_transformers::models::bert::{BertModel, Config, DTYPE};
     use tokenizers::Tokenizer;
@@ -514,10 +563,10 @@ mod tests {
         let device = if gpu_id >= 0 { Device::new_cuda(gpu_id as usize)? } else { Device::Cpu };
         let file_config = format!("{}/config.json", path);
         let file_weights = format!("{}/pytorch_model.bin", path);
-        let data_config = std::fs::read_to_string(file_config).unwrap();
-        let config: Config = serde_json::from_str(&data_config).unwrap();
-        let vb = VarBuilder::from_pth(file_weights, DTYPE, &device).unwrap();
-        return BertModel::load(vb, &config);
+        let data_config = std::fs::read_to_string(file_config)?;
+        let config: Config = serde_json::from_str(&data_config)?;
+        let vb = VarBuilder::from_pth(file_weights, DTYPE, &device)?;
+        return Ok(BertModel::load(vb, &config)?);
     }
 
     #[test]

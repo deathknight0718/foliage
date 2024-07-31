@@ -61,8 +61,18 @@ public class CandleModel implements AutoCloseable {
         }
     }
 
+    public CandleResult embeddings(String[] texts) throws Exception {
+        try (CandleEncodingVector vector = tokenizer.encodes(texts)) {
+            return embeddings(vector);
+        }
+    }
+
     public CandleResult embeddings(CandleEncoding encoding) {
         return new CandleResult(LIBRARY.embeddingsCreate(id, encoding.getId()));
+    }
+
+    public CandleResult embeddings(CandleEncodingVector vector) {
+        return new CandleResult(LIBRARY.embeddingsCreateInBatch(id, vector.getId()));
     }
 
     // ------------------------------------------------------------------------

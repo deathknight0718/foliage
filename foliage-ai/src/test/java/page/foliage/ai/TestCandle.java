@@ -52,9 +52,21 @@ public class TestCandle {
     private void test2() throws Exception {
         try (CandleModel model = CandleModel.builder().withPath(path).withGpuId(0).build()) {
             try (CandleResult result = model.embeddings("床前明月光")) {
-                LOGGER.info(Arrays.toString(result.lastHiddenState()[0][0]));
-                LOGGER.info(Arrays.toString(result.embeddings()[0]));
-                LOGGER.info(Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
+                LOGGER.info("lastHiddenState [0][0]: {}", Arrays.toString(result.lastHiddenState()[0][0]));
+                LOGGER.info("embeddings [0]: {}", Arrays.toString(result.embeddings()[0]));
+                LOGGER.info("java embeddings [0]: {}", Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
+            }
+            try (CandleResult result = model.embeddings("举头望明月")) {
+                LOGGER.info("lastHiddenState [0][0]: {}", Arrays.toString(result.lastHiddenState()[0][0]));
+                LOGGER.info("embeddings [0]: {}", Arrays.toString(result.embeddings()[0]));
+                LOGGER.info("java embeddings [0]: {}", Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
+            }
+            try (CandleResult result = model.embeddings(new String[] { "床前明月光", "举头望明月" })) {
+                LOGGER.info("lastHiddenState [0][0]: {}", Arrays.toString(result.lastHiddenState()[0][0]));
+                LOGGER.info("embeddings [0]: {}", Arrays.toString(result.embeddings()[0]));
+                LOGGER.info("embeddings [1]: {}", Arrays.toString(result.embeddings()[1]));
+                LOGGER.info("java embeddings [0]: {}", Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
+                LOGGER.info("java embeddings [1]: {}", Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[1]));
             }
         }
     }
