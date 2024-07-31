@@ -15,7 +15,6 @@
  */
 package page.foliage.ai.candle;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import page.foliage.ai.Tokenizer;
@@ -78,7 +77,7 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
         private CandleTokenizer bean = new CandleTokenizer();
 
         public Builder withPath(Path path) {
-            bean.path = path.resolve("tokenizer.json");
+            bean.path = path.resolve("tokenizer.json").toAbsolutePath();
             return this;
         }
 
@@ -94,7 +93,7 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
 
         public CandleTokenizer build() {
             try {
-                bean.id = LIBRARY.tokenizerCreate(Files.readString(bean.path));
+                bean.id = LIBRARY.tokenizerCreate(bean.path.toString());
                 int maxLength = LIBRARY.tokenizerMaxLength(bean.id);
                 if (bean.padding) LIBRARY.tokenizerPaddingUpdate(bean.id, maxLength, "", 0);
                 if (bean.truncation) LIBRARY.tokenizerTruncationUpdate(bean.id, maxLength, null, 0);

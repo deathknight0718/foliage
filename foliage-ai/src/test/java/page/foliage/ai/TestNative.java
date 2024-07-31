@@ -15,7 +15,6 @@
  */
 package page.foliage.ai;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -44,7 +43,7 @@ public class TestNative {
 
     @Test
     private void test1() throws Exception {
-        long tokenizerId = library.tokenizerCreate(Files.readString(tpath));
+        long tokenizerId = library.tokenizerCreate(tpath.toString());
         Assert.assertTrue(tokenizerId > 0L);
         Assert.assertTrue(library.isCudaAvailable());
         System.err.println(library.tokenizerMaxLength(tokenizerId));
@@ -70,7 +69,7 @@ public class TestNative {
     @Test
     private void test2() throws Exception {
         long modelId = library.modelCreate(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
-        long tokenizerId = library.tokenizerCreate(Files.readString(tpath));
+        long tokenizerId = library.tokenizerCreate(tpath.toString());
         long encodingId = library.encodingCreate(tokenizerId, "床前明月光", true);
         long embeddingsId = library.embeddingsCreate(modelId, encodingId);
         float[][] embeddings = (float[][]) library.embeddings(embeddingsId);
