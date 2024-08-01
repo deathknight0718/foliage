@@ -13,8 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-mod models;
-mod utils;
+package page.foliage.ai.bert;
 
-pub use models::*;
-pub use utils::*;
+/**
+ * 
+ * @author deathknight0718@qq.com
+ */
+public interface BertEncoding {
+
+    String[] getTokens();
+
+    long[] getTokenIds();
+
+    long[] getTokenTypeIds();
+
+    long[] getAttentionMask();
+
+}

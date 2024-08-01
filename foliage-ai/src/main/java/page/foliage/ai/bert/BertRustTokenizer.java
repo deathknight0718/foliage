@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.candle;
+package page.foliage.ai.bert;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-
-import page.foliage.ai.Tokenizer;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleTokenizer implements Tokenizer, AutoCloseable {
+public class BertRustTokenizer implements BertTokenizer, AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private final static CandleLibrary LIBRARY = CandleLibrary.instance();
+    private final static BertRustLibrary LIBRARY = BertRustLibrary.instance();
 
     private long id;
 
@@ -38,7 +35,7 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private CandleTokenizer() {}
+    private BertRustTokenizer() {}
 
     // ------------------------------------------------------------------------
 
@@ -61,12 +58,12 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
     }
 
     @Override
-    public CandleEncoding encode(String text) {
-        return new CandleEncoding(LIBRARY.encodingCreate(id, text, true));
+    public BertRustEncoding encode(String text) {
+        return new BertRustEncoding(LIBRARY.encodingCreate(id, text, true));
     }
 
-    public CandleEncodingVector encodes(String[] texts) {
-        return new CandleEncodingVector(LIBRARY.encodingsCreate(id, texts, true));
+    public BertRustEncodingVector encodes(String[] texts) {
+        return new BertRustEncodingVector(LIBRARY.encodingsCreate(id, texts, true));
     }
 
     // ------------------------------------------------------------------------
@@ -79,7 +76,7 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
 
     public static class Builder {
 
-        private CandleTokenizer bean = new CandleTokenizer();
+        private BertRustTokenizer bean = new BertRustTokenizer();
 
         public Builder withPath(Path path) {
             bean.path = path.resolve("tokenizer.json").toAbsolutePath();
@@ -96,7 +93,7 @@ public class CandleTokenizer implements Tokenizer, AutoCloseable {
             return this;
         }
 
-        public CandleTokenizer build() {
+        public BertRustTokenizer build() {
             try {
                 bean.id = LIBRARY.tokenizerCreate(bean.path.toString());
                 int maxLength = LIBRARY.tokenizerMaxLength(bean.id);

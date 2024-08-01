@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.candle;
-
-import page.foliage.ai.Encoding;
+package page.foliage.ai.bert;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleEncoding implements Encoding, AutoCloseable {
+public class BertRustEncoding implements BertEncoding, AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private final static CandleLibrary LIBRARY = CandleLibrary.instance();
+    private final static BertRustLibrary LIBRARY = BertRustLibrary.instance();
 
     private final long id;
 
     // ------------------------------------------------------------------------
 
-    public CandleEncoding(long id) {
+    public BertRustEncoding(long id) {
         this.id = id;
     }
 

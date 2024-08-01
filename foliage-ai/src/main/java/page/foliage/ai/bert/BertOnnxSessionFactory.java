@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.ort;
+package page.foliage.ai.bert;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +33,6 @@ import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
 import page.foliage.ai.Functions;
-import page.foliage.ai.ModelSession;
-import page.foliage.ai.Result;
 import page.foliage.common.util.ResourceUtils;
 import page.foliage.guava.common.base.Preconditions;
 
@@ -42,11 +40,11 @@ import page.foliage.guava.common.base.Preconditions;
  * 
  * @author deathknight0718@qq.com
  */
-public class OrtSessionFactory implements AutoCloseable {
+public class BertOnnxSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrtSessionFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BertOnnxSessionFactory.class);
 
     private static final OrtEnvironment environment = OrtEnvironment.getEnvironment();
 
@@ -56,15 +54,15 @@ public class OrtSessionFactory implements AutoCloseable {
 
     private Path path;
 
-    private OrtTokenizer tokenizer;
+    private BertOnnxTokenizer tokenizer;
 
     private final AtomicInteger count = new AtomicInteger(0);
 
-    private volatile ArrayBlockingQueue<ModelSession> pool;
+    private volatile ArrayBlockingQueue<BertModelSession> pool;
 
     // ------------------------------------------------------------------------
 
-    private OrtSessionFactory() {}
+    private BertOnnxSessionFactory() {}
 
     // ------------------------------------------------------------------------
 
@@ -77,7 +75,7 @@ public class OrtSessionFactory implements AutoCloseable {
     @Override
     public void close() throws Exception {
         synchronized (this) {
-            List<ModelSession> list = new ArrayList<>(size);
+            List<BertModelSession> list = new ArrayList<>(size);
             pool.drainTo(list);
             LOGGER.debug("close all object: {}", list.size());
             list.stream().forEach(ResourceUtils::safeClose);
@@ -87,12 +85,12 @@ public class OrtSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public ModelSession openPooledSession(int gpuId) throws Exception {
+    public BertModelSession openPooledSession(int gpuId) throws Exception {
         LOGGER.debug("count of session is {}, pool size is {}", count.get(), pool.size());
         if (count.get() < size) {
             synchronized (this) {
                 if (count.get() < size) {
-                    ModelSession instance = openSession(gpuId);
+                    BertModelSession instance = openSession(gpuId);
                     count.incrementAndGet();
                     return new PooledSession(instance);
                 }
@@ -103,14 +101,14 @@ public class OrtSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public ModelSession openSession(int gpuId) throws Exception {
+    public BertModelSession openSession(int gpuId) throws Exception {
         OrtSession.SessionOptions options = new OrtSession.SessionOptions();
         options.addCUDA(0);
         OrtSession session = environment.createSession(path.toString(), options);
         return new InternalSession(options, session);
     }
 
-    public ModelSession openSession() throws Exception {
+    public BertModelSession openSession() throws Exception {
         OrtSession.SessionOptions options = new OrtSession.SessionOptions();
         OrtSession session = environment.createSession(path.toString(), options);
         return new InternalSession(options, session);
@@ -118,11 +116,11 @@ public class OrtSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public class PooledSession implements ModelSession {
+    public class PooledSession implements BertModelSession {
 
-        private final ModelSession delegate;
+        private final BertModelSession delegate;
 
-        public PooledSession(ModelSession delegate) {
+        public PooledSession(BertModelSession delegate) {
             this.delegate = delegate;
         }
 
@@ -131,11 +129,11 @@ public class OrtSessionFactory implements AutoCloseable {
             pool.put(delegate);
         }
 
-        public Result run(File file) throws Exception {
+        public BertResult run(File file) throws Exception {
             return delegate.run(file);
         }
 
-        public Result run(String text) throws Exception {
+        public BertResult run(String text) throws Exception {
             return delegate.run(text);
         }
 
@@ -143,7 +141,7 @@ public class OrtSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public class InternalSession implements ModelSession {
+    public class InternalSession implements BertModelSession {
 
         private final OrtSession.SessionOptions options;
 
@@ -171,7 +169,7 @@ public class OrtSessionFactory implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public static class InternalResult implements Result {
+    public static class InternalResult implements BertResult {
 
         private final ai.onnxruntime.OrtSession.Result delegate;
 
@@ -200,9 +198,9 @@ public class OrtSessionFactory implements AutoCloseable {
 
     public static class Builder {
 
-        private OrtSessionFactory bean = new OrtSessionFactory();
+        private BertOnnxSessionFactory bean = new BertOnnxSessionFactory();
         
-        private OrtTokenizer.Builder builder;
+        private BertOnnxTokenizer.Builder builder;
 
         public Builder withDirectory(Path path) {
             return withDirectory(path.toFile());
@@ -231,10 +229,10 @@ public class OrtSessionFactory implements AutoCloseable {
         }
 
         public Builder withTokenizer(Path path) {
-            return withTokenizer(OrtTokenizer.builder().withPath(path));
+            return withTokenizer(BertOnnxTokenizer.builder().withPath(path));
         }
 
-        public Builder withTokenizer(OrtTokenizer.Builder builder) {
+        public Builder withTokenizer(BertOnnxTokenizer.Builder builder) {
             this.builder = builder;
             return this;
         }
@@ -244,11 +242,11 @@ public class OrtSessionFactory implements AutoCloseable {
             return this;
         }
 
-        public OrtSessionFactory build() {
+        public BertOnnxSessionFactory build() {
             Preconditions.checkNotNull(bean.path);
             Preconditions.checkNotNull(builder);
             bean.tokenizer = builder.build();
-            bean.pool = new ArrayBlockingQueue<ModelSession>(bean.size);
+            bean.pool = new ArrayBlockingQueue<BertModelSession>(bean.size);
             return bean;
         }
 

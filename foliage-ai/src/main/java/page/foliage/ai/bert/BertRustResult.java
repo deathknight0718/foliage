@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.candle;
+package page.foliage.ai.bert;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleEncodingVector implements AutoCloseable {
+public class BertRustResult implements BertResult {
 
     // ------------------------------------------------------------------------
 
-    private final static CandleLibrary LIBRARY = CandleLibrary.instance();
+    private final static BertRustLibrary LIBRARY = BertRustLibrary.instance();
 
     private final long id;
 
     // ------------------------------------------------------------------------
 
-    public CandleEncodingVector(long id) {
+    public BertRustResult(long id) {
         this.id = id;
     }
 
@@ -37,7 +37,19 @@ public class CandleEncodingVector implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        LIBRARY.encodingsDelete(id);
+        LIBRARY.embeddingsDelete(id);
+    }
+
+    // ------------------------------------------------------------------------
+
+    @Override
+    public float[][][] lastHiddenState() throws Exception {
+        return LIBRARY.embeddingsLastHiddenState(id);
+    }
+
+    @Override
+    public float[][] embeddings() throws Exception {
+        return LIBRARY.embeddings(id);
     }
 
     // ------------------------------------------------------------------------

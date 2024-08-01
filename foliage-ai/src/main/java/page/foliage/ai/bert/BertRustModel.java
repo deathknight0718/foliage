@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.candle;
+package page.foliage.ai.bert;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -25,11 +25,17 @@ import page.foliage.guava.common.base.Preconditions;
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleModel implements AutoCloseable {
+public class BertRustModel implements AutoCloseable {
+
+    // ------------------------------------------------------------------------
+    
+    public final static String MODE_PT = "PT";
+    
+    public final static String MODE_ST = "ST";
 
     // ------------------------------------------------------------------------
 
-    private final static CandleLibrary LIBRARY = CandleLibrary.instance();
+    private final static BertRustLibrary LIBRARY = BertRustLibrary.instance();
 
     private long id;
 
@@ -37,7 +43,9 @@ public class CandleModel implements AutoCloseable {
 
     private Path path;
 
-    private CandleTokenizer tokenizer;
+    private String mode = MODE_PT;
+
+    private BertRustTokenizer tokenizer;
 
     // ------------------------------------------------------------------------
 
@@ -55,33 +63,33 @@ public class CandleModel implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    public CandleResult embeddings(String text) throws Exception {
-        try (CandleEncoding encoding = tokenizer.encode(text)) {
+    public BertRustResult embeddings(String text) throws Exception {
+        try (BertRustEncoding encoding = tokenizer.encode(text)) {
             return embeddings(encoding);
         }
     }
 
-    public CandleResult embeddings(String[] texts) throws Exception {
-        try (CandleEncodingVector vector = tokenizer.encodes(texts)) {
+    public BertRustResult embeddings(String[] texts) throws Exception {
+        try (BertRustEncodingVector vector = tokenizer.encodes(texts)) {
             return embeddings(vector);
         }
     }
 
-    public CandleResult embeddings(CandleEncoding encoding) {
-        return new CandleResult(LIBRARY.embeddingsCreate(id, encoding.getId()));
+    public BertRustResult embeddings(BertRustEncoding encoding) {
+        return new BertRustResult(LIBRARY.embeddingsCreate(id, encoding.getId()));
     }
 
-    public CandleResult embeddings(CandleEncodingVector vector) {
-        return new CandleResult(LIBRARY.embeddingsCreateInBatch(id, vector.getId()));
+    public BertRustResult embeddings(BertRustEncodingVector vector) {
+        return new BertRustResult(LIBRARY.embeddingsCreateInBatch(id, vector.getId()));
     }
 
     // ------------------------------------------------------------------------
 
     public static class Builder {
 
-        private CandleModel bean = new CandleModel();
+        private BertRustModel bean = new BertRustModel();
 
-        private CandleTokenizer.Builder builder = CandleTokenizer.builder();
+        private BertRustTokenizer.Builder builder = BertRustTokenizer.builder();
 
         public Builder withFile(File file) {
             return withPath(file.toPath());
@@ -109,10 +117,17 @@ public class CandleModel implements AutoCloseable {
             return this;
         }
 
-        public CandleModel build() {
+        public Builder withMode(String mode) {
+            bean.mode = mode;
+            return this;
+        }
+
+        public BertRustModel build() {
             try {
+                Preconditions.checkNotNull(bean.path);
+                Preconditions.checkNotNull(bean.mode);
                 bean.tokenizer = builder.build();
-                bean.id = LIBRARY.modelCreate(bean.gpuId, bean.path.toAbsolutePath().toString());
+                bean.id = LIBRARY.modelCreate(bean.gpuId, bean.path.toAbsolutePath().toString(), bean.mode);
                 return bean;
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);

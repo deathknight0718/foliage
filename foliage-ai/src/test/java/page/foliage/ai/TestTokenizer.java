@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
-import page.foliage.ai.ort.OrtTokenizer;
+import page.foliage.ai.bert.BertOnnxTokenizer;
 
 /**
  * 
@@ -35,7 +35,7 @@ public class TestTokenizer {
     @Test
     private void test2() throws Exception {
         String text = "这是一份 FHIR 档案, 患者全名为 Tad831 Laverne101, 性别为 MALE, 出生日期是 1994-06-28.\n患者联系方式为 HOME:PHONE:555-152-2603, 家庭住址为 235 Hermann Ville, Brookfield, MA, US.\n家庭住址为 235 Hermann Ville, Brookfield, MA, US.\n";
-        OrtTokenizer tokenizer = OrtTokenizer.builder().withPath(path).build();
+        BertOnnxTokenizer tokenizer = BertOnnxTokenizer.builder().withPath(path).build();
         System.err.println(Arrays.toString(tokenizer.tokenize(text)));
     }
 

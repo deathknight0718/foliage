@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.candle;
+package page.foliage.ai.bert;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import page.foliage.guava.common.io.Resources;
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleLibrary {
+public class BertRustLibrary {
 
     // ------------------------------------------------------------------------
 
@@ -38,18 +38,18 @@ public class CandleLibrary {
 
     // ------------------------------------------------------------------------
 
-    private static volatile CandleLibrary INSTANCE;
+    private static volatile BertRustLibrary INSTANCE;
 
     // ------------------------------------------------------------------------
 
-    private CandleLibrary() {}
+    private BertRustLibrary() {}
 
     // ------------------------------------------------------------------------
 
-    public static CandleLibrary instance() {
-        CandleLibrary result = INSTANCE;
+    public static BertRustLibrary instance() {
+        BertRustLibrary result = INSTANCE;
         if (result == null) {
-            synchronized (CandleLibrary.class) {
+            synchronized (BertRustLibrary.class) {
                 result = INSTANCE;
                 if (result == null) {
                     try (InputStream in = Resources.getResource(RESOURCE_URL_TEXT).openStream()) {
@@ -57,7 +57,7 @@ public class CandleLibrary {
                         temp.deleteOnExit();
                         Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         System.load(temp.getAbsolutePath());
-                        result = INSTANCE = new CandleLibrary();
+                        result = INSTANCE = new BertRustLibrary();
                     } catch (IOException e) {
                         throw new IllegalStateException(e);
                     }
@@ -129,7 +129,7 @@ public class CandleLibrary {
 
     // ------------------------------------------------------------------------
 
-    public native long modelCreate(int gpuId, String path);
+    public native long modelCreate(int gpuId, String path, String mode);
 
     public native void modelDelete(long modelId);
 

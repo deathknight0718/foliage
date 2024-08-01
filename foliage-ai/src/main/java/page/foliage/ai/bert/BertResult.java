@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
+package page.foliage.ai.bert;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public interface Tokenizer {
+public interface BertResult extends AutoCloseable {
 
-    String[] INPUT_NAMES = new String[] { "input_ids", "attention_mask", "token_type_ids" };
+    float[][][] lastHiddenState() throws Exception;
 
-    String[] tokenize(String text);
-
-    Encoding encode(String text);
+    float[][] embeddings() throws Exception;
 
 }

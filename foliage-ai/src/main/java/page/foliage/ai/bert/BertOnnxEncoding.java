@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.ort;
+package page.foliage.ai.bert;
 
 import java.util.Map;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
-import page.foliage.ai.Encoding;
 import page.foliage.guava.common.collect.ForwardingMap;
 import page.foliage.guava.common.collect.ImmutableMap;
 
@@ -28,7 +27,7 @@ import page.foliage.guava.common.collect.ImmutableMap;
  * 
  * @author deathknight0718@qq.com
  */
-public class OrtEncoding extends ForwardingMap<String, OnnxTensor> implements Encoding {
+public class BertOnnxEncoding extends ForwardingMap<String, OnnxTensor> implements BertEncoding {
 
     // ------------------------------------------------------------------------
 
@@ -44,12 +43,12 @@ public class OrtEncoding extends ForwardingMap<String, OnnxTensor> implements En
 
     // ------------------------------------------------------------------------
 
-    private OrtEncoding() {}
+    private BertOnnxEncoding() {}
 
     // ------------------------------------------------------------------------
 
-    public static OrtEncoding create(Encoding encoding) throws OrtException {
-        OrtEncoding bean = new OrtEncoding();
+    public static BertOnnxEncoding create(BertEncoding encoding) throws OrtException {
+        BertOnnxEncoding bean = new BertOnnxEncoding();
         bean.tokens = encoding.getTokens();
         bean.tokenIds = encoding.getTokenIds();
         bean.tokenTypeIds = encoding.getTokenTypeIds();

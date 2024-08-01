@@ -45,9 +45,9 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import page.foliage.ai.Intent;
-import page.foliage.ai.ModelSession;
-import page.foliage.ai.Result;
-import page.foliage.ai.ort.OrtSessionFactory;
+import page.foliage.ai.bert.BertModelSession;
+import page.foliage.ai.bert.BertOnnxSessionFactory;
+import page.foliage.ai.bert.BertResult;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.util.JsonNodes;
@@ -73,7 +73,7 @@ public class TestElasticSearch {
 
     private static ElasticsearchClient client;
 
-    private static OrtSessionFactory factory;
+    private static BertOnnxSessionFactory factory;
 
     @BeforeClass
     public static void beforeClass() {
@@ -82,14 +82,14 @@ public class TestElasticSearch {
             .build();
         ElasticsearchTransport transport = new RestClientTransport(rest, new JacksonJsonpMapper());
         client = new ElasticsearchClient(transport);
-        OrtSessionFactory.Builder builder = OrtSessionFactory.builder();
+        BertOnnxSessionFactory.Builder builder = BertOnnxSessionFactory.builder();
         factory = builder.withDirectory(mpath).build();
         InstanceClosingCheck.hook(factory);
     }
 
     @Test
     private void testIndex() throws Exception {
-        try (ModelSession session = factory.openSession(0)) {
+        try (BertModelSession session = factory.openSession(0)) {
             try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -98,10 +98,10 @@ public class TestElasticSearch {
                     builder.withId(Identities.uuid());
                     builder.withInstruction(node.path("question").asText());
                     builder.withContent(node.path("answer").asText());
-                    try (Result result = session.run(node.path("question").asText())) {
+                    try (BertResult result = session.run(node.path("question").asText())) {
                         builder.withInstructionEmbeddings(result.embeddings()[0]);
                     }
-                    try (Result result = session.run(node.path("answer").asText())) {
+                    try (BertResult result = session.run(node.path("answer").asText())) {
                         builder.withContentEmbeddings(result.embeddings()[0]);
                     }
                     Intent bean = builder.build();
@@ -115,8 +115,8 @@ public class TestElasticSearch {
     @Test
     private void testSearch() throws Exception {
         String input = "我想找一家治疗糖尿病比较好的医院";
-        try (ModelSession session = factory.openSession(0)) {
-            try (Result result = session.run(input)) {
+        try (BertModelSession session = factory.openSession(0)) {
+            try (BertResult result = session.run(input)) {
                 float[] embeddings = result.embeddings()[0];
                 ObjectNode node = JsonNodes.asObject(Files.readString(spath));
                 ((ObjectNode) node.at(JsonPointer.compile("/knn/filter/bool/must/multi_match"))).set("query", TextNode.valueOf(input));

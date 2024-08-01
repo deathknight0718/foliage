@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
+package page.foliage.ai.bert;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,22 +23,23 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import page.foliage.ai.candle.CandleLibrary;
+import page.foliage.ai.bert.BertRustLibrary;
+import page.foliage.ai.bert.BertRustModel;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
 @Test
-public class TestNative {
+public class TestBertNative {
 
     private static Path tpath = Paths.get("/home/foliage/model/Phi-3-mini-4k-instruct/tokenizer.json");
 
-    private static CandleLibrary library;
+    private static BertRustLibrary library;
 
     @BeforeClass
     public static void beforeClass() {
-        library = CandleLibrary.instance();
+        library = BertRustLibrary.instance();
     }
 
     @Test
@@ -68,7 +69,7 @@ public class TestNative {
 
     @Test
     private void test2() throws Exception {
-        long modelId = library.modelCreate(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
+        long modelId = library.modelCreate(0, "/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2", BertRustModel.MODE_PT);
         long tokenizerId = library.tokenizerCreate(tpath.toString());
         long encodingId = library.encodingCreate(tokenizerId, "床前明月光", true);
         long embeddingsId = library.embeddingsCreate(modelId, encodingId);

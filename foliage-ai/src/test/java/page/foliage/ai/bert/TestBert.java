@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
+package page.foliage.ai.bert;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,26 +23,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import page.foliage.ai.candle.CandleEncoding;
-import page.foliage.ai.candle.CandleModel;
-import page.foliage.ai.candle.CandleResult;
-import page.foliage.ai.candle.CandleTokenizer;
+import page.foliage.ai.Functions;
+import page.foliage.ai.bert.BertRustEncoding;
+import page.foliage.ai.bert.BertRustModel;
+import page.foliage.ai.bert.BertRustResult;
+import page.foliage.ai.bert.BertRustTokenizer;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
 @Test
-public class TestCandle {
+public class TestBert {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestCandle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestBert.class);
 
     private static Path path = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
 
     @Test
     private void test1() throws Exception {
-        try (CandleTokenizer tokenizer = CandleTokenizer.builder().withPath(path).build()) {
-            try (CandleEncoding encoding = tokenizer.encode("床前明月光")) {
+        try (BertRustTokenizer tokenizer = BertRustTokenizer.builder().withPath(path).build()) {
+            try (BertRustEncoding encoding = tokenizer.encode("床前明月光")) {
                 LOGGER.info(Arrays.toString(encoding.getTokens()));
             }
         }
@@ -50,18 +51,18 @@ public class TestCandle {
 
     @Test
     private void test2() throws Exception {
-        try (CandleModel model = CandleModel.builder().withPath(path).withGpuId(0).build()) {
-            try (CandleResult result = model.embeddings("床前明月光")) {
+        try (BertRustModel model = BertRustModel.builder().withPath(path).withGpuId(0).build()) {
+            try (BertRustResult result = model.embeddings("床前明月光")) {
                 LOGGER.info("lastHiddenState [0][0]: {}", Arrays.toString(result.lastHiddenState()[0][0]));
                 LOGGER.info("embeddings [0]: {}", Arrays.toString(result.embeddings()[0]));
                 LOGGER.info("java embeddings [0]: {}", Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
             }
-            try (CandleResult result = model.embeddings("举头望明月")) {
+            try (BertRustResult result = model.embeddings("举头望明月")) {
                 LOGGER.info("lastHiddenState [0][0]: {}", Arrays.toString(result.lastHiddenState()[0][0]));
                 LOGGER.info("embeddings [0]: {}", Arrays.toString(result.embeddings()[0]));
                 LOGGER.info("java embeddings [0]: {}", Arrays.toString(Functions.mean(result.lastHiddenState(), 1)[0]));
             }
-            try (CandleResult result = model.embeddings(new String[] { "床前明月光", "举头望明月" })) {
+            try (BertRustResult result = model.embeddings(new String[] { "床前明月光", "举头望明月" })) {
                 LOGGER.info("lastHiddenState [0][0]: {}", Arrays.toString(result.lastHiddenState()[0][0]));
                 LOGGER.info("embeddings [0]: {}", Arrays.toString(result.embeddings()[0]));
                 LOGGER.info("embeddings [1]: {}", Arrays.toString(result.embeddings()[1]));

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
+package page.foliage.ai.bert;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,8 +31,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
-import page.foliage.ai.candle.CandleSessionFactory;
-import page.foliage.ai.ort.OrtSessionFactory;
+import page.foliage.ai.bert.BertRustModel;
+import page.foliage.ai.bert.BertRustSessionFactory;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.util.JsonNodes;
 
@@ -41,23 +41,23 @@ import page.foliage.common.util.JsonNodes;
  * @author deathknight0718@qq.com
  */
 @Test
-public class TestPooledSession {
+public class TestBertPool {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestPooledSession.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestBertPool.class);
 
     private static Path path = Paths.get("/home/foliage/fork/Huatuo26M-Lite/format_data.jsonl");
 
     private static Path mpath = Paths.get("/home/foliage/model/paraphrase-multilingual-MiniLM-L12-v2");
 
-    private static CandleSessionFactory factory1;
+    private static BertRustSessionFactory factory1;
 
-    private static OrtSessionFactory factory2;
+    private static BertOnnxSessionFactory factory2;
 
     @BeforeClass
     public static void beforeClass() {
-        factory1 = CandleSessionFactory.builder().withPath(mpath).withGpuId(0).build();
+        factory1 = BertRustSessionFactory.builder().withPath(mpath).withGpuId(0).withMode(BertRustModel.MODE_ST).build();
         InstanceClosingCheck.hook(factory1);
-        factory2 = OrtSessionFactory.builder().withDirectory(mpath).build();
+        factory2 = BertOnnxSessionFactory.builder().withDirectory(mpath).build();
         InstanceClosingCheck.hook(factory2);
     }
 
@@ -75,11 +75,11 @@ public class TestPooledSession {
             int index = 0;
             while ((line = reader.readLine()) != null && index < 100) {
                 JsonNode node = JsonNodes.asNode(line);
-                try (ModelSession session = factory1.openPooledSession(0)) {
-                    try (Result result = session.run(node.path("question").asText())) {
+                try (BertModelSession session = factory1.openPooledSession(0)) {
+                    try (BertResult result = session.run(node.path("question").asText())) {
                         LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
                     }
-                    try (Result result = session.run(node.path("answer").asText())) {
+                    try (BertResult result = session.run(node.path("answer").asText())) {
                         LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
                     }
                 }
@@ -105,11 +105,11 @@ public class TestPooledSession {
             int index = 0;
             while ((line = reader.readLine()) != null && index < 100) {
                 JsonNode node = JsonNodes.asNode(line);
-                try (ModelSession session = factory2.openPooledSession(0)) {
-                    try (Result result = session.run(node.path("question").asText())) {
+                try (BertModelSession session = factory2.openPooledSession(0)) {
+                    try (BertResult result = session.run(node.path("question").asText())) {
                         LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
                     }
-                    try (Result result = session.run(node.path("answer").asText())) {
+                    try (BertResult result = session.run(node.path("answer").asText())) {
                         LOGGER.info("answer result size: {}", Arrays.toString(result.embeddings()[0]));
                     }
                 }

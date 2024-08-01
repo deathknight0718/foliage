@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
+package page.foliage.ai.bert;
+
+import java.io.File;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public interface Encoding {
+public interface BertModelSession extends AutoCloseable {
 
-    String[] getTokens();
+    BertResult run(File file) throws Exception;
 
-    long[] getTokenIds();
-
-    long[] getTokenTypeIds();
-
-    long[] getAttentionMask();
+    BertResult run(String text) throws Exception;
 
 }

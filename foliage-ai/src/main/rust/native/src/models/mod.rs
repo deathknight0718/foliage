@@ -13,18 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai;
-
-import java.io.File;
-
-/**
- * 
- * @author deathknight0718@qq.com
- */
-public interface ModelSession extends AutoCloseable {
-
-    Result run(File file) throws Exception;
-
-    Result run(String text) throws Exception;
-
-}
+ pub mod model_bert;
+ pub mod model_sam;

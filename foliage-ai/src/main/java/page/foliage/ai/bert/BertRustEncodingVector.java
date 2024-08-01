@@ -13,50 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.candle;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-
-import page.foliage.ai.ModelSession;
-import page.foliage.ai.Result;
+package page.foliage.ai.bert;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class CandleSession implements ModelSession {
+public class BertRustEncodingVector implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private final CandleModel model;
+    private final static BertRustLibrary LIBRARY = BertRustLibrary.instance();
+
+    private final long id;
 
     // ------------------------------------------------------------------------
 
-    public CandleSession(CandleModel model) {
-        this.model = model;
+    public BertRustEncodingVector(long id) {
+        this.id = id;
     }
 
     // ------------------------------------------------------------------------
 
     @Override
     public void close() throws Exception {
-        model.close();
+        LIBRARY.encodingsDelete(id);
     }
 
-    @Override
-    public Result run(File file) throws Exception {
-        return run(Files.readString(file.toPath(), StandardCharsets.UTF_8));
-    }
+    // ------------------------------------------------------------------------
 
-    @Override
-    public Result run(String text) throws Exception {
-        return model.embeddings(text);
-    }
-    
-    public Result run(String[] texts) throws Exception {
-        return model.embeddings(texts);
+    public long getId() {
+        return id;
     }
 
 }

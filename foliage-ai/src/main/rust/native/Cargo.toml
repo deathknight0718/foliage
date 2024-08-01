@@ -8,20 +8,25 @@ name = "foliageai"
 crate-type = ["cdylib"]
 
 [dependencies]
+# JAVA
 jni = "0.21.1"
-candle = { version = "0.6.0", package = "candle-core" }
+# TRANSFORMERS
+tokenizers = { version = "*" }
+candle-core = { version = "0.6.0" }
 candle-nn = { version = "0.6.0" }
+candle-onnx = { version = "0.6.0" }
 candle-transformers = { version = "0.6.0" }
-candle-flash-attn = { version = "0.6.0", optional = true }
+# TOOLS
+image = { version= "*" }
 lazy_static = { version= "*" }
-tokenizers = { version = "0.19.1", features = ["onig"] }
-serde_json = { version = "*" }
 thiserror = { version = "*" }
+serde_json = { version = "*" }
 
 [dev-dependencies]
 anyhow = { version = "*" }
 
 
 [features]
-default = ["cuda"]
-cuda = ["candle/cuda", "candle-nn/cuda", "candle-transformers/cuda"]
+default = ["cuda", "onig"]
+cuda = ["candle-core/cuda", "candle-nn/cuda", "candle-transformers/cuda"]
+onig = ["tokenizers/onig"]

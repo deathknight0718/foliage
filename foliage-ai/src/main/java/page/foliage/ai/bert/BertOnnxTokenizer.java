@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package page.foliage.ai.ort;
+package page.foliage.ai.bert;
 
 import java.nio.file.Path;
-
-import page.foliage.ai.Tokenizer;
-import page.foliage.ai.candle.CandleEncoding;
-import page.foliage.ai.candle.CandleTokenizer;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class OrtTokenizer implements Tokenizer, AutoCloseable {
+public class BertOnnxTokenizer implements BertTokenizer, AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private CandleTokenizer delegate;
+    private BertRustTokenizer delegate;
 
     // ------------------------------------------------------------------------
 
@@ -43,9 +39,9 @@ public class OrtTokenizer implements Tokenizer, AutoCloseable {
     }
 
     @Override
-    public OrtEncoding encode(String text) {
-        try (CandleEncoding encoding = delegate.encode(text)) {
-            return OrtEncoding.create(encoding);
+    public BertOnnxEncoding encode(String text) {
+        try (BertRustEncoding encoding = delegate.encode(text)) {
+            return BertOnnxEncoding.create(encoding);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -62,7 +58,7 @@ public class OrtTokenizer implements Tokenizer, AutoCloseable {
 
     public static class Builder {
 
-        private CandleTokenizer.Builder builder = CandleTokenizer.builder();
+        private BertRustTokenizer.Builder builder = BertRustTokenizer.builder();
 
         public Builder withPath(Path path) {
             builder.withPath(path);
@@ -79,8 +75,8 @@ public class OrtTokenizer implements Tokenizer, AutoCloseable {
             return this;
         }
 
-        public OrtTokenizer build() {
-            OrtTokenizer bean = new OrtTokenizer();
+        public BertOnnxTokenizer build() {
+            BertOnnxTokenizer bean = new BertOnnxTokenizer();
             try {
                 bean.delegate = builder.build();
             } catch (Exception e) {
