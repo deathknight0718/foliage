@@ -40,8 +40,9 @@ pub extern "system" fn Java_page_foliage_ai_sam_SamLibrary_modelCreate<'local>(m
         let device = if gpu_id >= 0 { Device::new_cuda(gpu_id as usize)? } else { Device::Cpu };
         let mode: String = env.get_string(&mode)?.into();
         let builder = match mode.as_str() {
-            "PT" => Ok(VarBuilder::from_pth(format!("{}/pytorch_model.bin", directory), DType::F32, &device)?),
-            "ST" => Ok(unsafe { VarBuilder::from_mmaped_safetensors(&[format!("{}/model.safetensors", directory)], DType::F32, &device)? }),
+            "VIT_H" => Ok(unsafe { VarBuilder::from_mmaped_safetensors(&[format!("{}/model_vit_h.safetensors", directory)], DType::F32, &device)? }),
+            "VIT_L" => Ok(unsafe { VarBuilder::from_mmaped_safetensors(&[format!("{}/model_vit_l.safetensors", directory)], DType::F32, &device)? }),
+            "VIT_B" => Ok(unsafe { VarBuilder::from_mmaped_safetensors(&[format!("{}/model_vit_b.safetensors", directory)], DType::F32, &device)? }),
             _ => Err(Error::MODEL()),
         }?;
         let model = Sam::new_tiny(builder);
@@ -97,14 +98,8 @@ mod tests {
     #[test]
     fn sam() {
         let result: Result<(), Error> = (|| {
-            let directory = "/home/foliage/model/candle-sam".to_string();
             let device = Device::new_cuda(0)?;
-            let mode = "ST".to_string();
-            let builder = match mode.as_str() {
-                "PT" => Ok(VarBuilder::from_pth(format!("{}/pytorch_model.bin", directory), DType::F32, &device)?),
-                "ST" => Ok(unsafe { VarBuilder::from_mmaped_safetensors(&[format!("{}/sam_vit_b_01ec64.safetensors", directory)], DType::F32, &device)? }),
-                _ => Err(Error::MODEL()),
-            }?;
+            let builder = unsafe { VarBuilder::from_mmaped_safetensors(&["/home/foliage/model/segment-anything/model_vit_b.safetensors"], DType::F32, &device)? };
             let model = Sam::new(768, 12, 12, &[2, 5, 8, 11], builder)?;
             let path = "sample.jpg".to_string();
             let image = load_image(&device, &path, Some(IMAGE_SIZE))?;
@@ -126,22 +121,43 @@ mod tests {
     #[test]
     fn sam_points() {
         let result: Result<(), Error> = (|| {
-            let directory = "/home/foliage/model/candle-sam".to_string();
             let device = Device::new_cuda(0)?;
-            let mode = "PT".to_string();
-            let builder = match mode.as_str() {
-                "PT" => Ok(VarBuilder::from_pth(format!("{}/pytorch_model.bin", directory), DType::F32, &device)?),
-                "ST" => Ok(unsafe { VarBuilder::from_mmaped_safetensors(&[format!("{}/sam_vit_b_01ec64.safetensors", directory)], DType::F32, &device)? }),
-                _ => Err(Error::MODEL()),
-            }?;
+            let builder = unsafe { VarBuilder::from_mmaped_safetensors(&["/home/foliage/model/segment-anything/model_vit_b.safetensors"], DType::F32, &device)? };
+            // let model = Sam::new(1024, 24, 16, &[5, 11, 17, 23], builder)?;
             let model = Sam::new(768, 12, 12, &[2, 5, 8, 11], builder)?;
-            let path = "sample.jpg".to_string();
+            let path: String = "sample.jpg".to_string();
             let image = load_image(&device, &path, Some(IMAGE_SIZE))?;
-            let points = [(0.6, 0.6, true), (0.6, 0.55, true)];
+            let points = [(0.8, 0.62, true)];
             let points = points.to_vec();
             let (mask, iou_predictions) = model.forward(&image.data, &points, false)?;
             println!("mask:\n{mask}");
             println!("iou_predictions: {iou_predictions}");
+            let mask = (mask.ge(0.)? * 255.)?;
+            let (_, h, w) = mask.dims3()?;
+            let mask = mask.expand((3, h, w))?;
+            let mask_pixels = mask.permute((1, 2, 0))?.flatten_all()?.to_vec1::<u8>()?;
+            let mut image = image::ImageReader::open(&path)?.decode().map_err(Error::wrap)?;
+            let mask_image: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> = image::ImageBuffer::from_raw(w as u32, h as u32, mask_pixels).unwrap();
+            let mask_image = image::DynamicImage::from(mask_image).resize_to_fill(image.width(), image.height(), image::imageops::FilterType::CatmullRom);
+            for x in 0..image.width() {
+                for y in 0..image.height() {
+                    let mask_point = imageproc::drawing::Canvas::get_pixel(&mask_image, x, y);
+                    if mask_point.0[0] > 100 {
+                        let mut image_point = imageproc::drawing::Canvas::get_pixel(&image, x, y);
+                        image_point.0[2] = 255 - (255 - image_point.0[2]) / 2;
+                        image_point.0[1] /= 2;
+                        image_point.0[0] /= 2;
+                        imageproc::drawing::Canvas::draw_pixel(&mut image, x, y, image_point)
+                    }
+                }
+            }
+            for (x, y, b) in points {
+                let x = (x * image.width() as f64) as i32;
+                let y = (y * image.height() as f64) as i32;
+                let color = if b { image::Rgba([255, 0, 0, 200]) } else { image::Rgba([0, 255, 0, 200]) };
+                imageproc::drawing::draw_filled_circle_mut(&mut image, (x, y), 3, color);
+            }
+            image.save("merged.jpg").map_err(Error::wrap)?;
             return Ok(());
         })();
         result.unwrap_or_else(|e| {
