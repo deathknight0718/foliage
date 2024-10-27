@@ -26,6 +26,7 @@ import page.foliage.file.FilePoint;
 import page.foliage.file.session.FileSession;
 
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * @author deathknight0718@qq.com
@@ -71,11 +72,16 @@ public class MinioSessionImpl implements FileSession {
 
     @Override
     public void upload(FilePoint point, InputStream is) throws Exception {
-        this.upload(point, ImmutableMultimap.of(), is);
+        this.upload(point, is, ImmutableMultimap.of());
     }
 
     @Override
-    public void upload(FilePoint point, Multimap<String, String> headers, InputStream is) throws Exception {
+    public void upload(FilePoint point, InputStream is, Map<String, String> headers) throws Exception {
+        this.upload(point, is, ImmutableMultimap.copyOf(headers.entrySet()));
+    }
+
+    @Override
+    public void upload(FilePoint point, InputStream is, Multimap<String, String> headers) throws Exception {
         PutObjectArgs.Builder builder = PutObjectArgs.builder();
         try (is) {
             if (StringUtils.isNotEmpty(point.getRegion())) builder = builder.region(point.getRegion());

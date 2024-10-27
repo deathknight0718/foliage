@@ -21,6 +21,7 @@ import page.foliage.file.FileObjectStream;
 import page.foliage.file.FilePoint;
 
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * @author deathknight0718@qq.com
@@ -33,7 +34,9 @@ public interface FileSession extends AutoCloseable {
 
     void upload(FilePoint point, InputStream is) throws Exception;
 
-    void upload(FilePoint point, Multimap<String, String> headers, InputStream is) throws Exception;
+    void upload(FilePoint point, InputStream is, Map<String, String> headers) throws Exception;
+
+    void upload(FilePoint point, InputStream is, Multimap<String, String> headers) throws Exception;
 
     void remove(FilePoint point) throws Exception;
 

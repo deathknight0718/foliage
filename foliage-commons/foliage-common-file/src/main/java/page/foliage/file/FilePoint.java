@@ -16,6 +16,7 @@
 package page.foliage.file;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -72,6 +73,14 @@ public class FilePoint {
     public void upload(InputStream is) {
         try (is; FileSession session = factory().openSession()) {
             session.upload(this, is);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public void upload(InputStream is, Map<String, String> headers) {
+        try (is; FileSession session = factory().openSession()) {
+            session.upload(this, is, headers);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
