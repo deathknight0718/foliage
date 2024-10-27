@@ -15,30 +15,32 @@
  */
 package page.foliage.file;
 
-import java.io.ByteArrayInputStream;
+import okhttp3.Headers;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import page.foliage.common.collect.Identities;
-import page.foliage.test.TestBase;
+import java.io.FilterInputStream;
+import java.io.InputStream;
 
 /**
- * 
  * @author deathknight0718@qq.com
  */
-@Test
-public class TestMinioPoint {
+public class FileObjectStream extends FilterInputStream {
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        TestBase.beforeClass();
+    private final Headers headers;
+
+    private final FilePoint point;
+
+    public FileObjectStream(Headers headers, FilePoint point, InputStream body) {
+        super(body);
+        this.headers = headers;
+        this.point = point;
     }
 
-    @Test(invocationCount = 10)
-    private void testWrite() {
-        MinioPoint bean = MinioPoint.builder().withBucket("chat").withName(Identities.uuid().toString()).build();
-        bean.write(new ByteArrayInputStream("test".getBytes()));
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public FilePoint getPoint() {
+        return point;
     }
 
 }

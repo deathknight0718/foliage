@@ -15,20 +15,26 @@
  */
 package page.foliage.file.session;
 
+import com.google.common.collect.Multimap;
+import page.foliage.file.FileMetadata;
+import page.foliage.file.FileObjectStream;
+import page.foliage.file.FilePoint;
+
 import java.io.InputStream;
 
-import page.foliage.file.MinioPoint;
-
 /**
- * 
  * @author deathknight0718@qq.com
  */
-public interface MinioSession extends AutoCloseable {
+public interface FileSession extends AutoCloseable {
 
-    InputStream read(MinioPoint bean) throws Exception;
+    FileMetadata metadata(FilePoint point) throws Exception;
 
-    void write(MinioPoint bean, InputStream is) throws Exception;
+    FileObjectStream stream(FilePoint point) throws Exception;
 
-    void remove(MinioPoint bean) throws Exception;
+    void upload(FilePoint point, InputStream is) throws Exception;
+
+    void upload(FilePoint point, Multimap<String, String> headers, InputStream is) throws Exception;
+
+    void remove(FilePoint point) throws Exception;
 
 }

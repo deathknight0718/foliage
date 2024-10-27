@@ -50,6 +50,9 @@ out/
 .cache-*
 release.properties
 
+# Idea
+.idea/
+
 # Subversion
 .svn/
 

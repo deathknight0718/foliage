@@ -18,26 +18,26 @@ package page.foliage.file;
 import java.io.InputStream;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceFactory;
-import page.foliage.file.session.MinioSession;
-import page.foliage.file.session.MinioSessionFactory;
+import page.foliage.file.session.FileSession;
+import page.foliage.file.session.FileSessionFactory;
 
 /**
- * 
  * @author deathknight0718@qq.com
  */
-public class MinioPoint {
+public class FilePoint {
 
     // ------------------------------------------------------------------------
 
     private UUID id;
 
-    private String name, bucket;
+    private String region, name, bucket;
 
     // ------------------------------------------------------------------------
 
-    private MinioPoint() {}
+    private FilePoint() {}
 
     // ------------------------------------------------------------------------
 
@@ -47,31 +47,38 @@ public class MinioPoint {
 
     // ------------------------------------------------------------------------
 
-    private static MinioSessionFactory factory() {
-        return InstanceFactory.getInstance(MinioSessionFactory.class);
+    private static FileSessionFactory factory() {
+        return InstanceFactory.getInstance(FileSessionFactory.class);
     }
 
     // ------------------------------------------------------------------------
 
-    @SuppressWarnings("resource")
-    public InputStream read() {
-        try (MinioSession session = factory().openSession()) {
-            return session.read(this);
+    public FileMetadata metadata() {
+        try (FileSession session = factory().openSession()) {
+            return session.metadata(this);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public void write(InputStream is) {
-        try (is; MinioSession session = factory().openSession()) {
-            session.write(this, is);
+    public FileObjectStream stream() {
+        try (FileSession session = factory().openSession()) {
+            return session.stream(this);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public void upload(InputStream is) {
+        try (is; FileSession session = factory().openSession()) {
+            session.upload(this, is);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
     public void remove() {
-        try (MinioSession session = factory().openSession()) {
+        try (FileSession session = factory().openSession()) {
             session.remove(this);
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -84,22 +91,26 @@ public class MinioPoint {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getRegion() {
+        return region;
     }
 
     public String getBucket() {
         return bucket;
     }
 
+    public String getName() {
+        return name;
+    }
+
     // ------------------------------------------------------------------------
 
     public static class Builder {
 
-        private MinioPoint bean = new MinioPoint();
+        private final FilePoint bean = new FilePoint();
 
-        public Builder withName(String name) {
-            bean.name = name;
+        public Builder withRegion(String region) {
+            bean.region = region;
             return this;
         }
 
@@ -108,8 +119,14 @@ public class MinioPoint {
             return this;
         }
 
-        public MinioPoint build() {
-            bean.id = Identities.uuid(bean.bucket, bean.name);
+        public Builder withName(String name) {
+            bean.name = name;
+            return this;
+        }
+
+        public FilePoint build() {
+            if (StringUtils.isEmpty(bean.region)) bean.id = Identities.uuid(bean.bucket, bean.name);
+            else bean.id = Identities.uuid(bean.region, bean.bucket, bean.name);
             return bean;
         }
 

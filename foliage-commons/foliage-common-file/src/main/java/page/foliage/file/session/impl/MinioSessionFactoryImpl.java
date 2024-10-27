@@ -21,18 +21,17 @@ import io.minio.MinioClient;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import page.foliage.common.ioc.InstanceFactory;
-import page.foliage.file.session.MinioSession;
-import page.foliage.file.session.MinioSessionFactory;
+import page.foliage.file.session.FileSession;
+import page.foliage.file.session.FileSessionFactory;
 
 /**
- * 
  * @author deathknight0718@qq.com
  */
-public class MinioSessionFactoryImpl implements MinioSessionFactory {
+public class MinioSessionFactoryImpl implements FileSessionFactory, AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private MinioClient client;
+    private final MinioClient client;
 
     // ------------------------------------------------------------------------
 
@@ -57,8 +56,10 @@ public class MinioSessionFactoryImpl implements MinioSessionFactory {
         client.close();
     }
 
+    // ------------------------------------------------------------------------
+
     @Override
-    public MinioSession openSession() throws Exception {
+    public FileSession openSession() {
         return new MinioSessionImpl(client);
     }
 
@@ -66,9 +67,9 @@ public class MinioSessionFactoryImpl implements MinioSessionFactory {
 
     public static class Builder {
 
-        private MinioClient.Builder builder = MinioClient.builder();
+        private final MinioClient.Builder builder = MinioClient.builder();
 
-        private OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
+        private final OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
 
         public Builder endpoint(String endpoint) {
             builder.endpoint(endpoint);

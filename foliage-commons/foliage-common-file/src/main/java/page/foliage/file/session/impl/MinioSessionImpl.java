@@ -15,24 +15,26 @@
  */
 package page.foliage.file.session.impl;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import io.minio.*;
+import io.minio.messages.Tags;
+import org.apache.commons.lang3.StringUtils;
+import page.foliage.file.FileMetadata;
+import page.foliage.file.FileObjectStream;
+import page.foliage.file.FilePoint;
+import page.foliage.file.session.FileSession;
+
 import java.io.InputStream;
 
-import io.minio.DeleteObjectTagsArgs;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import page.foliage.file.MinioPoint;
-import page.foliage.file.session.MinioSession;
-
 /**
- * 
  * @author deathknight0718@qq.com
  */
-public class MinioSessionImpl implements MinioSession {
+public class MinioSessionImpl implements FileSession {
 
     // ------------------------------------------------------------------------
 
-    private final long PART_SIZE_LOWER = 5L * 1024L * 1024L;
+    private final static long PART_SIZE_LOWER = 5L * 1024L * 1024L;
 
     private final MinioClient delegate;
 
@@ -45,30 +47,51 @@ public class MinioSessionImpl implements MinioSession {
     // ------------------------------------------------------------------------
 
     @Override
-    public void close() throws Exception {}
+    public void close() {}
 
     // ------------------------------------------------------------------------
 
     @Override
-    public InputStream read(MinioPoint bean) throws Exception {
-        GetObjectArgs.Builder query = GetObjectArgs.builder();
-        query = query.bucket(bean.getBucket()).object(bean.getName());
-        return delegate.getObject(query.build());
+    public FileMetadata metadata(FilePoint point) throws Exception {
+        GetObjectTagsArgs.Builder query = GetObjectTagsArgs.builder();
+        if (StringUtils.isNotEmpty(point.getRegion())) query = query.region(point.getRegion());
+        query = query.bucket(point.getBucket()).object(point.getName());
+        Tags tags = delegate.getObjectTags(query.build());
+        return new FileMetadata(tags.get());
     }
 
     @Override
-    public void write(MinioPoint bean, InputStream is) throws Exception {
+    public FileObjectStream stream(FilePoint point) throws Exception {
+        GetObjectArgs.Builder query = GetObjectArgs.builder();
+        if (StringUtils.isNotEmpty(point.getRegion())) query = query.region(point.getRegion());
+        query = query.bucket(point.getBucket()).object(point.getName());
+        GetObjectResponse response = delegate.getObject(query.build());
+        return new FileObjectStream(response.headers(), point, response);
+    }
+
+    @Override
+    public void upload(FilePoint point, InputStream is) throws Exception {
+        this.upload(point, ImmutableMultimap.of(), is);
+    }
+
+    @Override
+    public void upload(FilePoint point, Multimap<String, String> headers, InputStream is) throws Exception {
         PutObjectArgs.Builder builder = PutObjectArgs.builder();
         try (is) {
-            builder = builder.bucket(bean.getBucket()).object(bean.getName()).stream(is, -1, PART_SIZE_LOWER);
+            if (StringUtils.isNotEmpty(point.getRegion())) builder = builder.region(point.getRegion());
+            builder = builder.bucket(point.getBucket());
+            builder = builder.object(point.getName());
+            builder = builder.stream(is, -1, PART_SIZE_LOWER);
+            builder = builder.headers(headers);
             delegate.putObject(builder.build());
         }
     }
 
     @Override
-    public void remove(MinioPoint bean) throws Exception {
+    public void remove(FilePoint point) throws Exception {
         DeleteObjectTagsArgs.Builder builder = DeleteObjectTagsArgs.builder();
-        builder = builder.bucket(bean.getBucket()).object(bean.getName());
+        if (StringUtils.isNotEmpty(point.getRegion())) builder = builder.region(point.getRegion());
+        builder = builder.bucket(point.getBucket()).object(point.getName());
         delegate.deleteObjectTags(builder.build());
     }
 

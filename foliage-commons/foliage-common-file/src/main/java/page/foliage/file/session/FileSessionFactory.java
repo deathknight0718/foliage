@@ -16,11 +16,10 @@
 package page.foliage.file.session;
 
 /**
- * 
  * @author deathknight0718@qq.com
  */
-public interface MinioSessionFactory extends AutoCloseable {
+public interface FileSessionFactory {
 
-    MinioSession openSession() throws Exception;
+    FileSession openSession() throws Exception;
 
 }
