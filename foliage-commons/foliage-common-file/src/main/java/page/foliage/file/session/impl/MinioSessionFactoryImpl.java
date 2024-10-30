@@ -15,14 +15,17 @@
  */
 package page.foliage.file.session.impl;
 
-import java.util.concurrent.TimeUnit;
-
 import io.minio.MinioClient;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author deathknight0718@qq.com
@@ -30,6 +33,8 @@ import page.foliage.file.session.FileSessionFactory;
 public class MinioSessionFactoryImpl implements FileSessionFactory, AutoCloseable {
 
     // ------------------------------------------------------------------------
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(MinioSessionFactoryImpl.class);
 
     private final MinioClient client;
 
@@ -86,9 +91,27 @@ public class MinioSessionFactoryImpl implements FileSessionFactory, AutoCloseabl
             return this;
         }
 
+        public Builder logging() {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new DebugLogger());
+            interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+            httpBuilder.addInterceptor(interceptor);
+            return this;
+        }
+
         public MinioSessionFactoryImpl build() {
             builder.httpClient(httpBuilder.build());
             return new MinioSessionFactoryImpl(builder.build());
+        }
+
+    }
+
+    // ------------------------------------------------------------------------
+
+    static class DebugLogger implements HttpLoggingInterceptor.Logger {
+
+        @Override
+        public void log(String message) {
+            LOGGER.debug(message);
         }
 
     }

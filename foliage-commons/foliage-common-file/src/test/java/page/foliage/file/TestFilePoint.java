@@ -15,13 +15,16 @@
  */
 package page.foliage.file;
 
-import java.io.ByteArrayInputStream;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 import page.foliage.common.collect.Identities;
+import page.foliage.guava.common.collect.ImmutableMap;
 import page.foliage.test.TestBase;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * @author deathknight0718@qq.com
@@ -29,21 +32,37 @@ import page.foliage.test.TestBase;
 @Test
 public class TestFilePoint {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(TestFilePoint.class);
+
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() {
         TestBase.beforeClass();
     }
 
     @Test
     private void testWrite() {
-        FilePoint bean = FilePoint.builder().withBucket("test").withName(Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test
     private void testWriteWithTree() {
-        FilePoint bean = FilePoint.builder().withBucket("test").withName("test/" + Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName("test/" + Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
+    }
+
+    @Test
+    private void testWriteWithTags() {
+        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName(Identities.uuid().toString()).build();
+        bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()), ImmutableMap.of("TYPE", "NIFTI"));
+    }
+
+    @Test
+    private void testObject() throws IOException {
+        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName("test/").build();
+        for (FilePoint item : bean.list(false)) {
+            LOGGER.info("item: {}", item.getName());
+        }
     }
 
 }

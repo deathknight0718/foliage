@@ -15,12 +15,12 @@
  */
 package page.foliage.file.session;
 
-import com.google.common.collect.Multimap;
-import page.foliage.file.FileMetadata;
-import page.foliage.file.FileObjectStream;
+import page.foliage.file.FileTags;
+import page.foliage.file.FileStream;
 import page.foliage.file.FilePoint;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,15 +28,27 @@ import java.util.Map;
  */
 public interface FileSession extends AutoCloseable {
 
-    FileMetadata metadata(FilePoint point) throws Exception;
+    // ------------------------------------------------------------------------
 
-    FileObjectStream stream(FilePoint point) throws Exception;
+    long PART_SIZE_LOWER = 5L * 1024L * 1024L;
+
+    String HEADER_REGION = "X-Amz-Bucket-Region";
+
+    String TAG_ID = "id";
+
+    String TAG_INTERPRETER = "interpreter";
+
+    // ------------------------------------------------------------------------
+
+    List<FilePoint> list(FilePoint point, boolean recursive) throws Exception;
+
+    FileTags tags(FilePoint point) throws Exception;
+
+    FileStream stream(FilePoint point) throws Exception;
 
     void upload(FilePoint point, InputStream is) throws Exception;
 
-    void upload(FilePoint point, InputStream is, Map<String, String> headers) throws Exception;
-
-    void upload(FilePoint point, InputStream is, Multimap<String, String> headers) throws Exception;
+    void upload(FilePoint point, InputStream is, Map<String, String> tags) throws Exception;
 
     void remove(FilePoint point) throws Exception;
 

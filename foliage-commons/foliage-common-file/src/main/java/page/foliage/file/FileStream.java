@@ -23,17 +23,23 @@ import java.io.InputStream;
 /**
  * @author deathknight0718@qq.com
  */
-public class FileObjectStream extends FilterInputStream {
+public class FileStream extends FilterInputStream {
+
+    // ------------------------------------------------------------------------
 
     private final Headers headers;
 
     private final FilePoint point;
 
-    public FileObjectStream(Headers headers, FilePoint point, InputStream body) {
+    // ------------------------------------------------------------------------
+
+    public FileStream(Headers headers, FilePoint point, InputStream body) {
         super(body);
         this.headers = headers;
         this.point = point;
     }
+
+    // ------------------------------------------------------------------------
 
     public Headers getHeaders() {
         return headers;

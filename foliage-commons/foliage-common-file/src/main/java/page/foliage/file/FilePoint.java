@@ -15,15 +15,16 @@
  */
 package page.foliage.file;
 
-import java.io.InputStream;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
+import page.foliage.guava.common.base.Preconditions;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author deathknight0718@qq.com
@@ -54,15 +55,23 @@ public class FilePoint {
 
     // ------------------------------------------------------------------------
 
-    public FileMetadata metadata() {
+    public List<FilePoint> list(boolean recursive) {
         try (FileSession session = factory().openSession()) {
-            return session.metadata(this);
+            return session.list(this, recursive);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public FileObjectStream stream() {
+    public FileTags tags() {
+        try (FileSession session = factory().openSession()) {
+            return session.tags(this);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public FileStream stream() {
         try (FileSession session = factory().openSession()) {
             return session.stream(this);
         } catch (Exception e) {
@@ -78,9 +87,9 @@ public class FilePoint {
         }
     }
 
-    public void upload(InputStream is, Map<String, String> headers) {
+    public void upload(InputStream is, Map<String, String> tags) {
         try (is; FileSession session = factory().openSession()) {
-            session.upload(this, is, headers);
+            session.upload(this, is, tags);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -134,8 +143,10 @@ public class FilePoint {
         }
 
         public FilePoint build() {
-            if (StringUtils.isEmpty(bean.region)) bean.id = Identities.uuid(bean.bucket, bean.name);
-            else bean.id = Identities.uuid(bean.region, bean.bucket, bean.name);
+            Preconditions.checkNotNull(bean.region);
+            Preconditions.checkNotNull(bean.bucket);
+            Preconditions.checkNotNull(bean.name);
+            bean.id = Identities.uuid(bean.region, bean.bucket, bean.name);
             return bean;
         }
 

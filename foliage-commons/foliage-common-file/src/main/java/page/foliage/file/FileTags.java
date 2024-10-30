@@ -15,17 +15,30 @@
  */
 package page.foliage.file;
 
-import java.util.HashMap;
+import page.foliage.guava.common.collect.ForwardingMap;
+
 import java.util.Map;
 
 /**
  * @author deathknight0718@qq.com
  */
-public class FileMetadata {
+public class FileTags extends ForwardingMap<String, String> {
+
+    // ------------------------------------------------------------------------
 
     private final Map<String, String> delegate;
 
-    public FileMetadata(Map<String, String> delegate) {
+    // ------------------------------------------------------------------------
+
+    public FileTags(Map<String, String> delegate) {
         this.delegate = delegate;
     }
+
+    // ------------------------------------------------------------------------
+
+    @Override
+    protected Map<String, String> delegate() {
+        return delegate;
+    }
+
 }

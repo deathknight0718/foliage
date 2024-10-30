@@ -32,9 +32,9 @@ public abstract class TestBase {
 
     // ------------------------------------------------------------------------
 
-    private static final String ENDPOINT = "https://portal.cecdat.dev:9201";
+    private static final String ENDPOINT = "https://file.foliage.page:7001";
 
-    private static final String[] KEYS = new String[]{ "EytsTh8UCrP58AuSow5a", "1lfrfmEJbxufabc927SPOpPMBmaXQlfH7cwV0uJU" };
+    private static final String[] KEYS = new String[]{ "yuxcUPKtLSwiWRHuyYiM", "V0EXFq5tdU1aqWmUOh9Pxf5PbEHaxIWwC5xeghyO" };
 
     // ------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public abstract class TestBase {
         @Singleton
         private FileSessionFactory buildMinioSessionFactory() {
             MinioSessionFactoryImpl bean = MinioSessionFactoryImpl.builder() //
-                    .endpoint(ENDPOINT).credentials(KEYS[0], KEYS[1]).build();
+                    .logging().endpoint(ENDPOINT).credentials(KEYS[0], KEYS[1]).build();
             return InstanceClosingCheck.hook(bean);
         }
 

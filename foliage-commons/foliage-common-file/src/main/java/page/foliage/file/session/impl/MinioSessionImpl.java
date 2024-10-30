@@ -15,17 +15,19 @@
  */
 package page.foliage.file.session.impl;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import io.minio.*;
+import io.minio.messages.Item;
 import io.minio.messages.Tags;
-import org.apache.commons.lang3.StringUtils;
-import page.foliage.file.FileMetadata;
-import page.foliage.file.FileObjectStream;
 import page.foliage.file.FilePoint;
+import page.foliage.file.FileStream;
+import page.foliage.file.FileTags;
 import page.foliage.file.session.FileSession;
+import page.foliage.guava.common.collect.ImmutableList;
+import page.foliage.guava.common.collect.ImmutableMap;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +36,6 @@ import java.util.Map;
 public class MinioSessionImpl implements FileSession {
 
     // ------------------------------------------------------------------------
-
-    private final static long PART_SIZE_LOWER = 5L * 1024L * 1024L;
 
     private final MinioClient delegate;
 
@@ -53,42 +53,63 @@ public class MinioSessionImpl implements FileSession {
     // ------------------------------------------------------------------------
 
     @Override
-    public FileMetadata metadata(FilePoint point) throws Exception {
-        GetObjectTagsArgs.Builder query = GetObjectTagsArgs.builder();
-        if (StringUtils.isNotEmpty(point.getRegion())) query = query.region(point.getRegion());
-        query = query.bucket(point.getBucket()).object(point.getName());
-        Tags tags = delegate.getObjectTags(query.build());
-        return new FileMetadata(tags.get());
+    public List<FilePoint> list(FilePoint point, boolean recursive) throws Exception {
+        ListObjectsArgs.Builder query = ListObjectsArgs.builder();
+        query.region(point.getRegion());
+        query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion()));
+        query.bucket(point.getBucket());
+        query.prefix(point.getName());
+        query.recursive(recursive);
+        ImmutableList.Builder<FilePoint> listBuilder = ImmutableList.builder();
+        for (Result<Item> result : delegate.listObjects(query.build())) {
+            FilePoint.Builder itemBuilder = FilePoint.builder();
+            itemBuilder.withRegion(point.getRegion());
+            itemBuilder.withBucket(point.getBucket());
+            itemBuilder.withName(result.get().objectName());
+            listBuilder.add(itemBuilder.build());
+        }
+        return listBuilder.build();
     }
 
     @Override
-    public FileObjectStream stream(FilePoint point) throws Exception {
+    public FileTags tags(FilePoint point) throws Exception {
+        GetObjectTagsArgs.Builder query = GetObjectTagsArgs.builder();
+        query.region(point.getRegion());
+        query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion()));
+        query.bucket(point.getBucket());
+        query.object(point.getName());
+        Tags tags = delegate.getObjectTags(query.build());
+        return new FileTags(tags.get());
+    }
+
+    @Override
+    public FileStream stream(FilePoint point) throws Exception {
         GetObjectArgs.Builder query = GetObjectArgs.builder();
-        if (StringUtils.isNotEmpty(point.getRegion())) query = query.region(point.getRegion());
-        query = query.bucket(point.getBucket()).object(point.getName());
+        query.region(point.getRegion());
+        query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion()));
+        query.bucket(point.getBucket());
+        query.object(point.getName());
         GetObjectResponse response = delegate.getObject(query.build());
-        return new FileObjectStream(response.headers(), point, response);
+        return new FileStream(response.headers(), point, response);
     }
 
     @Override
     public void upload(FilePoint point, InputStream is) throws Exception {
-        this.upload(point, is, ImmutableMultimap.of());
+        this.upload(point, is, ImmutableMap.of());
     }
 
     @Override
-    public void upload(FilePoint point, InputStream is, Map<String, String> headers) throws Exception {
-        this.upload(point, is, ImmutableMultimap.copyOf(headers.entrySet()));
-    }
-
-    @Override
-    public void upload(FilePoint point, InputStream is, Multimap<String, String> headers) throws Exception {
+    public void upload(FilePoint point, InputStream is, Map<String, String> tags) throws Exception {
         PutObjectArgs.Builder builder = PutObjectArgs.builder();
         try (is) {
-            if (StringUtils.isNotEmpty(point.getRegion())) builder = builder.region(point.getRegion());
-            builder = builder.bucket(point.getBucket());
-            builder = builder.object(point.getName());
-            builder = builder.stream(is, -1, PART_SIZE_LOWER);
-            builder = builder.headers(headers);
+            builder.region(point.getRegion());
+            builder.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion()));
+            builder.bucket(point.getBucket());
+            builder.object(point.getName());
+            builder.stream(is, -1, PART_SIZE_LOWER);
+            Map<String, String> merged = new HashMap<>(tags);
+            merged.put(TAG_ID, point.getId().toString());
+            builder.tags(merged);
             delegate.putObject(builder.build());
         }
     }
@@ -96,8 +117,10 @@ public class MinioSessionImpl implements FileSession {
     @Override
     public void remove(FilePoint point) throws Exception {
         DeleteObjectTagsArgs.Builder builder = DeleteObjectTagsArgs.builder();
-        if (StringUtils.isNotEmpty(point.getRegion())) builder = builder.region(point.getRegion());
-        builder = builder.bucket(point.getBucket()).object(point.getName());
+        builder.region(point.getRegion());
+        builder.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion()));
+        builder.bucket(point.getBucket());
+        builder.object(point.getName());
         delegate.deleteObjectTags(builder.build());
     }
 
