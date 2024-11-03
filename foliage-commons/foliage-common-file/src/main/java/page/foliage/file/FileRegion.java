@@ -16,9 +16,6 @@
 package page.foliage.file;
 
 import page.foliage.ldap.Repository;
-import page.foliage.ldap.session.IdentitySession;
-
-import static page.foliage.ldap.session.IdentitySessionFactory.openSession;
 
 /**
  * @author deathknight0718@qq.com

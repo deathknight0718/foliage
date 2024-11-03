@@ -24,7 +24,6 @@ import page.foliage.guava.common.collect.ImmutableMap;
 import page.foliage.test.TestBase;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * @author deathknight0718@qq.com
@@ -40,25 +39,25 @@ public class TestFilePoint {
     }
 
     @Test
-    private void testWrite() {
+    public void testWrite() {
         FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test
-    private void testWriteWithTree() {
-        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test/" + Identities.uuid().toString()).build();
+    public void testWriteWithTree() {
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test/" + Identities.uuid()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test
-    private void testWriteWithTags() {
+    public void testWriteWithTags() {
         FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()), ImmutableMap.of("TYPE", "NIFTI"));
     }
 
     @Test
-    private void testObject1() throws IOException {
+    public void testObject1() {
         FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test").build();
         for (FilePoint item : bean.list(true)) {
             LOGGER.info("item: {}", item.getName());
@@ -66,7 +65,7 @@ public class TestFilePoint {
     }
 
     @Test
-    private void testObject2() throws IOException {
+    public void testObject2() {
         FileBucket bean = new FileBucket(FileRegion.get(800001001L), "test");
         for (FilePoint item : bean.points()) {
             LOGGER.info("item: {}", item.getName());
