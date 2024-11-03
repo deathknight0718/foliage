@@ -60,9 +60,9 @@ public class FilePoint {
 
     // ------------------------------------------------------------------------
 
-    public PaginList<FilePoint> list(QueryParams params, boolean recursive) {
+    public PaginList<FilePoint> list(QueryParams params) {
         try (FileSession session = factory().openSession()) {
-            return session.pointsByParamsAndPrefix(params, this, recursive);
+            return session.pointsByParamsAndPrefix(params, this);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

@@ -43,7 +43,7 @@ public interface FileSession extends AutoCloseable {
 
     PaginList<FilePoint> pointsByParamsAndBucket(QueryParams params, FileBucket bucket) throws Exception;
 
-    PaginList<FilePoint> pointsByParamsAndPrefix(QueryParams params, FilePoint point, boolean recursive) throws Exception;
+    PaginList<FilePoint> pointsByParamsAndPrefix(QueryParams params, FilePoint point) throws Exception;
 
     FileTags tags(FilePoint point) throws Exception;
 

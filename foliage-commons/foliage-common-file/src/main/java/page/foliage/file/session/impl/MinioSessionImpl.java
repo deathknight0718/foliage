@@ -19,6 +19,7 @@ import io.minio.*;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import io.minio.messages.Tags;
+import org.apache.commons.lang3.StringUtils;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.file.*;
@@ -26,10 +27,7 @@ import page.foliage.file.session.FileSession;
 import page.foliage.guava.common.collect.ImmutableMap;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,13 +82,13 @@ public class MinioSessionImpl implements FileSession {
     }
 
     @Override
-    public PaginList<FilePoint> pointsByParamsAndPrefix(QueryParams params, FilePoint point, boolean recursive) throws Exception {
+    public PaginList<FilePoint> pointsByParamsAndPrefix(QueryParams params, FilePoint point) throws Exception {
         ListObjectsArgs.Builder query = ListObjectsArgs.builder();
         query.region(point.getRegion().getName());
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         query.bucket(point.getBucket().name());
         query.prefix(point.getName());
-        query.recursive(recursive);
+        query.recursive(!StringUtils.equalsIgnoreCase("false", params.get("recursive")));
         List<FilePoint> points = new ArrayList<>();
         int count = 0;
         for (Result<Item> result : delegate.listObjects(query.build())) {

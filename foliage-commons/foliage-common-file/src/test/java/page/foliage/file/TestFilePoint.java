@@ -60,7 +60,7 @@ public class TestFilePoint {
     @Test
     public void testObject1() {
         FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test").build();
-        for (FilePoint item : bean.list(QueryParams.of("offset", "0", "limit", "5"), true)) {
+        for (FilePoint item : bean.list(QueryParams.of("offset", "0", "limit", "5"))) {
             LOGGER.info("item: {}", item.getName());
         }
     }
