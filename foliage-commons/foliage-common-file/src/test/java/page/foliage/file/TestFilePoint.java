@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import page.foliage.common.collect.Identities;
+import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.collect.ImmutableMap;
 import page.foliage.test.TestBase;
 
@@ -44,7 +45,7 @@ public class TestFilePoint {
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
-    @Test
+    @Test(invocationCount = 40)
     public void testWriteWithTree() {
         FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test/" + Identities.uuid()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
@@ -59,7 +60,7 @@ public class TestFilePoint {
     @Test
     public void testObject1() {
         FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test").build();
-        for (FilePoint item : bean.list(true)) {
+        for (FilePoint item : bean.list(QueryParams.of("offset", "0", "limit", "5"), true)) {
             LOGGER.info("item: {}", item.getName());
         }
     }
@@ -67,7 +68,7 @@ public class TestFilePoint {
     @Test
     public void testObject2() {
         FileBucket bean = new FileBucket(FileRegion.get(800001001L), "test");
-        for (FilePoint item : bean.points()) {
+        for (FilePoint item : bean.points(QueryParams.ALL)) {
             LOGGER.info("item: {}", item.getName());
         }
     }

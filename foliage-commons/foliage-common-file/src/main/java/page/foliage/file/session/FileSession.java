@@ -15,13 +15,11 @@
  */
 package page.foliage.file.session;
 
-import page.foliage.file.FileBucket;
-import page.foliage.file.FileTags;
-import page.foliage.file.FileStream;
-import page.foliage.file.FilePoint;
+import page.foliage.common.collect.PaginList;
+import page.foliage.common.collect.QueryParams;
+import page.foliage.file.*;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,9 +39,11 @@ public interface FileSession extends AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    List<FilePoint> points(FileBucket bucket) throws Exception;
+    PaginList<FileBucket> bucketsByParams(QueryParams params, FileRegion region) throws Exception;
 
-    List<FilePoint> points(FilePoint point, boolean recursive) throws Exception;
+    PaginList<FilePoint> pointsByParamsAndBucket(QueryParams params, FileBucket bucket) throws Exception;
+
+    PaginList<FilePoint> pointsByParamsAndPrefix(QueryParams params, FilePoint point, boolean recursive) throws Exception;
 
     FileTags tags(FilePoint point) throws Exception;
 

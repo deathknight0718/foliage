@@ -16,13 +16,14 @@
 package page.foliage.file;
 
 import page.foliage.common.collect.Identities;
+import page.foliage.common.collect.PaginList;
+import page.foliage.common.collect.QueryParams;
 import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
 import page.foliage.guava.common.base.Preconditions;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,9 +60,9 @@ public class FilePoint {
 
     // ------------------------------------------------------------------------
 
-    public List<FilePoint> list(boolean recursive) {
+    public PaginList<FilePoint> list(QueryParams params, boolean recursive) {
         try (FileSession session = factory().openSession()) {
-            return session.points(this, recursive);
+            return session.pointsByParamsAndPrefix(params, this, recursive);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

@@ -15,11 +15,11 @@
  */
 package page.foliage.file;
 
+import page.foliage.common.collect.PaginList;
+import page.foliage.common.collect.QueryParams;
 import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
-
-import java.util.List;
 
 /**
  * @author deathknight0718@qq.com
@@ -34,9 +34,9 @@ public record FileBucket(FileRegion region, String name) {
 
     // ------------------------------------------------------------------------
 
-    public List<FilePoint> points() {
+    public PaginList<FilePoint> points(QueryParams params) {
         try (FileSession session = factory().openSession()) {
-            return session.points(this);
+            return session.pointsByParamsAndBucket(params, this);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

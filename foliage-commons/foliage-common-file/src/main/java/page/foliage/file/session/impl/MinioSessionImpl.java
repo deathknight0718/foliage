@@ -16,20 +16,22 @@
 package page.foliage.file.session.impl;
 
 import io.minio.*;
+import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import io.minio.messages.Tags;
-import page.foliage.file.FileBucket;
-import page.foliage.file.FilePoint;
-import page.foliage.file.FileStream;
-import page.foliage.file.FileTags;
+import page.foliage.common.collect.PaginList;
+import page.foliage.common.collect.QueryParams;
+import page.foliage.file.*;
 import page.foliage.file.session.FileSession;
-import page.foliage.guava.common.collect.ImmutableList;
 import page.foliage.guava.common.collect.ImmutableMap;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author deathknight0718@qq.com
@@ -55,36 +57,49 @@ public class MinioSessionImpl implements FileSession {
 
 
     @Override
-    public List<FilePoint> points(FileBucket bucket) throws Exception {
+    public PaginList<FileBucket> bucketsByParams(QueryParams params, FileRegion region) throws Exception {
+        ListBucketsArgs.Builder query = ListBucketsArgs.builder();
+        query.extraHeaders(ImmutableMap.of(HEADER_REGION, region.getName()));
+        List<Bucket> buckets = delegate.listBuckets(query.build());
+        Stream<Bucket> stream = buckets.stream().skip(params.offset()).limit(params.limit());
+        return PaginList.copyOf(stream.map(b -> new FileBucket(region, b.name())).collect(Collectors.toList()), buckets.size());
+    }
+
+    @Override
+    public PaginList<FilePoint> pointsByParamsAndBucket(QueryParams params, FileBucket bucket) throws Exception {
         ListObjectsArgs.Builder query = ListObjectsArgs.builder();
         query.region(bucket.region().getName());
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, bucket.region().getName()));
         query.bucket(bucket.name());
         query.recursive(false);
-        ImmutableList.Builder<FilePoint> listBuilder = ImmutableList.builder();
+        List<FilePoint> points = new ArrayList<>();
+        int count = 0;
         for (Result<Item> result : delegate.listObjects(query.build())) {
-            FilePoint.Builder itemBuilder = FilePoint.builder();
-            FilePoint item = itemBuilder.withRegion(bucket.region()).withBucket(bucket.name()).withName(result.get().objectName()).build();
-            listBuilder.add(item);
+            FilePoint.Builder builder = FilePoint.builder();
+            FilePoint item = builder.withRegion(bucket.region()).withBucket(bucket.name()).withName(result.get().objectName()).build();
+            if (count >= params.offset() && count < params.limit()) points.add(item);
+            count++;
         }
-        return listBuilder.build();
+        return PaginList.copyOf(points, count);
     }
 
     @Override
-    public List<FilePoint> points(FilePoint point, boolean recursive) throws Exception {
+    public PaginList<FilePoint> pointsByParamsAndPrefix(QueryParams params, FilePoint point, boolean recursive) throws Exception {
         ListObjectsArgs.Builder query = ListObjectsArgs.builder();
         query.region(point.getRegion().getName());
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         query.bucket(point.getBucket().name());
         query.prefix(point.getName());
         query.recursive(recursive);
-        ImmutableList.Builder<FilePoint> listBuilder = ImmutableList.builder();
+        List<FilePoint> points = new ArrayList<>();
+        int count = 0;
         for (Result<Item> result : delegate.listObjects(query.build())) {
-            FilePoint.Builder itemBuilder = FilePoint.builder();
-            FilePoint item = itemBuilder.withRegion(point.getRegion()).withBucket(point.getBucket().name()).withName(result.get().objectName()).build();
-            listBuilder.add(item);
+            FilePoint.Builder builder = FilePoint.builder();
+            FilePoint item = builder.withRegion(point.getRegion()).withBucket(point.getBucket().name()).withName(result.get().objectName()).build();
+            if (count >= params.offset() && count < params.limit()) points.add(item);
+            count++;
         }
-        return listBuilder.build();
+        return PaginList.copyOf(points, count);
     }
 
     @Override

@@ -15,6 +15,11 @@
  */
 package page.foliage.file;
 
+import page.foliage.common.collect.PaginList;
+import page.foliage.common.collect.QueryParams;
+import page.foliage.common.ioc.InstanceFactory;
+import page.foliage.file.session.FileSession;
+import page.foliage.file.session.FileSessionFactory;
 import page.foliage.ldap.Repository;
 
 /**
@@ -45,12 +50,28 @@ public class FileRegion {
 
     // ------------------------------------------------------------------------
 
+    private static FileSessionFactory factory() {
+        return InstanceFactory.getInstance(FileSessionFactory.class);
+    }
+
+    // ------------------------------------------------------------------------
+
     public static FileRegion create(Long id) {
         return new FileRegion(Repository.create(id));
     }
 
     public static FileRegion get(Long id) {
         return new FileRegion(Repository.get(id));
+    }
+
+    // ------------------------------------------------------------------------
+
+    public PaginList<FileBucket> buckets(QueryParams params) {
+        try (FileSession session = factory().openSession()) {
+            return session.bucketsByParams(params, this);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     // ------------------------------------------------------------------------

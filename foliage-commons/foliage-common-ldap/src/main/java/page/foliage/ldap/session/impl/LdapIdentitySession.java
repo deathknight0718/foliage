@@ -47,7 +47,6 @@ import page.foliage.ldap.Dashboard.Builder;
 import page.foliage.ldap.session.IdentitySession;
 
 /**
- * 
  * @author deathknight0718@qq.com
  */
 public class LdapIdentitySession implements IdentitySession {
@@ -121,8 +120,7 @@ public class LdapIdentitySession implements IdentitySession {
             bean.setDomainId(domainId);
             beans.add(bean);
         }
-        Stream<User> stream = beans.stream();
-        stream = stream.skip(params.offset()).limit(params.limit());
+        Stream<User> stream = beans.stream().skip(params.offset()).limit(params.limit());
         return PaginList.copyOf(stream.collect(Collectors.toList()), beans.size());
     }
 
@@ -280,22 +278,22 @@ public class LdapIdentitySession implements IdentitySession {
     // ------------------------------------------------------------------------
 
     @Override
-    public PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
+    public PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Dashboard dashboardSelectById(Long id) throws Exception {
+    public Dashboard dashboardSelectById(Long id) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Dashboard dashboardInsertOrUpdate(Builder builder) throws Exception {
+    public Dashboard dashboardInsertOrUpdate(Builder builder) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Long dashboardDeleteById(Long id) throws Exception {
+    public Long dashboardDeleteById(Long id) {
         throw new UnsupportedOperationException();
     }
 
