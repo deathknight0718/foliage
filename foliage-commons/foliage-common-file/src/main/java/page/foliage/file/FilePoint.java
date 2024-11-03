@@ -33,9 +33,13 @@ public class FilePoint {
 
     // ------------------------------------------------------------------------
 
+    private FileRegion region;
+
+    private FileBucket bucket;
+
     private UUID id;
 
-    private String region, name, bucket;
+    private String name;
 
     // ------------------------------------------------------------------------
 
@@ -57,7 +61,7 @@ public class FilePoint {
 
     public List<FilePoint> list(boolean recursive) {
         try (FileSession session = factory().openSession()) {
-            return session.list(this, recursive);
+            return session.points(this, recursive);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -109,11 +113,11 @@ public class FilePoint {
         return id;
     }
 
-    public String getRegion() {
+    public FileRegion getRegion() {
         return region;
     }
 
-    public String getBucket() {
+    public FileBucket getBucket() {
         return bucket;
     }
 
@@ -123,30 +127,77 @@ public class FilePoint {
 
     // ------------------------------------------------------------------------
 
-    public static class Builder {
+    interface StepRegion {
+
+        StepBucket withRegion(FileRegion region);
+
+        StepBucket withRegion(Long id);
+
+    }
+
+    // ------------------------------------------------------------------------
+
+    interface StepBucket {
+
+        StepName withBucket(FileBucket bucket);
+
+        StepName withBucket(String bucket);
+
+    }
+
+    // ------------------------------------------------------------------------
+
+    interface StepName {
+
+        Builder withName(String name);
+
+    }
+
+    // ------------------------------------------------------------------------
+
+    interface StepBuilder {
+
+        FilePoint build();
+
+    }
+
+    // ------------------------------------------------------------------------
+
+    public static class Builder implements StepRegion, StepBucket, StepName, StepBuilder {
 
         private final FilePoint bean = new FilePoint();
 
-        public Builder withRegion(String region) {
+        public Builder withRegion(FileRegion region) {
             bean.region = region;
             return this;
         }
 
-        public Builder withBucket(String bucket) {
+        public Builder withRegion(Long id) {
+            bean.region = FileRegion.get(id);
+            return this;
+        }
+
+        public Builder withBucket(FileBucket bucket) {
+            bean.region = bucket.region();
             bean.bucket = bucket;
             return this;
         }
 
+        public Builder withBucket(String name) {
+            Preconditions.checkNotNull(bean.region);
+            bean.bucket = new FileBucket(bean.region, name);
+            return this;
+        }
+
         public Builder withName(String name) {
+            Preconditions.checkNotNull(bean.bucket);
             bean.name = name;
             return this;
         }
 
         public FilePoint build() {
-            Preconditions.checkNotNull(bean.region);
-            Preconditions.checkNotNull(bean.bucket);
             Preconditions.checkNotNull(bean.name);
-            bean.id = Identities.uuid(bean.region, bean.bucket, bean.name);
+            bean.id = Identities.uuid(bean.region.getName(), bean.bucket.name(), bean.name);
             return bean;
         }
 

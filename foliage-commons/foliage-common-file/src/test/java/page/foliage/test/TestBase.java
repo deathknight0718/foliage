@@ -15,6 +15,8 @@
  */
 package page.foliage.test;
 
+import com.unboundid.ldap.sdk.LDAPConnection;
+import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import org.testng.annotations.BeforeClass;
 import page.foliage.common.ioc.InstanceClosingCheck;
 import page.foliage.common.ioc.InstanceFactory;
@@ -24,6 +26,9 @@ import page.foliage.file.session.impl.MinioSessionFactoryImpl;
 import page.foliage.inject.AbstractModule;
 import page.foliage.inject.Provides;
 import page.foliage.inject.Singleton;
+import page.foliage.ldap.session.IdentitySession;
+import page.foliage.ldap.session.impl.LdapConnection;
+import page.foliage.ldap.session.impl.LdapIdentitySession;
 
 /**
  * @author deathknight0718@qq.com
@@ -32,9 +37,27 @@ public abstract class TestBase {
 
     // ------------------------------------------------------------------------
 
+    private static final String LDAP_SEARCH_BASE = "dc=cecdat,dc=com";
+
+    // ------------------------------------------------------------------------
+
+    private static final String LDAP_PROVIDER_URL = "portal.cecdat.dev";
+
+    private static final String LDAP_SECURITY_PRINCIPAL = "cn=admin,dc=cecdat,dc=com";
+
+    private static final String LDAP_SECURITY_CREDENTIALS = "changeit";
+
+    private static final LDAPConnectionOptions OPTIONS = new LDAPConnectionOptions();
+
+    static {
+        OPTIONS.setFollowReferrals(false);
+    }
+
+    // ------------------------------------------------------------------------
+
     private static final String ENDPOINT = "https://file.foliage.page:7001";
 
-    private static final String[] KEYS = new String[]{ "yuxcUPKtLSwiWRHuyYiM", "V0EXFq5tdU1aqWmUOh9Pxf5PbEHaxIWwC5xeghyO" };
+    private static final String[] KEYS = new String[]{ "admin", "changeit" };
 
     // ------------------------------------------------------------------------
 
@@ -53,6 +76,16 @@ public abstract class TestBase {
             MinioSessionFactoryImpl bean = MinioSessionFactoryImpl.builder() //
                     .logging().endpoint(ENDPOINT).credentials(KEYS[0], KEYS[1]).build();
             return InstanceClosingCheck.hook(bean);
+        }
+
+        @Provides
+        public IdentitySession buildSession() throws Exception {
+            return new LdapIdentitySession(buildConnection());
+        }
+
+        @Provides
+        public LdapConnection buildConnection() throws Exception {
+            return new LdapConnection(LDAP_SEARCH_BASE, new LDAPConnection(OPTIONS, LDAP_PROVIDER_URL, 1389, LDAP_SECURITY_PRINCIPAL, LDAP_SECURITY_CREDENTIALS));
         }
 
     }

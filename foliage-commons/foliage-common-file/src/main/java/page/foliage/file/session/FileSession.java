@@ -15,6 +15,7 @@
  */
 package page.foliage.file.session;
 
+import page.foliage.file.FileBucket;
 import page.foliage.file.FileTags;
 import page.foliage.file.FileStream;
 import page.foliage.file.FilePoint;
@@ -40,7 +41,9 @@ public interface FileSession extends AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    List<FilePoint> list(FilePoint point, boolean recursive) throws Exception;
+    List<FilePoint> points(FileBucket bucket) throws Exception;
+
+    List<FilePoint> points(FilePoint point, boolean recursive) throws Exception;
 
     FileTags tags(FilePoint point) throws Exception;
 

@@ -43,9 +43,7 @@ public class IdentitySessionFactory {
         if (result == null) {
             synchronized (IdentitySessionFactory.class) {
                 if (result == null) {
-                    CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
-                    builder = builder.maximumSize(10000);
-                    builder = builder.expireAfterWrite(Duration.ofHours(1));
+                    CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().maximumSize(10000).expireAfterWrite(Duration.ofHours(1));
                     result = cache = builder.build();
                 }
             }

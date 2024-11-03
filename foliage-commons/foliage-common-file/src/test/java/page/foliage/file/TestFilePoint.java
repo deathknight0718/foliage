@@ -41,26 +41,34 @@ public class TestFilePoint {
 
     @Test
     private void testWrite() {
-        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName(Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test
     private void testWriteWithTree() {
-        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName("test/" + Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test/" + Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test
     private void testWriteWithTags() {
-        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName(Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()), ImmutableMap.of("TYPE", "NIFTI"));
     }
 
     @Test
-    private void testObject() throws IOException {
-        FilePoint bean = FilePoint.builder().withRegion("cn-800001001").withBucket("test").withName("test/").build();
-        for (FilePoint item : bean.list(false)) {
+    private void testObject1() throws IOException {
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test").build();
+        for (FilePoint item : bean.list(true)) {
+            LOGGER.info("item: {}", item.getName());
+        }
+    }
+
+    @Test
+    private void testObject2() throws IOException {
+        FileBucket bean = new FileBucket(FileRegion.get(800001001L), "test");
+        for (FilePoint item : bean.points()) {
             LOGGER.info("item: {}", item.getName());
         }
     }

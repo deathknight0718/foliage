@@ -21,7 +21,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
 
@@ -45,10 +44,6 @@ public class MinioSessionFactoryImpl implements FileSessionFactory, AutoCloseabl
     }
 
     // ------------------------------------------------------------------------
-
-    public static MinioSessionFactoryImpl singleton() {
-        return InstanceFactory.getInstance(MinioSessionFactoryImpl.class);
-    }
 
     public static Builder builder() {
         return new Builder();
