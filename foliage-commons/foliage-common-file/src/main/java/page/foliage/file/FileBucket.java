@@ -21,10 +21,18 @@ import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
 
+import java.time.ZonedDateTime;
+
 /**
  * @author deathknight0718@qq.com
  */
-public record FileBucket(FileRegion region, String name) {
+public record FileBucket(FileRegion region, String name, ZonedDateTime timestamp) {
+
+    // ------------------------------------------------------------------------
+
+    public FileBucket(FileRegion region, String name) {
+        this(region, name, ZonedDateTime.now());
+    }
 
     // ------------------------------------------------------------------------
 

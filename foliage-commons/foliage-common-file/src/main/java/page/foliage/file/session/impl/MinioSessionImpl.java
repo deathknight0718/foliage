@@ -27,7 +27,10 @@ import page.foliage.file.session.FileSession;
 import page.foliage.guava.common.collect.ImmutableMap;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,7 +62,9 @@ public class MinioSessionImpl implements FileSession {
         ListBucketsArgs.Builder query = ListBucketsArgs.builder();
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, region.getName()));
         List<Bucket> buckets = delegate.listBuckets(query.build());
-        Stream<Bucket> stream = buckets.stream().skip(params.offset()).limit(params.limit());
+        Stream<FileBucket> stream = buckets.stream()
+            .skip(params.offset()).limit(params.limit())
+            .map(it -> new FileBucket(region, it.name(), it.creationDate()));
         return PaginList.copyOf(stream.map(b -> new FileBucket(region, b.name())).collect(Collectors.toList()), buckets.size());
     }
 
