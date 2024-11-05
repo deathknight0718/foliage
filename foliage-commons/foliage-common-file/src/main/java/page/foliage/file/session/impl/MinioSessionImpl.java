@@ -76,11 +76,15 @@ public class MinioSessionImpl implements FileSession {
         query.bucket(bucket.name());
         query.recursive(false);
         List<FilePoint> points = new ArrayList<>();
-        int count = 0;
+        int count = 0, upper = params.offset() + params.limit();
         for (Result<Item> result : delegate.listObjects(query.build())) {
+            Item item = result.get();
             FilePoint.Builder builder = FilePoint.builder();
-            FilePoint item = builder.withRegion(bucket.region()).withBucket(bucket.name()).withName(result.get().objectName()).build();
-            if (count >= params.offset() && count < params.limit()) points.add(item);
+            FilePoint itemPoint = builder.withRegion(bucket.region()).withBucket(bucket.name())
+                .withPath(item.objectName())
+                .withTimestamp(item.objectName().endsWith("/") ? null : item.lastModified())
+                .build();
+            if (count >= params.offset() && count < upper) points.add(itemPoint);
             count++;
         }
         return PaginList.copyOf(points, count);
@@ -92,14 +96,18 @@ public class MinioSessionImpl implements FileSession {
         query.region(point.getRegion().getName());
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         query.bucket(point.getBucket().name());
-        query.prefix(point.getName());
+        query.prefix(point.getPath());
         query.recursive(!StringUtils.equalsIgnoreCase("false", params.get("recursive")));
         List<FilePoint> points = new ArrayList<>();
-        int count = 0;
+        int count = 0, upper = params.offset() + params.limit();
         for (Result<Item> result : delegate.listObjects(query.build())) {
+            Item item = result.get();
             FilePoint.Builder builder = FilePoint.builder();
-            FilePoint item = builder.withRegion(point.getRegion()).withBucket(point.getBucket().name()).withName(result.get().objectName()).build();
-            if (count >= params.offset() && count < params.limit()) points.add(item);
+            FilePoint itemPoint = builder.withRegion(point.getRegion()).withBucket(point.getBucket().name())
+                .withPath(item.objectName())
+                .withTimestamp(item.objectName().endsWith("/") ? null : item.lastModified())
+                .build();
+            if (count >= params.offset() && count < upper) points.add(itemPoint);
             count++;
         }
         return PaginList.copyOf(points, count);
@@ -111,7 +119,7 @@ public class MinioSessionImpl implements FileSession {
         query.region(point.getRegion().getName());
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         query.bucket(point.getBucket().name());
-        query.object(point.getName());
+        query.object(point.getPath());
         Tags tags = delegate.getObjectTags(query.build());
         return new FileTags(tags.get());
     }
@@ -122,7 +130,7 @@ public class MinioSessionImpl implements FileSession {
         query.region(point.getRegion().getName());
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         query.bucket(point.getBucket().name());
-        query.object(point.getName());
+        query.object(point.getPath());
         GetObjectResponse response = delegate.getObject(query.build());
         return new FileStream(response.headers(), point, response);
     }
@@ -139,7 +147,7 @@ public class MinioSessionImpl implements FileSession {
             builder.region(point.getRegion().getName());
             builder.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
             builder.bucket(point.getBucket().name());
-            builder.object(point.getName());
+            builder.object(point.getPath());
             builder.stream(is, -1, PART_SIZE_LOWER);
             Map<String, String> merged = new HashMap<>(tags);
             merged.put(TAG_ID, point.getId().toString());
@@ -154,7 +162,7 @@ public class MinioSessionImpl implements FileSession {
         builder.region(point.getRegion().getName());
         builder.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         builder.bucket(point.getBucket().name());
-        builder.object(point.getName());
+        builder.object(point.getPath());
         delegate.deleteObjectTags(builder.build());
     }
 

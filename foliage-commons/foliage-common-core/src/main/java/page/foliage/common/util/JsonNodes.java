@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import page.foliage.common.jackson.FoliageModule;
 
 /**
  * 
@@ -33,7 +34,7 @@ public class JsonNodes {
 
     // ------------------------------------------------------------------------
 
-    private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
+    static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new FoliageModule());
 
     // ------------------------------------------------------------------------
 
@@ -73,64 +74,64 @@ public class JsonNodes {
 
     public static ArrayNode asArray(float[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (float value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(double[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (double value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(boolean[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (boolean value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(byte[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (byte value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(char[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (char value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(short[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (short value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(int[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (int value : values) {
+            node.add(value);
         }
         return node;
     }
 
     public static ArrayNode asArray(long[] values) {
         ArrayNode node = createArrayNode();
-        for (int i = 0; i < values.length; i++) {
-            node.add(values[i]);
+        for (long value : values) {
+            node.add(value);
         }
         return node;
     }

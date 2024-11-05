@@ -15,6 +15,7 @@
  */
 package page.foliage.file;
 
+import org.apache.commons.io.FilenameUtils;
 import page.foliage.common.collect.Identities;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
@@ -24,6 +25,7 @@ import page.foliage.file.session.FileSessionFactory;
 import page.foliage.guava.common.base.Preconditions;
 
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,7 +42,9 @@ public class FilePoint {
 
     private UUID id;
 
-    private String name;
+    private String path;
+
+    private ZonedDateTime timestamp;
 
     // ------------------------------------------------------------------------
 
@@ -110,6 +114,12 @@ public class FilePoint {
 
     // ------------------------------------------------------------------------
 
+    public boolean isDirectory() {
+        return path.endsWith("/");
+    }
+
+    // ------------------------------------------------------------------------
+
     public UUID getId() {
         return id;
     }
@@ -122,8 +132,20 @@ public class FilePoint {
         return bucket;
     }
 
-    public String getName() {
-        return name;
+    public ZonedDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getFileName() {
+        return FilenameUtils.getName(path);
+    }
+
+    public String getParent() {
+        return FilenameUtils.getPath(path);
     }
 
     // ------------------------------------------------------------------------
@@ -150,7 +172,9 @@ public class FilePoint {
 
     interface StepName {
 
-        Builder withName(String name);
+        Builder withPath(String path);
+
+        Builder withTimestamp(ZonedDateTime timestamp);
 
     }
 
@@ -190,15 +214,22 @@ public class FilePoint {
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder withPath(String path) {
             Preconditions.checkNotNull(bean.bucket);
-            bean.name = name;
+            bean.path = FilenameUtils.normalize(path);
+            return this;
+        }
+
+        @Override
+        public Builder withTimestamp(ZonedDateTime timestamp) {
+            Preconditions.checkNotNull(bean.bucket);
+            bean.timestamp = timestamp;
             return this;
         }
 
         public FilePoint build() {
-            Preconditions.checkNotNull(bean.name);
-            bean.id = Identities.uuid(bean.region.getName(), bean.bucket.name(), bean.name);
+            Preconditions.checkNotNull(bean.path);
+            bean.id = Identities.uuid(bean.region.getName(), bean.bucket.name(), bean.path);
             return bean;
         }
 

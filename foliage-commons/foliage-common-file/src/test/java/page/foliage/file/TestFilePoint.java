@@ -41,27 +41,27 @@ public class TestFilePoint {
 
     @Test
     public void testWrite() {
-        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName(Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withPath(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test(invocationCount = 40)
     public void testWriteWithTree() {
-        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test/" + Identities.uuid()).build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withPath("test/" + Identities.uuid()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()));
     }
 
     @Test
     public void testWriteWithTags() {
-        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName(Identities.uuid().toString()).build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withPath(Identities.uuid().toString()).build();
         bean.upload(new ByteArrayInputStream("Hello Minio".getBytes()), ImmutableMap.of("TYPE", "NIFTI"));
     }
 
     @Test
     public void testObject1() {
-        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withName("test").build();
+        FilePoint bean = FilePoint.builder().withRegion(800001001L).withBucket("test").withPath("test").build();
         for (FilePoint item : bean.list(QueryParams.of("offset", "0", "limit", "5"))) {
-            LOGGER.info("item: {}", item.getName());
+            LOGGER.info("item: {}", item.getPath());
         }
     }
 
@@ -69,7 +69,7 @@ public class TestFilePoint {
     public void testObject2() {
         FileBucket bean = new FileBucket(FileRegion.get(800001001L), "test");
         for (FilePoint item : bean.points(QueryParams.ALL)) {
-            LOGGER.info("item: {}", item.getName());
+            LOGGER.info("item: {}", item.getPath());
         }
     }
 

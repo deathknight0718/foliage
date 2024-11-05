@@ -50,4 +50,11 @@ public record FileBucket(FileRegion region, String name, ZonedDateTime timestamp
         }
     }
 
+    // ------------------------------------------------------------------------
+
+    @Override
+    public ZonedDateTime timestamp() {
+        return timestamp;
+    }
+
 }
