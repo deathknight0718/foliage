@@ -3,7 +3,7 @@
     <parent>
         <groupId>page.foliage</groupId>
         <artifactId>foliage-commons</artifactId>
-        <version>1.0.9-SNAPSHOT</version>
+        <version>1.0.9</version>
     </parent>
     <artifactId>foliage-common-oidc</artifactId>
     <name>FOLIAGE COMMON OIDC</name>

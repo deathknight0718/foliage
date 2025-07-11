@@ -8,7 +8,7 @@
     </parent>
     <groupId>page.foliage</groupId>
     <artifactId>foliage</artifactId>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.0.9</version>
     <packaging>pom</packaging>
     <name>Foliage Project</name>
     <description>Repositories for research by foliage.develop@gmail.com.</description>
@@ -44,7 +44,7 @@
         <connection>scm:git:ssh://git@github.com/deathknight0718/foliage.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/deathknight0718/foliage.git</developerConnection>
         <url>https://github.com/deathknight0718/foliage.git</url>
-        <tag>v1.0.5</tag>
+        <tag>v1.0.9</tag>
     </scm>
     <developers>
         <developer>
