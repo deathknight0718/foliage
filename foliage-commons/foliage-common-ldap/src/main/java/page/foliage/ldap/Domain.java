@@ -15,10 +15,7 @@
  */
 package page.foliage.ldap;
 
-import static page.foliage.ldap.session.IdentitySessionFactory.openJdbcSession;
 import static page.foliage.ldap.session.IdentitySessionFactory.openSession;
-
-import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -27,8 +24,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.base.Objects;
-import page.foliage.guava.common.collect.ImmutableList;
-import page.foliage.guava.common.collect.Lists;
 import page.foliage.ldap.session.IdentitySession;
 
 /**
@@ -101,41 +96,6 @@ public class Domain {
     public PaginList<User> users(QueryParams params) {
         try (IdentitySession session = openSession()) {
             return session.usersSelectByParamsAndDomainId(params, id);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public PaginList<Repository> repositories(QueryParams params) {
-        try (IdentitySession session = openSession()) {
-            return session.repositoriesSelectByParamsAndDomainId(params, id);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public PaginList<Dashboard> dashboards(QueryParams params) {
-        try (IdentitySession session = openJdbcSession()) {
-            return session.dashboardsSelectByParamsAndDomainId(params, id);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public List<Repository> repositoriesByAccessible() {
-        ImmutableList.Builder<Repository> builder = ImmutableList.builder();
-        try (IdentitySession session = openSession()) {
-            builder.addAll(session.repositoriesSelectByParamsAndDomainId(QueryParams.ALL, id));
-            builder.addAll(Lists.transform(session.contractsSelectByParamsAndDomainId(QueryParams.ALL, id), Contract::repository));
-            return builder.build();
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public PaginList<Contract> contracts(QueryParams params) {
-        try (IdentitySession session = openSession()) {
-            return session.contractsSelectByParamsAndDomainId(params, id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }

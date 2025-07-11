@@ -133,7 +133,7 @@ public class IdentitySessionLdap implements IdentitySession {
             bean.setDisplayName(entry.get("displayName").asText());
             bean.setEmail(entry.get("mail").asText());
             bean.setName(entry.get("cn").asText());
-            bean.setDomainId(domainId);
+            bean.setDomainId(connection.reverse(entry, 2).get("uniqueIdentifier").asLong());
             beans.add(bean);
         }
         Stream<User> stream = beans.stream().skip(params.offset()).limit(params.limit());

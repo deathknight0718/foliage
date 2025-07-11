@@ -15,7 +15,6 @@
  */
 package page.foliage.ldap;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,8 +28,6 @@ public interface Access {
     User getUser();
 
     Domain getDomain();
-
-    List<Domain> getDomains();
 
     Set<Role> getRoles();
 

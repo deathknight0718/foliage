@@ -15,23 +15,13 @@
  */
 package page.foliage.ldap;
 
-import static page.foliage.ldap.session.IdentitySessionFactory.openJdbcSession;
+import static page.foliage.ldap.session.IdentitySessionFactory.openSession;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-
 import page.foliage.common.collect.QueryParams;
-import page.foliage.common.util.JsonNodes;
-import page.foliage.guava.common.base.Preconditions;
-import page.foliage.guava.common.collect.ImmutableList;
 import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.ldap.session.IdentitySession;
 
@@ -43,23 +33,11 @@ public class StatelessAccess implements Access {
 
     // ------------------------------------------------------------------------
 
-    private static final String PATH_CONST = "const";
-
-    private static final String PATH_TITLE = "title";
-
-    // ------------------------------------------------------------------------
-
     private User user;
 
     private Domain domain;
 
-    private List<Domain> domains;
-
-    private Set<Repository> accessibleRepositories;
-
     private Set<Role> roles;
-
-    private List<Dashboard> dashboards;
 
     // ------------------------------------------------------------------------
 
@@ -68,20 +46,11 @@ public class StatelessAccess implements Access {
     // ------------------------------------------------------------------------
 
     public static StatelessAccess fromEmail(String email) {
-        try (IdentitySession session = openJdbcSession()) {
+        try (IdentitySession session = openSession()) {
             StatelessAccess bean = new StatelessAccess();
             bean.user = session.userSelectByEmail(email);
             bean.domain = session.domainSelectById(bean.user.getDomainId());
             bean.roles = ImmutableSet.copyOf(session.rolesSelectByParamsAndUserId(QueryParams.ALL, bean.user.getId()));
-            ImmutableSet.Builder<Repository> repositories = ImmutableSet.builder();
-            repositories.addAll(session.repositoriesSelectByParamsAndDomainId(QueryParams.ALL, bean.user.getDomainId()));
-            for (Contract contract : session.contractsSelectByParamsAndDomainId(QueryParams.ALL, bean.user.getDomainId())) {
-                repositories.add(contract.repository());
-            }
-            bean.accessibleRepositories = repositories.build();
-            if (bean.user.isMemberOf(Role.SYSTEM_ADMIN)) bean.domains = ImmutableList.copyOf(session.domainsSelectByParams(QueryParams.ALL));
-            else bean.domains = ImmutableList.of(bean.domain);
-            bean.dashboards = session.dashboardsSelectByParamsAndDomainId(QueryParams.ALL, bean.user.getDomainId());
             return bean;
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -91,7 +60,6 @@ public class StatelessAccess implements Access {
     public static StatelessAccess create(Domain domain) {
         StatelessAccess bean = new StatelessAccess();
         bean.domain = domain;
-        bean.accessibleRepositories = ImmutableSet.of();
         bean.roles = ImmutableSet.of();
         return bean;
     }
@@ -104,30 +72,6 @@ public class StatelessAccess implements Access {
 
     public LocalDateTime currentDateTime() {
         return LocalDateTime.now();
-    }
-
-    public JsonNode domains() {
-        Preconditions.checkArgument(user.isMemberOf(Role.DOMAIN_ADMIN, Role.SYSTEM_ADMIN));
-        ArrayNode result = JsonNodes.createArrayNode();
-        for (Domain item : Domain.list(QueryParams.ALL)) {
-            ObjectNode node = JsonNodes.createObjectNode();
-            node.set(PATH_CONST, LongNode.valueOf(item.getId()));
-            node.set(PATH_TITLE, TextNode.valueOf(item.getDisplayName()));
-            result.add(node);
-        }
-        return result;
-    }
-
-    public JsonNode repositories() {
-        Preconditions.checkArgument(user.isMemberOf(Role.DOMAIN_ADMIN, Role.SYSTEM_ADMIN));
-        ArrayNode result = JsonNodes.createArrayNode();
-        for (Repository item : domain.repositories(QueryParams.ALL)) {
-            ObjectNode node = JsonNodes.createObjectNode();
-            node.set(PATH_CONST, LongNode.valueOf(item.getId()));
-            node.set(PATH_TITLE, TextNode.valueOf(item.getDisplayName()));
-            result.add(node);
-        }
-        return result;
     }
 
     // ------------------------------------------------------------------------
@@ -143,21 +87,8 @@ public class StatelessAccess implements Access {
     }
 
     @Override
-    public List<Domain> getDomains() {
-        return domains;
-    }
-
-    @Override
     public Set<Role> getRoles() {
         return roles;
-    }
-
-    public Set<Repository> getAccessibleRepositories() {
-        return accessibleRepositories;
-    }
-
-    public List<Dashboard> getDashboards() {
-        return dashboards;
     }
 
 }

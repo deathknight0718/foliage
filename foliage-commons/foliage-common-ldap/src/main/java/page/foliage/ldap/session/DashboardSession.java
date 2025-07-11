@@ -28,31 +28,23 @@ import page.foliage.common.collect.QueryParams;
 import page.foliage.common.util.sql.SQLE;
 import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.collect.ImmutableList;
-import page.foliage.ldap.Contract;
 import page.foliage.ldap.Dashboard;
-import page.foliage.ldap.Domain;
-import page.foliage.ldap.Repository;
-import page.foliage.ldap.Role;
-import page.foliage.ldap.User;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-public class IdentitySessionJdbc implements IdentitySession {
+public class DashboardSession implements AutoCloseable {
 
     // ------------------------------------------------------------------------
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(IdentitySessionJdbc.class);
-
-    private final IdentitySession delegate;
+    private final static Logger LOGGER = LoggerFactory.getLogger(DashboardSession.class);
 
     private final Connection connection;
 
     // ------------------------------------------------------------------------
 
-    public IdentitySessionJdbc(IdentitySession delegate, Connection connection) {
-        this.delegate = delegate;
+    public DashboardSession(Connection connection) {
         this.connection = connection;
     }
 
@@ -61,95 +53,10 @@ public class IdentitySessionJdbc implements IdentitySession {
     @Override
     public void close() throws Exception {
         connection.close();
-        delegate.close();
     }
 
     // ------------------------------------------------------------------------
 
-    @Override
-    public PaginList<Domain> domainsSelectByParams(QueryParams params) throws Exception {
-        return delegate.domainsSelectByParams(params);
-    }
-
-    @Override
-    public PaginList<Domain> domainsRecursionByParamsAndRoot(QueryParams params, Domain root) throws Exception {
-        return delegate.domainsRecursionByParamsAndRoot(params, root);
-    }
-
-    @Override
-    public Domain domainSelectById(Long id) throws Exception {
-        return delegate.domainSelectById(id);
-    }
-
-    @Override
-    public Domain domainSelectByIdentifier(String identifier) throws Exception {
-        return delegate.domainSelectByIdentifier(identifier);
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<User> usersSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
-        return delegate.usersSelectByParamsAndDomainId(params, domainId);
-    }
-
-    @Override
-    public User userSelectById(Long id) throws Exception {
-        return delegate.userSelectById(id);
-    }
-
-    @Override
-    public User userSelectByEmail(String email) throws Exception {
-        return delegate.userSelectByEmail(email);
-    }
-
-    @Override
-    public User userSelectByName(String name) throws Exception {
-        return delegate.userSelectByName(name);
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<Repository> repositoriesSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
-        return delegate.repositoriesSelectByParamsAndDomainId(params, domainId);
-    }
-
-    @Override
-    public Repository repositorySelectById(Long id) throws Exception {
-        return delegate.repositorySelectById(id);
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<Contract> contractsSelectByParamsAndRepositoryId(QueryParams params, Long repositoryId) throws Exception {
-        return delegate.contractsSelectByParamsAndRepositoryId(params, repositoryId);
-    }
-
-    @Override
-    public PaginList<Contract> contractsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
-        return delegate.contractsSelectByParamsAndDomainId(params, domainId);
-    }
-
-    @Override
-    public Contract contractSelectById(Long id) throws Exception {
-        return delegate.contractSelectById(id);
-    }
-
-    @Override
-    public Contract contractInsert(Contract.Builder builder) throws Exception {
-        return delegate.contractInsert(builder);
-    }
-
-    @Override
-    public void contractDeleteById(Long id) throws Exception {
-        delegate.contractDeleteById(id);
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
     public PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
         ImmutableList.Builder<Dashboard> builder = ImmutableList.builder();
         SQLE sqle = new SQLE().SELECT("id_, name_, domain_id_, dashboard_id_, dashboard_token_").FROM("public.fli_core_dashboard").WHERE("domain_id_ = ?");
@@ -179,7 +86,6 @@ public class IdentitySessionJdbc implements IdentitySession {
         }
     }
 
-    @Override
     public Dashboard dashboardSelectById(Long id) throws Exception {
         SQLE sqle = new SQLE().SELECT("id_, name_, domain_id_, dashboard_id_, dashboard_token_").FROM("public.fli_core_dashboard").WHERE("id_ = ?");
         try (PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString())) {
@@ -197,7 +103,6 @@ public class IdentitySessionJdbc implements IdentitySession {
         }
     }
 
-    @Override
     public Dashboard dashboardInsertOrUpdate(Dashboard.Builder builder) throws Exception {
         Long id = builder.getId() != null ? builder.getId() : Identities.snowflake();
         SQLE sqle1 = new SQLE();
@@ -226,7 +131,6 @@ public class IdentitySessionJdbc implements IdentitySession {
         }
     }
 
-    @Override
     public Long dashboardDeleteById(Long id) throws Exception {
         SQLE sqle = new SQLE().DELETE_FROM("public.fli_core_dashboard").WHERE("id_ = ?");
         try (PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString())) {
@@ -236,18 +140,6 @@ public class IdentitySessionJdbc implements IdentitySession {
             if (callback != 1) LOGGER.warn("Warning! nothing happened when executing sql: {}", statement);
             return id;
         }
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<Role> rolesSelectByParams(QueryParams params) throws Exception {
-        return delegate.rolesSelectByParams(params);
-    }
-
-    @Override
-    public PaginList<Role> rolesSelectByParamsAndUserId(QueryParams params, Long userId) throws Exception {
-        return delegate.rolesSelectByParamsAndUserId(params, userId);
     }
 
 }

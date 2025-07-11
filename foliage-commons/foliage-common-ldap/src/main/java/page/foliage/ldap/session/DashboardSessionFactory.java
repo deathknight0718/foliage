@@ -26,7 +26,7 @@ import page.foliage.guava.common.cache.CacheBuilder;
  * 
  * @author deathknight0718@qq.com
  */
-public class IdentitySessionFactory {
+public class DashboardSessionFactory {
 
     // ------------------------------------------------------------------------
 
@@ -49,8 +49,8 @@ public class IdentitySessionFactory {
 
     // ------------------------------------------------------------------------
 
-    public static IdentitySession openSession() throws Exception {
-        return new IdentitySessionCache(InstanceFactory.getInstance(IdentitySession.class), cache());
+    public static DashboardSession openSession() throws Exception {
+        return InstanceFactory.getInstance(DashboardSession.class);
     }
 
 }

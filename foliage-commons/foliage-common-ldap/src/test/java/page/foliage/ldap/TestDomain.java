@@ -15,8 +15,6 @@
  */
 package page.foliage.ldap;
 
-import java.time.LocalDateTime;
-
 import org.slf4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,11 +35,11 @@ import page.foliage.ldap.session.LdapConnection;
  * 
  * @author deathknight0718@qq.com
  */
-public class TestLdap {
+public class TestDomain {
 
     // ------------------------------------------------------------------------
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(TestLdap.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(TestDomain.class);
 
     private static final String LDAP_SEARCH_BASE = "dc=cecdat,dc=com";
 
@@ -66,14 +64,6 @@ public class TestLdap {
         InstanceFactory.provide(InstanceGuice.withModule(new InternalModule()));
     }
 
-    @Test(enabled = false)
-    public void testRepositoryContractBuild() throws Exception {
-        Contract.Builder builder = Contract.builder(StatelessAccess.fromEmail("domain2admin1@cecdat.com"));
-        builder.name("repo1contract2").domainId(800003L).repositoryId(800002001L).expiration(LocalDateTime.now().plusYears(1));
-        Contract contract = builder.build();
-        contract.remove();
-    }
-
     @Test(enabled = true)
     public void testDomainList() throws Exception {
         for (Domain domain : Domain.list(QueryParams.ALL)) {
@@ -89,18 +79,10 @@ public class TestLdap {
     }
 
     @Test(enabled = true)
-    public void testUserList() throws Exception {
+    public void testDomainUserList() throws Exception {
         Domain domain = Domain.get("domain1");
         for (User user : domain.users(QueryParams.ALL)) {
-            LOGGER.info("User: {} {} {}", user.getId(), user.getName(), user.getEmail());
-        }
-    }
-
-    @Test(enabled = true)
-    public void testRepositoryList() throws Exception {
-        Domain domain = Domain.get("system");
-        for (Repository repository : domain.repositories(QueryParams.ALL)) {
-            LOGGER.info("Repository: {} {} {}", repository.getId(), repository.getName(), repository.getDisplayName());
+            LOGGER.info("User: {} {} {} {}", user.getId(), user.getName(), user.getEmail(), user.getDomainId());
         }
     }
 

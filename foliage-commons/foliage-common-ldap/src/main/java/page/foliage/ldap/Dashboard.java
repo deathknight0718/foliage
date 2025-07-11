@@ -15,7 +15,7 @@
  */
 package page.foliage.ldap;
 
-import static page.foliage.ldap.session.IdentitySessionFactory.openJdbcSession;
+import static page.foliage.ldap.session.DashboardSessionFactory.openSession;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -23,7 +23,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import page.foliage.guava.common.base.Objects;
 import page.foliage.guava.common.base.Preconditions;
-import page.foliage.ldap.session.IdentitySession;
+import page.foliage.ldap.session.DashboardSession;
 
 /**
  * 
@@ -58,7 +58,7 @@ public class Dashboard {
     }
 
     public static Dashboard get(Long id) {
-        try (IdentitySession session = openJdbcSession()) {
+        try (DashboardSession session = openSession()) {
             return session.dashboardSelectById(id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -72,7 +72,7 @@ public class Dashboard {
     }
 
     public void remove() {
-        try (IdentitySession session = openJdbcSession()) {
+        try (DashboardSession session = openSession()) {
             session.dashboardDeleteById(id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -177,7 +177,7 @@ public class Dashboard {
             Preconditions.checkNotNull(referenceId);
             Preconditions.checkNotNull(name);
             Preconditions.checkNotNull(token);
-            try (IdentitySession session = openJdbcSession()) {
+            try (DashboardSession session = openSession()) {
                 return session.dashboardInsertOrUpdate(this);
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);

@@ -26,7 +26,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import page.foliage.common.collect.Identities;
-import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
 import page.foliage.guava.common.base.Objects;
 import page.foliage.guava.common.base.Preconditions;
@@ -201,8 +200,6 @@ public class Contract {
 
         public Contract build() {
             Preconditions.checkNotNull(name);
-            Preconditions.checkArgument(access.getDomain().repositories(QueryParams.ALL).contains(repository));
-            Preconditions.checkArgument(!domain.repositoriesByAccessible().contains(repository));
             Preconditions.checkArgument(expiration.isAfter(LocalDateTime.now()));
             try (IdentitySession session = openSession()) {
                 return session.contractInsert(this);

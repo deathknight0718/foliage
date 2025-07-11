@@ -18,7 +18,6 @@ package page.foliage.ldap;
 import static page.foliage.ldap.session.IdentitySessionFactory.openSession;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -73,7 +72,7 @@ public class User {
             throw new IllegalArgumentException(e);
         }
     }
-    
+
     public static User fromName(String name) {
         try (IdentitySession session = openSession()) {
             return session.userSelectByName(name);
@@ -86,10 +85,6 @@ public class User {
 
     public boolean isMemberOf(Role... roles) {
         return !Collections.disjoint(ImmutableSet.copyOf(roles), roles(QueryParams.ALL));
-    }
-
-    public List<Repository> repositoriesByAccessible() {
-        return domain().repositoriesByAccessible();
     }
 
     public PaginList<Role> roles(QueryParams params) {
