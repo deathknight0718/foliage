@@ -1,0 +1,19 @@
+{
+  "fields": ["instruction"],
+  "_source": false,
+  "knn": {
+    "field": "instruction_embeddings",
+    "filter": {
+      "bool": {
+        "must": {
+          "multi_match": {
+            "fields": ["instruction", "content"]
+          }
+        }
+      }
+    },
+    "query_vector": null,
+    "k": 5,
+    "num_candidates": 50
+  }
+}

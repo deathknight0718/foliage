@@ -14,6 +14,7 @@
  * the License.
  ******************************************************************************/
 package page.foliage.common.collect;
+
 import java.util.List;
 
 import page.foliage.guava.common.base.Function;
@@ -26,7 +27,7 @@ import page.foliage.guava.common.collect.Lists;
  * @author deathknight0718@qq.com.
  * @version 1.0.0
  */
-public class PaginList<T> extends ForwardingList<T> implements List<T> {
+public class PaginList<T> extends ForwardingList<T> {
 
     // ------------------------------------------------------------------------
 

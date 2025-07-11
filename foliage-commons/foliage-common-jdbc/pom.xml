@@ -6,7 +6,7 @@
         <version>1.0.9-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-jdbc</artifactId>
-    <name>Foliage Common JDBC</name>
+    <name>FOLIAGE COMMON JDBC</name>
     <build>
         <plugins>
             <plugin>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-common-core</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>

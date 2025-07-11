@@ -1,0 +1,6 @@
+You are given a table named: 'items' with schema, generate SQLite SQL query to answer the given question.
+Table schema:
+{'name': <class 'str'>, 'age': <class 'int'>, 'major': <class 'str'>, 'email': <class 'str'>, 'address': <class 'str'>, 'city': <class 'str'>, 'state': <class 'str'>, 'country': <class 'str'>, 'phone': <class 'str'>, 'occupation': <class 'str'>}
+Question: What is the average age of the individuals in the dataset?
+
+SQLQuery: "

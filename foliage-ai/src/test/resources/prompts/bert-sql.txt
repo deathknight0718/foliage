@@ -1,0 +1,1 @@
+帮我查找一下姓名为刘正的患者, http://localhost:8080/fhir/Patient?name=[MASK]&_pretty=true

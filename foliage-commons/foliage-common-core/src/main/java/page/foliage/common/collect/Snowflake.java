@@ -27,13 +27,13 @@ public class Snowflake {
 
     // ------------------------------------------------------------------------
 
-    private final static long START_MILLIS = 100132547003L;
+    private final static long START_MILLIS = 170406720000L;
 
     private final static long BIT_SEQUENCE = 12;
 
-    private final static long BIT_MACHINE = 5;
+    private final static long BIT_MACHINE = 4;
 
-    private final static long BIT_DATACENTER = 5;
+    private final static long BIT_DATACENTER = 2;
 
     private final static long MAX_SEQUENCE = -1L ^ (-1L << BIT_SEQUENCE);
 

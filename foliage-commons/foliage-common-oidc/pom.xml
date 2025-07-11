@@ -6,7 +6,7 @@
         <version>1.0.9-SNAPSHOT</version>
     </parent>
     <artifactId>foliage-common-oidc</artifactId>
-    <name>Foliage Common OIDC</name>
+    <name>FOLIAGE COMMON OIDC</name>
     <build>
         <plugins>
             <plugin>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-common-core</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

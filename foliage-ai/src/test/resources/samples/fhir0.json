@@ -1,0 +1,312 @@
+{
+  "resourceType": "Bundle",
+  "type": "batch",
+  "entry": [ {
+    "fullUrl": "urn:uuid:0caa0116-ef9a-3d4c-bcff-9c405a9d2bda",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "0caa0116-ef9a-3d4c-bcff-9c405a9d2bda",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 15
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-procedures-extension",
+        "valueInteger": 12
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-labs-extension",
+        "valueInteger": 2
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-prescriptions-extension",
+        "valueInteger": 3
+      } ],
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "0caa0116-ef9a-3d4c-bcff-9c405a9d2bda"
+      } ],
+      "active": true,
+      "type": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        } ],
+        "text": "Healthcare Provider"
+      } ],
+      "name": "TRANQUILITY HEALTH AND WELLNESS PROFESSIONALS LLC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "5085633003"
+      } ],
+      "address": [ {
+        "line": [ "105 CHESTNUT ST STE 35" ],
+        "city": "PLYMOUTH",
+        "state": "MA",
+        "postalCode": "023604054",
+        "country": "US"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "Organization",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|0caa0116-ef9a-3d4c-bcff-9c405a9d2bda"
+    }
+  }, {
+    "fullUrl": "urn:uuid:6ca2b299-d1a7-300b-9b7b-969385ac5418",
+    "resource": {
+      "resourceType": "Location",
+      "id": "6ca2b299-d1a7-300b-9b7b-969385ac5418",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" ]
+      },
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "6ca2b299-d1a7-300b-9b7b-969385ac5418"
+      } ],
+      "status": "active",
+      "name": "TRANQUILITY HEALTH AND WELLNESS PROFESSIONALS LLC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "5085633003"
+      } ],
+      "address": {
+        "line": [ "105 CHESTNUT ST STE 35" ],
+        "city": "PLYMOUTH",
+        "state": "MA",
+        "postalCode": "023604054",
+        "country": "US"
+      },
+      "position": {
+        "longitude": -70.847219,
+        "latitude": 41.884685
+      },
+      "managingOrganization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "0caa0116-ef9a-3d4c-bcff-9c405a9d2bda"
+        },
+        "display": "TRANQUILITY HEALTH AND WELLNESS PROFESSIONALS LLC"
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|6ca2b299-d1a7-300b-9b7b-969385ac5418"
+    }
+  }, {
+    "fullUrl": "urn:uuid:3ff0f58b-7a1f-3334-9449-ff15f68b7d86",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "3ff0f58b-7a1f-3334-9449-ff15f68b7d86",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 3
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-procedures-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-labs-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-prescriptions-extension",
+        "valueInteger": 0
+      } ],
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "3ff0f58b-7a1f-3334-9449-ff15f68b7d86"
+      } ],
+      "active": true,
+      "type": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        } ],
+        "text": "Healthcare Provider"
+      } ],
+      "name": "BETH ISRAEL DEACONESS HOSPITAL PLYMOUTH INC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "5087462000"
+      } ],
+      "address": [ {
+        "line": [ "275 SANDWICH ST" ],
+        "city": "PLYMOUTH",
+        "state": "MA",
+        "postalCode": "023607761",
+        "country": "US"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "Organization",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|3ff0f58b-7a1f-3334-9449-ff15f68b7d86"
+    }
+  }, {
+    "fullUrl": "urn:uuid:69fc5bac-35b9-3671-9b39-e157b58b6207",
+    "resource": {
+      "resourceType": "Location",
+      "id": "69fc5bac-35b9-3671-9b39-e157b58b6207",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" ]
+      },
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "69fc5bac-35b9-3671-9b39-e157b58b6207"
+      } ],
+      "status": "active",
+      "name": "BETH ISRAEL DEACONESS HOSPITAL PLYMOUTH INC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "5087462000"
+      } ],
+      "address": {
+        "line": [ "275 SANDWICH ST" ],
+        "city": "PLYMOUTH",
+        "state": "MA",
+        "postalCode": "023607761",
+        "country": "US"
+      },
+      "position": {
+        "longitude": -70.6455366462985,
+        "latitude": 41.94186605
+      },
+      "managingOrganization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "3ff0f58b-7a1f-3334-9449-ff15f68b7d86"
+        },
+        "display": "BETH ISRAEL DEACONESS HOSPITAL PLYMOUTH INC"
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|69fc5bac-35b9-3671-9b39-e157b58b6207"
+    }
+  }, {
+    "fullUrl": "urn:uuid:7b20d1c4-c56b-3647-801c-5e4e13679073",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "7b20d1c4-c56b-3647-801c-5e4e13679073",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" ]
+      },
+      "extension": [ {
+        "url": "http://synthetichealth.github.io/synthea/utilization-encounters-extension",
+        "valueInteger": 2
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-procedures-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-labs-extension",
+        "valueInteger": 0
+      }, {
+        "url": "http://synthetichealth.github.io/synthea/utilization-prescriptions-extension",
+        "valueInteger": 0
+      } ],
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "7b20d1c4-c56b-3647-801c-5e4e13679073"
+      } ],
+      "active": true,
+      "type": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+          "code": "prov",
+          "display": "Healthcare Provider"
+        } ],
+        "text": "Healthcare Provider"
+      } ],
+      "name": "BETH ISRAEL DEACONESS HOSPITAL PLYMOUTH INC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "5087462000"
+      } ],
+      "address": [ {
+        "line": [ "275 SANDWICH ST" ],
+        "city": "PLYMOUTH",
+        "state": "MA",
+        "postalCode": "023602183",
+        "country": "US"
+      } ]
+    },
+    "request": {
+      "method": "POST",
+      "url": "Organization",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|7b20d1c4-c56b-3647-801c-5e4e13679073"
+    }
+  }, {
+    "fullUrl": "urn:uuid:c64ea29a-9c02-31a6-9721-2c245c1c085d",
+    "resource": {
+      "resourceType": "Location",
+      "id": "c64ea29a-9c02-31a6-9721-2c245c1c085d",
+      "meta": {
+        "profile": [ "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" ]
+      },
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "c64ea29a-9c02-31a6-9721-2c245c1c085d"
+      } ],
+      "status": "active",
+      "name": "BETH ISRAEL DEACONESS HOSPITAL PLYMOUTH INC",
+      "telecom": [ {
+        "system": "phone",
+        "value": "5087462000"
+      } ],
+      "address": {
+        "line": [ "275 SANDWICH ST" ],
+        "city": "PLYMOUTH",
+        "state": "MA",
+        "postalCode": "023602183",
+        "country": "US"
+      },
+      "position": {
+        "longitude": -70.6455366462985,
+        "latitude": 41.94186605
+      },
+      "managingOrganization": {
+        "identifier": {
+          "system": "https://github.com/synthetichealth/synthea",
+          "value": "7b20d1c4-c56b-3647-801c-5e4e13679073"
+        },
+        "display": "BETH ISRAEL DEACONESS HOSPITAL PLYMOUTH INC"
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|c64ea29a-9c02-31a6-9721-2c245c1c085d"
+    }
+  }, {
+    "fullUrl": "urn:uuid:bb1ad573-19b8-9cd8-68fb-0e6f684df992",
+    "resource": {
+      "resourceType": "Location",
+      "id": "bb1ad573-19b8-9cd8-68fb-0e6f684df992",
+      "identifier": [ {
+        "system": "https://github.com/synthetichealth/synthea",
+        "value": "bb1ad573-19b8-9cd8-68fb-0e6f684df992"
+      } ],
+      "status": "active",
+      "description": "Patient's Home",
+      "mode": "kind",
+      "physicalType": {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+          "code": "ho",
+          "display": "House"
+        } ]
+      }
+    },
+    "request": {
+      "method": "POST",
+      "url": "Location",
+      "ifNoneExist": "identifier=https://github.com/synthetichealth/synthea|bb1ad573-19b8-9cd8-68fb-0e6f684df992"
+    }
+  } ]
+}

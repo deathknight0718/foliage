@@ -15,18 +15,23 @@
  */
 package org.foliage.common.test;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.testng.annotations.Test;
+
+import page.foliage.common.collect.Identities;
 
 /**
  * 
  * @author deathknight0718@qq.com
  */
-@Test
 public class TestUtils {
 
-    @Test
-    private void testNamedPreparedStatement() {
-        
+    @Test(invocationCount = 10)
+    public void testUuidv3Generation() throws NoSuchAlgorithmException {
+        System.out.println(Identities.uuidv3("test", "test".getBytes()));
+        System.out.println(Identities.snowflake()); // 51818591548080128
+        System.out.println(Identities.snowflake()); // 25909299483443201
     }
 
 }

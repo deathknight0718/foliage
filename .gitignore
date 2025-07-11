@@ -3,74 +3,61 @@
 ##################################################
 
 # Filter Files
-**/*.class
-**/*.jar
-**/*.war
-**/*.ear
-**/*.iml
-**/*.o
-**/*.so
-**/*.so.*
-**/*.a
-**/*.a.*
-**/*.swp
-**/*.log
-**/*.out
-**/*.db
-**/*.pc
-**/*.tar.gz
-**/*.asc
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.o
+*.so
+*.so.*
+*.a
+*.a.*
+*.swp
+*.log
+*.out
+*.db
+*.pc
+*.tar.gz
+*.asc
 
-!/repository/*.jar
-!**/src/main/**/*.jar
-!**/src/main/**/*.tar.gz
+!src/main/**/*.jar
+!src/main/**/*.tar.gz
 
 # Maven Shade Plugin
-**/dependency-reduced-pom.xml
+dependency-reduced-pom.xml
 
 # PID Files
-**/PID
+PID
 
 # Virtual Machine Crash Logs, see http://www.java.com/en/download/help/error_hotspot.xml
-**/hs_err_pid*
+hs_err_pid*
 
-# Eclipse Target Directory
+# Build Output
 target/
 test-output/
 allure-results/
 node_modules/
+dist/
+out/
 
-# Logger and Temp Directory
-/log/
-/logs/
-/data/
-/temp/
-/work/
-/webapps/
+# Eclipse
+.settings/
+.project
+.allure/
+.cproject
+.classpath
+.cache-*
+release.properties
 
-# Eclipse Plugin Directory
-**/.idea/
+# Idea
+.idea/
 
-# Eclipse Plugin Directory
-**/.settings/
+# Subversion
+.svn/
 
-# Eclipse Plugin File
-**/.project
-**/.allure/
-**/.cproject
-**/.classpath
-**/.cache-*
-**/release.properties
+# Gradle
+.gradle/
 
-# Subversion direntory
-**/.svn/
-
-# Gradle Plugin Directory
-**/.gradle/
-
-# Filter Files
-
-# Filter Links
-
-/.metadata/
-/.idea/
+# Cargo
+# Cargo.lock

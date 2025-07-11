@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>page.foliage</groupId>
+        <artifactId>foliage-commons</artifactId>
+        <version>1.0.9-SNAPSHOT</version>
+    </parent>
+    <artifactId>foliage-common-flow</artifactId>
+    <name>FOLIAGE COMMON FLOW</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>empty-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- ======================================== -->
+        <!-- Local Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>page.foliage</groupId>
+            <artifactId>foliage-common-ldap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Flowable Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-engine</artifactId>
+            <version>6.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-form-engine</artifactId>
+            <version>6.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-ldap</artifactId>
+            <version>6.8.0</version>
+        </dependency>
+        <!-- ======================================== -->
+        <!-- Test Dependencies -->
+        <!-- ======================================== -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>page.foliage</groupId>
+            <artifactId>foliage-guice</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

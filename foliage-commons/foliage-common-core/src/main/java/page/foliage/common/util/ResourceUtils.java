@@ -34,7 +34,11 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+    // ------------------------------------------------------------------------
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceUtils.class);
+
+    // ------------------------------------------------------------------------
 
     public static InputStream readResource(String path) throws IOException {
         return readResource(path, ClassLoader.getSystemClassLoader());
@@ -54,39 +58,39 @@ public class ResourceUtils {
 
     public static void safeClose(Object... objects) {
         if (objects == null || objects.length == 0) {
-            logger.info("safeClose(...) was invoked with null or empty array: {}", objects);
+            LOGGER.info("safeClose(...) was invoked with null or empty array: {}", objects);
             return;
         }
         for (Object obj : objects) {
             if (obj != null) {
-                logger.debug("Trying to safely close {}", obj);
+                LOGGER.debug("Trying to safely close {}", obj);
                 if (obj instanceof Flushable) {
                     try {
                         ((Flushable) obj).flush();
                     } catch (Exception e) {
-                        logger.debug("Flushing Flushable failed", e);
+                        LOGGER.debug("Flushing Flushable failed", e);
                     }
                 }
                 if (obj instanceof AutoCloseable) {
                     try {
                         ((AutoCloseable) obj).close();
                     } catch (Exception e) {
-                        logger.debug("Closing AutoCloseable failed", e);
+                        LOGGER.debug("Closing AutoCloseable failed", e);
                     }
                 } else {
-                    logger.info("obj was not AutoCloseable, trying to find close() method via reflection.");
+                    LOGGER.info("obj was not AutoCloseable, trying to find close() method via reflection.");
                     try {
                         Method method = obj.getClass().getMethod("close", new Class[0]);
                         if (method == null) {
-                            logger.info("obj did not have a close() method, ignoring");
+                            LOGGER.info("obj did not have a close() method, ignoring");
                         } else {
                             method.setAccessible(true);
                             method.invoke(obj);
                         }
                     } catch (InvocationTargetException e) {
-                        logger.warn("Invoking close() by reflection threw exception", e);
+                        LOGGER.warn("Invoking close() by reflection threw exception", e);
                     } catch (Exception e) {
-                        logger.warn("Could not invoke close() by reflection", e);
+                        LOGGER.warn("Could not invoke close() by reflection", e);
                     }
                 }
             }

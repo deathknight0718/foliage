@@ -37,6 +37,8 @@ public class Identities {
 
     private final static Snowflake DEFAULT_SNOW_FLAKE_GENERATER = new Snowflake(0L, 0L);
 
+    private final static Jsonflake DEFAULT_JSON_FLAKE_GENERATER = new Jsonflake();
+
     // ------------------------------------------------------------------------
 
     public static long snowflake() {
@@ -51,16 +53,59 @@ public class Identities {
         return new Snowflake(did, mid).next();
     }
 
+    public static long jsonflake() {
+        return DEFAULT_JSON_FLAKE_GENERATER.next();
+    }
+
     // ------------------------------------------------------------------------
 
     /**
-     * UUID Type 4
-     *
-     * @see UUID#randomUUID()
+     * UUID Type 3
+     * 
+     * @see UUID#nameUUIDFromBytes(byte[])
      */
-    public static UUID uuid() {
-        return UUID.randomUUID();
+    public static UUID uuidv3(byte[] bytes) {
+        return UUID.nameUUIDFromBytes(bytes);
     }
+
+    /**
+     * UUID Type 3
+     * 
+     * @see UUID#nameUUIDFromBytes(byte[])
+     */
+    public static UUID uuidv3(String namespace, byte[] bytes) {
+        return uuidv3(uuidv3(namespace.getBytes()), bytes);
+    }
+
+    /**
+     * UUID Type 3
+     * 
+     * @see UUID#nameUUIDFromBytes(byte[])
+     */
+    public static UUID uuidv3(UUID namespace, byte[] bytes) {
+        UUID uuid = namespace;
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException nsae) {
+            throw new InternalError("MD5 not supported", nsae);
+        }
+        md.update(bytes);
+        byte[] mdBytes = md.digest(uuidBytes(namespace));
+        mdBytes[6] &= 0x0f; /* clear version */
+        mdBytes[6] |= 0x30; /* set to version 3 */
+        mdBytes[8] &= 0x3f; /* clear variant */
+        mdBytes[8] |= 0x80; /* set to IETF variant */
+        long msb = 0;
+        long lsb = 0;
+        assert mdBytes.length == 16 : "data must be 16 bytes in length";
+        for (int i = 0; i < 8; i++) msb = (msb << 8) | (mdBytes[i] & 0xff);
+        for (int i = 8; i < 16; i++) lsb = (lsb << 8) | (mdBytes[i] & 0xff);
+        uuid = new UUID(msb, lsb);
+        return uuid;
+    }
+
+    // ------------------------------------------------------------------------
 
     /**
      * UUID Type 3
@@ -69,6 +114,15 @@ public class Identities {
      */
     public static UUID uuid(byte[] bytes) {
         return UUID.nameUUIDFromBytes(bytes);
+    }
+
+    /**
+     * UUID Type 4
+     *
+     * @see UUID#randomUUID()
+     */
+    public static UUID uuid() {
+        return UUID.randomUUID();
     }
 
     /**
@@ -106,30 +160,29 @@ public class Identities {
      * 
      * @see UUID#nameUUIDFromBytes(byte[])
      */
-
-    public static UUID uuid(String namespave, Object v1) {
-        byte[] buffer = Bytes.concat(namespave.getBytes(), DELIMITER);
+    public static UUID uuid(String namespace, Object v1) {
+        byte[] buffer = Bytes.concat(namespace.getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v1).getBytes(), DELIMITER);
         return uuid(buffer);
     }
 
-    public static UUID uuid(String namespave, Object v1, Object v2) {
-        byte[] buffer = Bytes.concat(namespave.getBytes(), DELIMITER);
+    public static UUID uuid(String namespace, Object v1, Object v2) {
+        byte[] buffer = Bytes.concat(namespace.getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v1).getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v2).getBytes(), DELIMITER);
         return uuid(buffer);
     }
 
-    public static UUID uuid(String namespave, Object v1, Object v2, Object v3) {
-        byte[] buffer = Bytes.concat(namespave.getBytes(), DELIMITER);
+    public static UUID uuid(String namespace, Object v1, Object v2, Object v3) {
+        byte[] buffer = Bytes.concat(namespace.getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v1).getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v2).getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v3).getBytes(), DELIMITER);
         return uuid(buffer);
     }
-    
-    public static UUID uuid(String namespave, Object v1, Object v2, Object v3, Object v4) {
-        byte[] buffer = Bytes.concat(namespave.getBytes(), DELIMITER);
+
+    public static UUID uuid(String namespace, Object v1, Object v2, Object v3, Object v4) {
+        byte[] buffer = Bytes.concat(namespace.getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v1).getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v2).getBytes(), DELIMITER);
         buffer = Bytes.concat(buffer, String.valueOf(v3).getBytes(), DELIMITER);

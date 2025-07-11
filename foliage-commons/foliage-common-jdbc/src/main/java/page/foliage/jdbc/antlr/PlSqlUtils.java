@@ -31,7 +31,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import page.foliage.jdbc.antlr.PlSqlParser;
+
+import page.foliage.guava.common.base.Objects;
+import page.foliage.guava.common.collect.ForwardingMap;
+import page.foliage.guava.common.collect.Maps;
 import page.foliage.jdbc.antlr.PlSqlParser.ArgumentContext;
 import page.foliage.jdbc.antlr.PlSqlParser.AtomContext;
 import page.foliage.jdbc.antlr.PlSqlParser.Column_based_update_set_clauseContext;
@@ -48,10 +51,6 @@ import page.foliage.jdbc.antlr.PlSqlParser.Relational_expressionContext;
 import page.foliage.jdbc.antlr.PlSqlParser.Tableview_nameContext;
 import page.foliage.jdbc.antlr.PlSqlParser.Update_set_clauseContext;
 import page.foliage.jdbc.antlr.PlSqlParser.Values_clauseContext;
-
-import page.foliage.guava.common.base.Objects;
-import page.foliage.guava.common.collect.ForwardingMap;
-import page.foliage.guava.common.collect.Maps;
 
 /**
  * 

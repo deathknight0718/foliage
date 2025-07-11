@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" id="Definitions_1gajtcz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.3.0">
+  <bpmn:process id="repository-contract-signed" name="共享合约 - 合约审查" isExecutable="true">
+    <bpmn:startEvent id="Event_09or18u" name="流程发起">
+      <bpmn:outgoing>Flow_0up2a3y</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0up2a3y" sourceRef="Event_09or18u" targetRef="Activity_09iev7i" />
+    <bpmn:userTask id="Activity_09iev7i" name="合约审查" flowable:formKey="contract-signed" flowable:candidateGroups="DOMAIN_ADMIN">
+      <bpmn:incoming>Flow_0up2a3y</bpmn:incoming>
+      <bpmn:outgoing>Flow_09m2dyo</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_11q1z5x" name="审查结果" default="Flow_0xt7rzs">
+      <bpmn:incoming>Flow_09m2dyo</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xt7rzs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0t3ykj4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_09m2dyo" sourceRef="Activity_09iev7i" targetRef="Gateway_11q1z5x" />
+    <bpmn:sequenceFlow id="Flow_0xt7rzs" sourceRef="Gateway_11q1z5x" targetRef="Activity_0w4pt9o" />
+    <bpmn:serviceTask id="Activity_0w4pt9o" name="合约生成" flowable:class="page.foliage.flow.cmd.DomainRepositoryContractBuild">
+      <bpmn:incoming>Flow_0xt7rzs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1672m41</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1672m41" sourceRef="Activity_0w4pt9o" targetRef="Activity_1fqby9c" />
+    <bpmn:serviceTask id="Activity_1fqby9c" name="跨机构反馈" flowable:class="page.foliage.flow.cmd.DomainProcessReceipt">
+      <bpmn:incoming>Flow_1672m41</bpmn:incoming>
+      <bpmn:incoming>Flow_0t3ykj4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xx5sht</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1bcyh3f">
+      <bpmn:incoming>Flow_1xx5sht</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1xx5sht" sourceRef="Activity_1fqby9c" targetRef="Event_1bcyh3f" />
+    <bpmn:sequenceFlow id="Flow_0t3ykj4" sourceRef="Gateway_11q1z5x" targetRef="Activity_1fqby9c">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${_status == 'REJECT'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="repository-contract-signed">
+      <bpmndi:BPMNShape id="Event_09or18u_di" bpmnElement="Event_09or18u">
+        <dc:Bounds x="292" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="288" y="205" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ww6g6o_di" bpmnElement="Activity_09iev7i">
+        <dc:Bounds x="380" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_11q1z5x_di" bpmnElement="Gateway_11q1z5x" isMarkerVisible="true">
+        <dc:Bounds x="535" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="538" y="212" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qduj35_di" bpmnElement="Activity_0w4pt9o">
+        <dc:Bounds x="640" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q8lpku_di" bpmnElement="Activity_1fqby9c">
+        <dc:Bounds x="800" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bcyh3f_di" bpmnElement="Event_1bcyh3f">
+        <dc:Bounds x="962" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0up2a3y_di" bpmnElement="Flow_0up2a3y">
+        <di:waypoint x="328" y="180" />
+        <di:waypoint x="380" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09m2dyo_di" bpmnElement="Flow_09m2dyo">
+        <di:waypoint x="480" y="180" />
+        <di:waypoint x="535" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xt7rzs_di" bpmnElement="Flow_0xt7rzs">
+        <di:waypoint x="585" y="180" />
+        <di:waypoint x="640" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1672m41_di" bpmnElement="Flow_1672m41">
+        <di:waypoint x="740" y="180" />
+        <di:waypoint x="800" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xx5sht_di" bpmnElement="Flow_1xx5sht">
+        <di:waypoint x="900" y="180" />
+        <di:waypoint x="962" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t3ykj4_di" bpmnElement="Flow_0t3ykj4">
+        <di:waypoint x="560" y="155" />
+        <di:waypoint x="560" y="50" />
+        <di:waypoint x="850" y="50" />
+        <di:waypoint x="850" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

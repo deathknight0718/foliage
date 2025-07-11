@@ -1,0 +1,113 @@
+{
+  "schema": {
+    "title": "共享合约 - 分配仓库",
+    "description": "共享合约 - 分配仓库的测试表单",
+    "type": "object",
+    "required": [
+      "reviewUserId", 
+      "reviewDomainId", 
+      "reviewDateTime", 
+      "approvalRepositoryId",
+      "expiration"
+    ],
+    "properties": {
+      "initialUserName":{
+        "type": "string",
+        "title": "提交人"
+      },
+      "initialDomainName":{
+        "type": "string",
+        "title": "提交机构"
+      },
+      "initialReason":{
+        "type": "string",
+        "title": "申请原因"
+      },
+      "estimatedExpiration": {
+        "type": "string",
+        "format": "datetime",
+        "title": "申请有效期至"
+      },
+      "reviewUserId": {
+        "type": "number",
+        "default": ${access.user.id}
+      },
+      "reviewUserName": {
+        "type": "string",
+        "title": "审核人",
+        "default": "${access.user.displayName}"
+      },
+      "reviewDomainId": {
+        "type": "number",
+        "default": ${access.user.domain().id}
+      },
+      "reviewDomainName": {
+        "type": "string",
+        "title": "审核机构",
+        "default": "${access.user.domain().displayName}"
+      },
+      "reviewDateTime": {
+        "type": "string",
+        "title": "审核时间",
+        "format": "date-time",
+        "default": "${access.currentDateTime()}"
+      },
+      "approvalRepositoryId": {
+        "type": "number",
+        "title": "签约数据仓库",
+        "default": ${access.domain.id},
+        "oneOf": ${access.repositories()}
+      },
+      "expiration": {
+        "type": "string",
+        "title": "签约有效期至",
+        "format": "date"
+      },
+      "remark": {
+        "type": "string",
+        "title": "备注信息"
+      }
+    }
+  },
+  "uiSchema": {
+    "initialUserName": {
+      "ui:readonly": true
+    },
+    "initialDomainName": {
+      "ui:readonly": true
+    },
+    "initialReason": {
+      "ui:readonly": true
+    },
+    "estimatedExpiration": {
+      "ui:readonly": true
+    },
+    "reviewUserId": {
+      "ui:readonly": true,
+      "ui:widget": "hidden"
+    },
+    "reviewUserName": {
+      "ui:readonly": true
+    },
+    "reviewDomainId": {
+      "ui:readonly": true,
+      "ui:widget": "hidden"
+    },
+    "reviewDomainName": {
+      "ui:readonly": true
+    },
+    "reviewDateTime": {
+      "ui:readonly": true,
+      "ui:widget": "hidden"
+    },
+    "remark": {
+      "ui:widget": "textarea"
+    }
+  },
+  "formData": {
+    "initialUserName": "${initialUserName}",
+    "initialDomainName": "${initialDomainName}",
+    "initialReason": "${initialReason}",
+    "estimatedExpiration": "${estimatedExpiration}"
+  }
+}

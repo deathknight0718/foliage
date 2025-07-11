@@ -1,0 +1,33 @@
+[package]
+name = "foliage-ai-native"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "foliageai"
+crate-type = ["cdylib"]
+
+[dependencies]
+# JAVA
+jni = "0.21.1"
+# TRANSFORMERS
+tokenizers = { version = "*" }
+candle-core = { version = "0.6.0" }
+candle-nn = { version = "0.6.0" }
+candle-onnx = { version = "0.6.0", optional = true }
+candle-transformers = { version = "0.6.0" }
+# TOOLS
+image = { version= "*" }
+imageproc = { version="*" }
+lazy_static = { version= "*" }
+thiserror = { version = "*" }
+serde_json = { version = "*" }
+
+[dev-dependencies]
+anyhow = { version = "*" }
+
+
+[features]
+default = ["cuda", "onig"]
+cuda = ["candle-core/cuda", "candle-nn/cuda", "candle-transformers/cuda"]
+onig = ["tokenizers/onig"]
