@@ -165,6 +165,26 @@ public abstract class BaseSQL<T> {
         return getSelf();
     }
 
+    public T OUTER_JOIN(String join) {
+        sql().outerJoin.add(join);
+        return getSelf();
+    }
+
+    public T OUTER_JOIN(String... joins) {
+        sql().outerJoin.addAll(Arrays.asList(joins));
+        return getSelf();
+    }
+
+    public T LEFT_JOIN(String join) {
+        sql().leftJoin.add(join);
+        return getSelf();
+    }
+
+    public T LEFT_JOIN(String... joins) {
+        sql().leftJoin.addAll(Arrays.asList(joins));
+        return getSelf();
+    }
+
     public T LEFT_OUTER_JOIN(String join) {
         sql().leftOuterJoin.add(join);
         return getSelf();
@@ -192,16 +212,6 @@ public abstract class BaseSQL<T> {
 
     public T RIGHT_OUTER_JOIN(String... joins) {
         sql().rightOuterJoin.addAll(Arrays.asList(joins));
-        return getSelf();
-    }
-
-    public T OUTER_JOIN(String join) {
-        sql().outerJoin.add(join);
-        return getSelf();
-    }
-
-    public T OUTER_JOIN(String... joins) {
-        sql().outerJoin.addAll(Arrays.asList(joins));
         return getSelf();
     }
 
@@ -370,6 +380,8 @@ public abstract class BaseSQL<T> {
 
         List<String> outerJoin = new ArrayList<String>();
 
+        List<String> leftJoin = new ArrayList<String>();
+
         List<String> leftOuterJoin = new ArrayList<String>();
 
         List<String> rightJoin = new ArrayList<String>();
@@ -495,6 +507,7 @@ public abstract class BaseSQL<T> {
             sqlClause(builder, "JOIN", join, "", "", "\nJOIN ");
             sqlClause(builder, "INNER JOIN", innerJoin, "", "", "\nINNER JOIN ");
             sqlClause(builder, "OUTER JOIN", outerJoin, "", "", "\nOUTER JOIN ");
+            sqlClause(builder, "LEFT JOIN", leftJoin, "", "", "\nLEFT JOIN ");
             sqlClause(builder, "LEFT OUTER JOIN", leftOuterJoin, "", "", "\nLEFT OUTER JOIN ");
             sqlClause(builder, "RIGHT JOIN", rightJoin, "", "", "\nRIGHT JOIN ");
             sqlClause(builder, "RIGHT OUTER JOIN", rightOuterJoin, "", "", "\nRIGHT OUTER JOIN ");
