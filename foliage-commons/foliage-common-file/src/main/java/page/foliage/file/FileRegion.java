@@ -20,7 +20,6 @@ import page.foliage.common.collect.QueryParams;
 import page.foliage.common.ioc.InstanceFactory;
 import page.foliage.file.session.FileSession;
 import page.foliage.file.session.FileSessionFactory;
-import page.foliage.ldap.Repository;
 
 /**
  * @author deathknight0718@qq.com
@@ -29,22 +28,11 @@ public class FileRegion {
 
     // ------------------------------------------------------------------------
 
-    public static final String PREFIX = "cn-";
-
-    // ------------------------------------------------------------------------
-
-    private final Repository repository;
-
     private final String name;
 
     // ------------------------------------------------------------------------
 
-    private FileRegion(Repository repository) {
-        this(repository, PREFIX + repository.getId());
-    }
-
-    private FileRegion(Repository repository, String name) {
-        this.repository = repository;
+    public FileRegion(String name) {
         this.name = name;
     }
 
@@ -52,16 +40,6 @@ public class FileRegion {
 
     private static FileSessionFactory factory() {
         return InstanceFactory.getInstance(FileSessionFactory.class);
-    }
-
-    // ------------------------------------------------------------------------
-
-    public static FileRegion create(Long id) {
-        return new FileRegion(Repository.create(id));
-    }
-
-    public static FileRegion get(Long id) {
-        return new FileRegion(Repository.get(id));
     }
 
     // ------------------------------------------------------------------------
@@ -76,16 +54,8 @@ public class FileRegion {
 
     // ------------------------------------------------------------------------
 
-    public Long getId() {
-        return repository.getId();
-    }
-
     public String getName() {
         return name;
-    }
-
-    public Repository getRepository() {
-        return repository;
     }
 
 }

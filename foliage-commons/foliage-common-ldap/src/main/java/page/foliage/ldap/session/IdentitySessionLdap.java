@@ -16,32 +16,20 @@
 package page.foliage.ldap.session;
 
 import java.text.MessageFormat;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.unboundid.ldap.sdk.Attribute;
-import com.unboundid.ldap.sdk.DN;
 import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.RDN;
-import com.unboundid.ldap.sdk.ResultCode;
 
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
-import page.foliage.guava.common.base.Preconditions;
-import page.foliage.guava.common.collect.ImmutableList;
 import page.foliage.guava.common.collect.Lists;
-import page.foliage.guava.common.net.HostAndPort;
-import page.foliage.ldap.Contract;
 import page.foliage.ldap.Dashboard;
 import page.foliage.ldap.Dashboard.Builder;
 import page.foliage.ldap.Domain;
-import page.foliage.ldap.Repository;
 import page.foliage.ldap.Role;
 import page.foliage.ldap.User;
 import page.foliage.ldap.session.LdapConnection.Entry;
@@ -174,121 +162,6 @@ public class IdentitySessionLdap implements IdentitySession {
         bean.setName(entry.get("cn").asText());
         bean.setDomainId(connection.reverse(entry, 2).get("uniqueIdentifier").asLong());
         return bean;
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<Repository> repositoriesSelectByParamsAndDomainId(QueryParams params, Long domainId) throws LDAPException {
-        List<Repository> beans = Lists.newArrayList();
-        Domain domain = domainSelectById(domainId);
-        String filter = "(businessCategory=REPOSITORY)";
-        Iterator<Entry> iterator = connection.selectTree(new RDN("dc", domain.getIdentifier()), filter);
-        while (iterator.hasNext()) {
-            Entry entry = iterator.next();
-            Repository bean = Repository.create(entry.get("uniqueIdentifier").asLong());
-            bean.setDisplayName(entry.get("displayName").asText());
-            bean.setName(entry.get("ou").asText());
-            bean.setDomainId(domainId);
-            bean.setHostAndPort(HostAndPort.fromString(entry.get("labeledURI").asText()));
-            beans.add(bean);
-        }
-        Stream<Repository> stream = beans.stream();
-        stream = stream.skip(params.offset()).limit(params.limit());
-        return PaginList.copyOf(stream.collect(Collectors.toList()), beans.size());
-    }
-
-    @Override
-    public Repository repositorySelectById(Long id) throws LDAPException {
-        String filter = MessageFormat.format("(uniqueIdentifier={0,number,#})", id);
-        Entry entry = connection.selectOne(filter);
-        Repository bean = Repository.create(entry.get("uniqueIdentifier").asLong());
-        bean.setDisplayName(entry.get("displayName").asText());
-        bean.setName(entry.get("ou").asText());
-        bean.setDomainId(connection.reverse(entry, 1).get("uniqueIdentifier").asLong());
-        bean.setHostAndPort(HostAndPort.fromString(entry.get("labeledURI").asText()));
-        return bean;
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<Contract> contractsSelectByParamsAndRepositoryId(QueryParams params, Long repositoryId) throws LDAPException {
-        List<Contract> beans = Lists.newArrayList();
-        Repository repository = repositorySelectById(repositoryId);
-        String filter = "(objectClass=document)";
-        Iterator<Entry> iterator = connection.selectTree(new RDN("ou", repository.getName()), filter);
-        while (iterator.hasNext()) {
-            Entry entry = iterator.next();
-            Contract bean = Contract.create(entry.get("documentIdentifier").asLong());
-            bean.setName(entry.get("cn").asText());
-            bean.setDomainId(entry.get("associatedDomain").asLong());
-            bean.setRepositoryId(repositoryId);
-            bean.setExpiration(entry.get("shadowExpire").asTimeStamp(ZoneId.systemDefault()));
-            beans.add(bean);
-        }
-        Stream<Contract> stream = beans.stream();
-        stream = stream.skip(params.offset()).limit(params.limit());
-        return PaginList.copyOf(stream.collect(Collectors.toList()), beans.size());
-    }
-
-    @Override
-    public PaginList<Contract> contractsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws LDAPException {
-        List<Contract> beans = Lists.newArrayList();
-        String filter = MessageFormat.format("(&(associatedDomain={0,number,#})(objectClass=document))", domainId);
-        Iterator<Entry> iterator = connection.selectTree(filter);
-        while (iterator.hasNext()) {
-            Entry entry = iterator.next();
-            Contract bean = Contract.create(entry.get("documentIdentifier").asLong());
-            bean.setName(entry.get("cn").asText());
-            bean.setDomainId(entry.get("associatedDomain").asLong());
-            bean.setRepositoryId(connection.reverse(entry, 1).get("uniqueIdentifier").asLong());
-            bean.setExpiration(entry.get("shadowExpire").asTimeStamp(ZoneId.systemDefault()));
-            beans.add(bean);
-        }
-        Stream<Contract> stream = beans.stream();
-        stream = stream.skip(params.offset()).limit(params.limit());
-        return PaginList.copyOf(stream.collect(Collectors.toList()), beans.size());
-    }
-
-    @Override
-    public Contract contractSelectById(Long id) throws LDAPException {
-        String filter = MessageFormat.format("(documentIdentifier={0,number,#})", id);
-        Entry entry = connection.selectOne(filter);
-        Contract bean = Contract.create(entry.get("documentIdentifier").asLong());
-        bean.setName(entry.get("cn").asText());
-        bean.setDomainId(entry.get("associatedDomain").asLong());
-        bean.setRepositoryId(connection.reverse(entry, 1).get("uniqueIdentifier").asLong());
-        bean.setExpiration(entry.get("shadowExpire").asTimeStamp(ZoneId.systemDefault()));
-        return bean;
-    }
-
-    @Override
-    public Contract contractInsert(Contract.Builder builder) throws LDAPException {
-        Entry repositoryEntry = connection.selectOne(MessageFormat.format("(uniqueIdentifier={0,number,#})", builder.getRepository().getId()));
-        DN parent = new DN(repositoryEntry.getName());
-        DN dn = new DN(new RDN("cn", builder.getName()), parent);
-        ImmutableList.Builder<Attribute> attributes = ImmutableList.builder();
-        attributes.add(new Attribute("objectClass", "document", "domainRelatedObject", "extensibleObject", "top"));
-        attributes.add(new Attribute("documentIdentifier", builder.getId().toString()));
-        attributes.add(new Attribute("associatedDomain", builder.getDomain().getId().toString()));
-        attributes.add(new Attribute("shadowExpire", Long.toString(builder.getExpiration().toInstant(ZoneOffset.ofHours(8)).toEpochMilli())));
-        LDAPResult result = connection.insert(dn, attributes.build());
-        Preconditions.checkArgument(Objects.equals(result.getResultCode(), ResultCode.SUCCESS));
-        Contract bean = Contract.create(builder.getId());
-        bean.setName(builder.getName());
-        bean.setDomainId(builder.getDomain().getId());
-        bean.setExpiration(builder.getExpiration());
-        bean.setRepositoryId(builder.getRepository().getId());
-        return bean;
-    }
-
-    @Override
-    public void contractDeleteById(Long id) throws LDAPException {
-        String filter = MessageFormat.format("(documentIdentifier={0,number,#})", id);
-        Entry entry = connection.selectOne(filter);
-        LDAPResult result = connection.delete(new DN(entry.getName()));
-        Preconditions.checkArgument(Objects.equals(result.getResultCode(), ResultCode.SUCCESS));
     }
 
     // ------------------------------------------------------------------------

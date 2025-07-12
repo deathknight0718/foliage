@@ -21,10 +21,8 @@ import page.foliage.common.collect.Identities;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.cache.Cache;
-import page.foliage.ldap.Contract;
 import page.foliage.ldap.Dashboard;
 import page.foliage.ldap.Domain;
-import page.foliage.ldap.Repository;
 import page.foliage.ldap.Role;
 import page.foliage.ldap.User;
 
@@ -97,44 +95,6 @@ public class IdentitySessionCache implements IdentitySession {
     @Override
     public User userSelectByName(String name) throws Exception {
         return (User) cache.get(Identities.uuid("userSelectByName", name), () -> delegate.userSelectByName(name));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PaginList<Repository> repositoriesSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
-        return (PaginList<Repository>) cache.get(Identities.uuid("repositoriesSelectByParamsAndDomainId", params, domainId), () -> delegate.repositoriesSelectByParamsAndDomainId(params, domainId));
-    }
-
-    @Override
-    public Repository repositorySelectById(Long id) throws Exception {
-        return (Repository) cache.get(Identities.uuid("repositorySelectById", id), () -> delegate.repositorySelectById(id));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PaginList<Contract> contractsSelectByParamsAndRepositoryId(QueryParams params, Long repositoryId) throws Exception {
-        return (PaginList<Contract>) cache.get(Identities.uuid("contractsSelectByParamsAndRepositoryId", params, repositoryId), () -> delegate.repositoriesSelectByParamsAndDomainId(params, repositoryId));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PaginList<Contract> contractsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
-        return (PaginList<Contract>) cache.get(Identities.uuid("contractsSelectByParamsAndDomainId", params, domainId), () -> delegate.contractsSelectByParamsAndDomainId(params, domainId));
-    }
-
-    @Override
-    public Contract contractSelectById(Long id) throws Exception {
-        return (Contract) cache.get(Identities.uuid("contractSelectById", id), () -> delegate.contractSelectById(id));
-    }
-
-    @Override
-    public Contract contractInsert(Contract.Builder builder) throws Exception {
-        return delegate.contractInsert(builder);
-    }
-
-    @Override
-    public void contractDeleteById(Long id) throws Exception {
-        delegate.contractDeleteById(id);
     }
 
     @Override

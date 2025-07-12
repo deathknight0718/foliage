@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import page.foliage.flow.FlowCommandDelegate;
 import page.foliage.flow.FlowExecution;
-import page.foliage.ldap.Contract;
 
 /**
  * 
@@ -33,7 +32,6 @@ public class DomainRepositoryContractBuild extends FlowCommandDelegate {
     @Override
     protected void doExecute(FlowExecution execution) {
         LOGGER.info("Execute Command: {}", execution.getId());
-        Contract.builder(null);
     }
 
 }

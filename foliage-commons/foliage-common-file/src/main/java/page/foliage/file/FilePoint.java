@@ -154,7 +154,7 @@ public class FilePoint {
 
         StepBucket withRegion(FileRegion region);
 
-        StepBucket withRegion(Long id);
+        StepBucket withRegion(String name);
 
     }
 
@@ -197,8 +197,8 @@ public class FilePoint {
             return this;
         }
 
-        public Builder withRegion(Long id) {
-            bean.region = FileRegion.get(id);
+        public Builder withRegion(String name) {
+            bean.region = new FileRegion(name);
             return this;
         }
 
