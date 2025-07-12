@@ -82,7 +82,7 @@ public class TestDomain {
     public void testDomainUserList() throws Exception {
         Domain domain = Domain.get("domain1");
         for (User user : domain.users(QueryParams.ALL)) {
-            LOGGER.info("User: {} {} {} {}", user.getId(), user.getName(), user.getEmail(), user.getDomainId());
+            LOGGER.info("User: {} {} {} {}", user.getId(), user.getName(), user.getEmail(), user.domain().getDisplayName());
         }
     }
 

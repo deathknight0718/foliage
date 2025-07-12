@@ -21,6 +21,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import page.foliage.common.collect.PaginList;
+import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.base.Objects;
 import page.foliage.guava.common.base.Preconditions;
 import page.foliage.ldap.session.DashboardSession;
@@ -60,6 +62,14 @@ public class Dashboard {
     public static Dashboard get(Long id) {
         try (DashboardSession session = openSession()) {
             return session.dashboardSelectById(id);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static PaginList<Dashboard> list(QueryParams params, Domain domain) {
+        try (DashboardSession session = openSession()) {
+            return session.dashboardsSelectByParamsAndDomainId(params, domain.getId());
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
