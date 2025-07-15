@@ -50,4 +50,9 @@ public class Hex36Serializer extends StdSerializer<Long> {
         gen.writeString(Long.toString(value, HEX_BIT).toUpperCase());
     }
 
+    public static Long decode(String value) {
+        Preconditions.checkNotNull(value, "Value to decode cannot be null");
+        return Long.parseLong(value, HEX_BIT);
+    }
+
 }
