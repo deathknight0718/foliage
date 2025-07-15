@@ -21,8 +21,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
+import page.foliage.common.jackson.Hex36Serializer;
 import page.foliage.guava.common.base.Objects;
 import page.foliage.ldap.session.IdentitySession;
 
@@ -124,6 +127,7 @@ public class Domain {
 
     // ------------------------------------------------------------------------
 
+    @JsonSerialize(using = Hex36Serializer.class)
     public Long getId() {
         return id;
     }
