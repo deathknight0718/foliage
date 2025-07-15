@@ -46,13 +46,19 @@ public class Hex36Serializer extends StdSerializer<Long> {
 
     @Override
     public void serialize(Long value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        Preconditions.checkNotNull(value, "Value to serialize cannot be null");
-        gen.writeString(Long.toString(value, HEX_BIT).toUpperCase());
+        gen.writeString(encode(value));
     }
+
+    // Decodes a hexadecimal string representation of a long value.
 
     public static Long decode(String value) {
         Preconditions.checkNotNull(value, "Value to decode cannot be null");
         return Long.parseLong(value, HEX_BIT);
+    }
+
+    public static String encode(Long value) {
+        Preconditions.checkNotNull(value, "Value to encode cannot be null");
+        return Long.toString(value, HEX_BIT).toUpperCase();
     }
 
 }
