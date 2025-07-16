@@ -18,6 +18,7 @@ package page.foliage.common.util;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,6 +41,8 @@ public class DateTimes {
     public static final DateTimeFormatter TIME_FORMATTER_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
 
     public static final DateTimeFormatter TIME_FORMATTER_DATE_TIME = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+    public static final DateTimeFormatter TIME_FORMATTER_TIME = DateTimeFormatter.ISO_LOCAL_TIME;
 
     public static final DateTimeFormatter TIME_FORMATTER_ZONED_DATE_TIME = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
@@ -77,6 +80,14 @@ public class DateTimes {
         return LocalDateTime.parse(input, formatter);
     }
 
+    public static LocalTime timeOf(String input) {
+        return LocalTime.parse(input, TIME_FORMATTER_TIME);
+    }
+
+    public static LocalTime timeOf(String input, DateTimeFormatter formatter) {
+        return LocalTime.parse(input, formatter);
+    }
+
     public static ZonedDateTime zonedDateTimeOf(String input) {
         return zonedDateTimeOf(input, TIME_FORMATTER_ZONED_DATE_TIME);
     }
@@ -101,6 +112,10 @@ public class DateTimes {
 
     public static String format(LocalDateTime temporal) {
         return format(temporal, TIME_FORMATTER_DATE_TIME);
+    }
+
+    public static String format(LocalTime temporal) {
+        return format(temporal, TIME_FORMATTER_TIME);
     }
 
     public static String format(ZonedDateTime temporal) {
