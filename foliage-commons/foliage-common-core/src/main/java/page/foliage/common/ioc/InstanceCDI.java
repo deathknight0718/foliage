@@ -15,6 +15,8 @@
  */
 package page.foliage.common.ioc;
 
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 
 /**
@@ -46,6 +48,8 @@ public class InstanceCDI implements InstanceProvider {
 
     @Override
     public <T> T getInstance(Class<T> clazz) {
+        Instance<T> instance = CDI.current().select(clazz);
+        if (instance.isAmbiguous()) return instance.select(Default.Literal.INSTANCE).get();
         return CDI.current().select(clazz).get();
     }
 
