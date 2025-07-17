@@ -73,4 +73,27 @@ public class Tenant {
 
     }
 
+    // ------------------------------------------------------------------------
+
+    public static class ThreadLocalProvider implements Provider {
+
+        private final ThreadLocal<Long> THREAD_LOCAL = ThreadLocal.withInitial(() -> null);
+
+        @Override
+        public Long get() {
+            return THREAD_LOCAL.get();
+        }
+
+        @Override
+        public void set(Long value) {
+            THREAD_LOCAL.set(value);
+        }
+
+        @Override
+        public void clean() {
+            THREAD_LOCAL.remove();
+        }
+
+    }
+
 }
