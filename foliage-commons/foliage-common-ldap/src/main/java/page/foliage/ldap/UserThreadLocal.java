@@ -22,28 +22,26 @@ import java.util.function.Supplier;
  *
  * @author: liuzheng@cecdat.com
  */
-public class Tenant {
+public class UserThreadLocal {
 
     // ------------------------------------------------------------------------
 
-    private static volatile Tenant.Provider provider;
+    public static final String TYPE_KEY_OF_USER_ID = "foliage.user.id";
+
+    private static final ThreadLocal<Long> THREAD_LOCAL = ThreadLocal.withInitial(() -> null);
 
     // ------------------------------------------------------------------------
-
-    public static void inject(Tenant.Provider provider) {
-        Tenant.provider = provider;
-    }
 
     public static Long get() {
-        return provider.get();
+        return THREAD_LOCAL.get();
     }
 
     public static void set(Long value) {
-        provider.set(value);
+        THREAD_LOCAL.set(value);
     }
 
-    public static void clean() {
-        provider.clean();
+    public static void remove() {
+        THREAD_LOCAL.remove();
     }
 
     public static boolean exists() {
@@ -57,43 +55,8 @@ public class Tenant {
             return operation.get();
         } finally {
             if (original != null) set(original);
-            else clean();
+            else remove();
         }
-    }
-
-    // ------------------------------------------------------------------------
-
-    public interface Provider {
-
-        Long get();
-
-        void set(Long value);
-
-        void clean();
-
-    }
-
-    // ------------------------------------------------------------------------
-
-    public static class ThreadLocalProvider implements Provider {
-
-        private final ThreadLocal<Long> THREAD_LOCAL = ThreadLocal.withInitial(() -> null);
-
-        @Override
-        public Long get() {
-            return THREAD_LOCAL.get();
-        }
-
-        @Override
-        public void set(Long value) {
-            THREAD_LOCAL.set(value);
-        }
-
-        @Override
-        public void clean() {
-            THREAD_LOCAL.remove();
-        }
-
     }
 
 }
