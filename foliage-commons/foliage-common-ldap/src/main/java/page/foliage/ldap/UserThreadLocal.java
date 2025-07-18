@@ -26,7 +26,7 @@ public class UserThreadLocal {
 
     // ------------------------------------------------------------------------
 
-    public static final String TYPE_KEY_OF_USER_ID = "foliage.user.id";
+    public static final String TYPE_KEY_OF_USER_ID = "FoliageUserId";
 
     private static final ThreadLocal<Long> THREAD_LOCAL = ThreadLocal.withInitial(() -> null);
 
