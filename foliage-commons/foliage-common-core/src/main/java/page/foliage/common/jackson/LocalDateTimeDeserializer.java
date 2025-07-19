@@ -35,8 +35,14 @@ public class LocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
 
     private static final long serialVersionUID = 1L;
 
+    public static final LocalDateTimeDeserializer instance = new LocalDateTimeDeserializer();
+
     public LocalDateTimeDeserializer() {
         super(LocalDateTime.class);
+    }
+
+    public LocalDateTimeDeserializer(Class<LocalDateTime> clazz) {
+        super(clazz);
     }
 
     @Override

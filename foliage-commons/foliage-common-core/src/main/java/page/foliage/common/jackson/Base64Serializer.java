@@ -34,8 +34,14 @@ public class Base64Serializer extends StdSerializer<String> {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Base64Serializer instance = new Base64Serializer();
+
     public Base64Serializer() {
         super(String.class);
+    }
+
+    public Base64Serializer(Class<String> clazz) {
+        super(clazz);
     }
 
     @Override

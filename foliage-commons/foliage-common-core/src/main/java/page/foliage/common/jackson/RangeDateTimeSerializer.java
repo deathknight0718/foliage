@@ -35,9 +35,15 @@ public class RangeDateTimeSerializer extends StdSerializer<Range<LocalDateTime>>
 
     private static final long serialVersionUID = 1L;
 
+    public static final RangeDateTimeSerializer instance = new RangeDateTimeSerializer();
+
     @SuppressWarnings("unchecked")
     public RangeDateTimeSerializer() {
         super((Class<Range<LocalDateTime>>) (Class<?>) Range.class);
+    }
+
+    public RangeDateTimeSerializer(Class<Range<LocalDateTime>> clazz) {
+        super(clazz);
     }
 
     @Override

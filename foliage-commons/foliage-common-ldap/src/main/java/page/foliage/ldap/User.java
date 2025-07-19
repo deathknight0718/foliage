@@ -29,6 +29,7 @@ import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.Hex36Serializer;
 import page.foliage.guava.common.base.Objects;
+import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.ldap.session.IdentitySession;
 
@@ -55,6 +56,10 @@ public class User {
     }
 
     // ------------------------------------------------------------------------
+
+    public static User current() {
+        return get(Preconditions.checkNotNull(UserThreadLocal.get(), "Current user ID cannot be null"));
+    }
 
     public static User create(Long id) {
         return new User(id);
@@ -124,7 +129,6 @@ public class User {
     }
 
     // ------------------------------------------------------------------------
-
 
     @JsonSerialize(using = Hex36Serializer.class)
     public Long getId() {

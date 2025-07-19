@@ -35,8 +35,14 @@ public class OffsetDateTimeSerializer extends StdSerializer<OffsetDateTime> {
 
     private static final long serialVersionUID = 1L;
 
+    public static final OffsetDateTimeSerializer instance = new OffsetDateTimeSerializer();
+
     public OffsetDateTimeSerializer() {
         super(OffsetDateTime.class);
+    }
+
+    public OffsetDateTimeSerializer(Class<OffsetDateTime> clazz) {
+        super(clazz);
     }
 
     @Override

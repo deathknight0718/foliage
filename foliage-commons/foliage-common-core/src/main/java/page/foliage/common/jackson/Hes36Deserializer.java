@@ -17,9 +17,10 @@ package page.foliage.common.jackson;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import page.foliage.guava.common.base.Preconditions;
 
@@ -28,30 +29,30 @@ import page.foliage.guava.common.base.Preconditions;
  *
  * @author: liuzheng@cecdat.com
  */
-public class Hex36Serializer extends StdSerializer<Long> {
+public class Hes36Deserializer extends StdDeserializer<Long> {
 
     private static final long serialVersionUID = 1L;
 
     public static final int HEX_BIT = 36;
 
-    public final static Hex36Serializer instance = new Hex36Serializer();
+    public static final Hes36Deserializer instance = new Hes36Deserializer();
 
-    public Hex36Serializer() {
-        super(Long.class);
+    public Hes36Deserializer() {
+        super(String.class);
     }
 
-    public Hex36Serializer(Class<Long> clazz) {
+    public Hes36Deserializer(Class<Long> clazz) {
         super(clazz);
     }
 
     @Override
-    public void serialize(Long value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeString(encode(value));
+    public Long deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+        return decode(parser.readValueAs(String.class));
     }
 
-    public static String encode(Long value) {
-        Preconditions.checkNotNull(value, "Value to encode cannot be null");
-        return Long.toString(value, HEX_BIT).toUpperCase();
+    public static Long decode(String value) {
+        Preconditions.checkNotNull(value, "Value to decode cannot be null");
+        return Long.parseLong(value, HEX_BIT);
     }
 
 }

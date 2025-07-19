@@ -35,8 +35,14 @@ public class LocalTimeSerializer extends StdSerializer<LocalTime> {
 
     private static final long serialVersionUID = 1L;
 
+    public static final LocalTimeSerializer instance = new LocalTimeSerializer();
+
     public LocalTimeSerializer() {
         super(LocalTime.class);
+    }
+
+    public LocalTimeSerializer(Class<LocalTime> clazz) {
+        super(clazz);
     }
 
     @Override

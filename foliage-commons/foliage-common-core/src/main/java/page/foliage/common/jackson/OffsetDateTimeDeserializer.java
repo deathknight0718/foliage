@@ -35,8 +35,14 @@ public class OffsetDateTimeDeserializer extends StdDeserializer<OffsetDateTime> 
 
     private static final long serialVersionUID = 1L;
 
+    public static final OffsetDateTimeDeserializer instance = new OffsetDateTimeDeserializer();
+
     public OffsetDateTimeDeserializer() {
         super(OffsetDateTime.class);
+    }
+
+    public OffsetDateTimeDeserializer(Class<OffsetDateTime> clazz) {
+        super(clazz);
     }
 
     @Override

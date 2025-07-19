@@ -33,8 +33,14 @@ public class DurationSecondSerializer extends StdSerializer<Duration> {
 
     private static final long serialVersionUID = 1L;
 
+    public static final DurationSecondSerializer instance = new DurationSecondSerializer();
+
     public DurationSecondSerializer() {
         super(Duration.class);
+    }
+
+    public DurationSecondSerializer(Class<Duration> clazz) {
+        super(clazz);
     }
 
     @Override

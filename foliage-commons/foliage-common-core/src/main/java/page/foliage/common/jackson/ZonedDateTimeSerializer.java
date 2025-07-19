@@ -35,8 +35,14 @@ public class ZonedDateTimeSerializer extends StdSerializer<ZonedDateTime> {
 
     private static final long serialVersionUID = 1L;
 
+    public static final ZonedDateTimeSerializer instance = new ZonedDateTimeSerializer();
+
     public ZonedDateTimeSerializer() {
         super(ZonedDateTime.class);
+    }
+
+    public ZonedDateTimeSerializer(Class<ZonedDateTime> clazz) {
+        super(clazz);
     }
 
     @Override

@@ -34,8 +34,14 @@ public class Base64Deserializer extends StdDeserializer<String> {
 
     private static final long serialVersionUID = 1L;
 
-    protected Base64Deserializer() {
+    public static final Base64Deserializer instance = new Base64Deserializer();
+
+    public Base64Deserializer() {
         super(String.class);
+    }
+
+    public Base64Deserializer(Class<String> clazz) {
+        super(clazz);
     }
 
     @Override
