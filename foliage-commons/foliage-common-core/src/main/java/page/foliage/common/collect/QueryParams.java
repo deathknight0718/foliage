@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.collect.ImmutableMultimap;
 import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.guava.common.collect.LinkedListMultimap;
@@ -32,22 +33,34 @@ import page.foliage.guava.common.collect.Multimap;
  * @author deathknight0718@qq.com
  */
 public class QueryParams {
-    
-    // ------------------------------------------------------------------------
-
-    private final static String KEYWORD_OFFSET = "offset";
-
-    private final static String KEYWORD_LIMIT = "limit";
-
-    private final static int VALUE_DEFAULT_OFFSET = 0;
-
-    private final static int VALUE_DEFAULT_LIMIT = 20;
 
     // ------------------------------------------------------------------------
 
-    public final static QueryParams ALL = new QueryParams(ImmutableMultimap.of(KEYWORD_OFFSET, "0", KEYWORD_LIMIT, "65535"));
+    public final static String KEYWORD_OFFSET = "offset";
+
+    public final static String KEYWORD_LIMIT = "limit";
+
+    public final static String KEYWORD_SPLIT = ",";
+
+    public final static Integer VALUE_DEF_OFFSET = 0;
+
+    public final static Integer VALUE_DEF_LIMIT = 20;
+
+    public final static Integer VALUE_MAX_LIMIT = 65535;
+
+    // ------------------------------------------------------------------------
+
+    public final static QueryParams ALL = new QueryParams(ImmutableMultimap.of(KEYWORD_OFFSET, VALUE_DEF_OFFSET.toString(), KEYWORD_LIMIT, VALUE_MAX_LIMIT.toString()));
+
+    // ------------------------------------------------------------------------
 
     private final Multimap<String, String> delegate;
+
+    // ------------------------------------------------------------------------
+
+    private static String lc(Object value) {
+        return String.valueOf(value).toLowerCase();
+    }
 
     // ------------------------------------------------------------------------
 
@@ -65,31 +78,31 @@ public class QueryParams {
         return new QueryParams();
     }
 
-    public static QueryParams of(String k1, String v1) {
+    public static QueryParams of(String k1, Object v1) {
         QueryParams bean = new QueryParams();
-        bean.delegate.put(k1, v1);
+        bean.delegate.put(lc(k1), lc(v1));
         return bean;
     }
 
-    public static QueryParams of(String k1, String v1, String k2, String v2) {
+    public static QueryParams of(String k1, Object v1, String k2, Object v2) {
         QueryParams bean = new QueryParams();
-        bean.delegate.put(k1, v1);
-        bean.delegate.put(k2, v2);
+        bean.delegate.put(lc(k1), lc(v1));
+        bean.delegate.put(lc(k2), lc(v2));
         return bean;
     }
 
-    public static QueryParams of(String k1, String v1, String k2, String v2, String k3, String v3) {
+    public static QueryParams of(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
         QueryParams bean = new QueryParams();
-        bean.delegate.put(k1, v1);
-        bean.delegate.put(k2, v2);
-        bean.delegate.put(k3, v3);
+        bean.delegate.put(lc(k1), lc(v1));
+        bean.delegate.put(lc(k2), lc(v2));
+        bean.delegate.put(lc(k3), lc(v3));
         return bean;
     }
 
     public static QueryParams of(Map<String, List<String>> params) {
         QueryParams bean = new QueryParams();
         for (Map.Entry<String, List<String>> entry : params.entrySet()) {
-            bean.delegate.putAll(entry.getKey(), entry.getValue());
+            bean.delegate.putAll(lc(entry.getKey()), entry.getValue().stream().map(StringUtils::trim).map(QueryParams::lc).toList());
         }
         return bean;
     }
@@ -98,12 +111,12 @@ public class QueryParams {
 
     public Integer offset() {
         if (containsKey(KEYWORD_OFFSET)) return Integer.valueOf(get(KEYWORD_OFFSET));
-        return VALUE_DEFAULT_OFFSET;
+        return VALUE_DEF_OFFSET;
     }
 
     public Integer limit() {
         if (containsKey(KEYWORD_LIMIT)) return Integer.valueOf(get(KEYWORD_LIMIT));
-        return VALUE_DEFAULT_LIMIT;
+        return VALUE_DEF_LIMIT;
     }
 
     // ------------------------------------------------------------------------
@@ -130,26 +143,26 @@ public class QueryParams {
     // ------------------------------------------------------------------------
 
     public boolean containsKey(String key) {
-        return delegate.containsKey(key);
+        return delegate.containsKey(lc(key));
     }
 
-    public void set(String key, String value) {
-        delegate.put(key, value);
+    public void set(String key, Object value) {
+        delegate.put(lc(key), lc(value));
     }
 
     public String get(String key) {
-        return containsKey(key) ? delegate.get(key).iterator().next() : null;
+        return containsKey(key) ? delegate.get(lc(key)).iterator().next() : null;
     }
 
-    public String get(String key, String defaultValue) {
-        return containsKey(key) ? get(key) : defaultValue;
+    public String get(String key, Object defaultValue) {
+        return containsKey(key) ? get(key) : lc(defaultValue);
     }
 
     public Set<String> split(String key) {
         if (!containsKey(key)) return null;
-        String text = delegate.get(key).iterator().next();
+        String text = delegate.get(lc(key)).iterator().next();
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-        for (String item : StringUtils.split(text, ",")) {
+        for (String item : StringUtils.split(text, KEYWORD_SPLIT)) {
             builder.add(StringUtils.trim(item));
         }
         return builder.build();

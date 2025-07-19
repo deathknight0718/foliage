@@ -133,7 +133,7 @@ public class CodecUtils {
 
     public static Long decodeHex36(String value) {
         Preconditions.checkNotNull(value, "Value to decode cannot be null");
-        return Long.parseLong(value, HEX_BIT_36);
+        return Long.parseLong(value.toLowerCase(), HEX_BIT_36);
     }
 
     // ------------------------------------------------------------------------
