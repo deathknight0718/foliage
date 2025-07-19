@@ -33,8 +33,6 @@ public class Hes36Deserializer extends StdDeserializer<Long> {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int HEX_BIT = 36;
-
     public static final Hes36Deserializer instance = new Hes36Deserializer();
 
     public Hes36Deserializer() {

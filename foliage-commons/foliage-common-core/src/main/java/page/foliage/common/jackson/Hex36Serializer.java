@@ -32,8 +32,6 @@ public class Hex36Serializer extends StdSerializer<Long> {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int HEX_BIT = 36;
-
     public final static Hex36Serializer instance = new Hex36Serializer();
 
     public Hex36Serializer() {
