@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
+import page.foliage.common.util.CodecUtils;
 import page.foliage.guava.common.base.Preconditions;
 
 /**
@@ -47,12 +48,7 @@ public class Hes36Deserializer extends StdDeserializer<Long> {
 
     @Override
     public Long deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
-        return decode(parser.readValueAs(String.class));
-    }
-
-    public static Long decode(String value) {
-        Preconditions.checkNotNull(value, "Value to decode cannot be null");
-        return Long.parseLong(value, HEX_BIT);
+        return CodecUtils.decodeHex36(parser.readValueAs(String.class));
     }
 
 }

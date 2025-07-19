@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import page.foliage.guava.common.base.Preconditions;
+import page.foliage.common.util.CodecUtils;
 
 /**
  *
@@ -46,12 +46,7 @@ public class Hex36Serializer extends StdSerializer<Long> {
 
     @Override
     public void serialize(Long value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeString(encode(value));
-    }
-
-    public static String encode(Long value) {
-        Preconditions.checkNotNull(value, "Value to encode cannot be null");
-        return Long.toString(value, HEX_BIT).toUpperCase();
+        gen.writeString(CodecUtils.encodeHex36(value));
     }
 
 }

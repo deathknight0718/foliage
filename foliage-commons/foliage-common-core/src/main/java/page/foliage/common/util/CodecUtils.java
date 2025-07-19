@@ -30,8 +30,8 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
 
+import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.io.BaseEncoding;
-
 
 /**
  * 
@@ -40,6 +40,10 @@ import page.foliage.guava.common.io.BaseEncoding;
  * @version 1.0.0
  */
 public class CodecUtils {
+
+    // ------------------------------------------------------------------------
+
+    public static final int HEX_BIT_36 = 36;
 
     // ------------------------------------------------------------------------
 
@@ -85,6 +89,11 @@ public class CodecUtils {
         return encodeZipped(bytes);
     }
 
+    public static String encodeHex36(Long value) {
+        Preconditions.checkNotNull(value, "Value to encode cannot be null");
+        return Long.toString(value, HEX_BIT_36).toUpperCase();
+    }
+
     // ------------------------------------------------------------------------
 
     public static byte[] decodeBase64(String base64String) {
@@ -120,6 +129,11 @@ public class CodecUtils {
 
     public static String decodeZippedString(String zippedString) {
         return new String(decodeZipped(zippedString));
+    }
+
+    public static Long decodeHex36(String value) {
+        Preconditions.checkNotNull(value, "Value to decode cannot be null");
+        return Long.parseLong(value, HEX_BIT_36);
     }
 
     // ------------------------------------------------------------------------
