@@ -1,2 +1,0 @@
-# foliage-assemblies
-Foliage Assemblies

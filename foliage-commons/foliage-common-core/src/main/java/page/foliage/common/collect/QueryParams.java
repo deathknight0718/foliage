@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
-import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.collect.ImmutableMultimap;
 import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.guava.common.collect.LinkedListMultimap;
@@ -80,29 +79,47 @@ public class QueryParams {
 
     public static QueryParams of(String k1, Object v1) {
         QueryParams bean = new QueryParams();
-        bean.delegate.put(lc(k1), lc(v1));
+        bean.set(k1, v1);
         return bean;
     }
 
     public static QueryParams of(String k1, Object v1, String k2, Object v2) {
         QueryParams bean = new QueryParams();
-        bean.delegate.put(lc(k1), lc(v1));
-        bean.delegate.put(lc(k2), lc(v2));
+        bean.set(k1, v1);
+        bean.set(k2, v2);
         return bean;
     }
 
     public static QueryParams of(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
         QueryParams bean = new QueryParams();
-        bean.delegate.put(lc(k1), lc(v1));
-        bean.delegate.put(lc(k2), lc(v2));
-        bean.delegate.put(lc(k3), lc(v3));
+        bean.set(k1, v1);
+        bean.set(k2, v2);
+        bean.set(k3, v3);
         return bean;
     }
 
     public static QueryParams of(Map<String, List<String>> params) {
         QueryParams bean = new QueryParams();
         for (Map.Entry<String, List<String>> entry : params.entrySet()) {
-            bean.delegate.putAll(lc(entry.getKey()), entry.getValue().stream().map(StringUtils::trim).map(QueryParams::lc).toList());
+            for (String value : entry.getValue()) {
+                bean.set(entry.getKey(), value);
+            }
+        }
+        return bean;
+    }
+
+    public static QueryParams of(Multimap<String, String> params) {
+        QueryParams bean = new QueryParams();
+        for (Map.Entry<String, String> entry : params.entries()) {
+            bean.set(entry.getKey(), entry.getValue());
+        }
+        return bean;
+    }
+
+    public static QueryParams of(QueryParams params) {
+        QueryParams bean = new QueryParams();
+        for (Map.Entry<String, String> entry : params.delegate.entries()) {
+            bean.set(entry.getKey(), entry.getValue());
         }
         return bean;
     }
@@ -146,8 +163,9 @@ public class QueryParams {
         return delegate.containsKey(lc(key));
     }
 
-    public void set(String key, Object value) {
+    public QueryParams set(String key, Object value) {
         delegate.put(lc(key), lc(value));
+        return this;
     }
 
     public String get(String key) {

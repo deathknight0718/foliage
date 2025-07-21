@@ -17,6 +17,8 @@ package org.foliage.common.test;
 
 import java.security.NoSuchAlgorithmException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import page.foliage.common.collect.Identities;
@@ -27,11 +29,13 @@ import page.foliage.common.collect.Identities;
  */
 public class TestUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
+
     @Test(invocationCount = 10)
     public void testUuidv3Generation() throws NoSuchAlgorithmException {
-        System.out.println(Identities.uuidv3("test", "test".getBytes()));
-        System.out.println(Identities.snowflake()); // 51818591548080128
-        System.out.println(Identities.snowflake()); // 25909299483443201
+        LOGGER.info("UUIDv3: {}", Identities.uuidv3("test", "test".getBytes()));
+        LOGGER.info("Snowflake ID: {}", Identities.snowflake()); // 51818591548080128
+        LOGGER.info("Snowflake ID: {}", Identities.snowflake()); // 25909299483443201
     }
 
 }

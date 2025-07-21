@@ -17,7 +17,6 @@
 		<module>foliage-common-flow</module>
 		<module>foliage-common-func</module>
 	</modules>
-
 	<dependencies>
 		<!-- ======================================== -->
 		<!-- Logging System Dependencies For All Modules -->
