@@ -172,15 +172,15 @@ public class FederatedEngine {
     }
 
     public void executionEventReceivedMessage(String name, String executionId, Map<String, Object> processVariables) {
-        processEngine.getRuntimeService().messageEventReceived(name, executionId, processVariables);
+        processEngine.getRuntimeService().trigger(executionId, processVariables);
     }
 
     public void executionEventReceivedSignal(String name, String executionId, Map<String, Object> processVariables) {
         processEngine.getRuntimeService().signalEventReceived(name, executionId, processVariables);
     }
 
-    public void executionTrigger(String executionId) {
-        processEngine.getRuntimeService().trigger(executionId);
+    public void executionTrigger(String executionId, FlowVariables variables) {
+        processEngine.getRuntimeService().trigger(executionId, variables);
     }
 
     // ------------------------------------------------------------------------

@@ -70,8 +70,20 @@ public class FlowExecution {
         getInstance(FederatedEngine.class).executionEventReceivedSignal(name, delegate.getId(), variables);
     }
 
-    public void trigger() {
-        getInstance(FederatedEngine.class).executionTrigger(delegate.getId());
+    public void trigger(String result) {
+        trigger(FlowVariables.of(FlowVariables.KEY_RESULT, result));
+    }
+
+    public void trigger(String result, String resultReason) {
+        trigger(FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason));
+    }
+
+    public void trigger(String result, String resultReason, String resultReferenceId) {
+        trigger(FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason, FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+    }
+
+    public void trigger(FlowVariables variables) {
+        getInstance(FederatedEngine.class).executionTrigger(delegate.getId(), variables);
     }
 
     // ------------------------------------------------------------------------
