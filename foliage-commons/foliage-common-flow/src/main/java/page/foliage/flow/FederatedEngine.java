@@ -204,13 +204,13 @@ public class FederatedEngine {
     }
 
     public FlowTask taskQueryByKey(Access access, FlowProcess process, String key) {
-        TaskQuery query = processEngine.getTaskService().createTaskQuery();
+        TaskQuery query = processEngine.getTaskService().createTaskQuery().taskTenantId(access.getDomainHexId()).active();
         Task bean = query.processInstanceId(process.getId()).taskDefinitionKey(key).singleResult();
         return Optional.ofNullable(bean).map(FlowTask::new).orElse(null);
     }
 
     public FlowTask taskQueryById(Access access, String id) {
-        TaskQuery query = processEngine.getTaskService().createTaskQuery().taskTenantId(access.getDomainHexId());
+        TaskQuery query = processEngine.getTaskService().createTaskQuery().taskTenantId(access.getDomainHexId()).active();
         Task bean = query.taskId(id).singleResult();
         return Optional.ofNullable(bean).map(FlowTask::new).orElse(null);
     }
@@ -219,9 +219,9 @@ public class FederatedEngine {
         processEngine.getTaskService().deleteTask(task.getId(), true);
     }
 
-    public FlowTask.Completer taskCompleting(Access access, FlowTask task) {
+    public FlowTask.Submitter taskCompleting(Access access, FlowTask task) {
         TaskCompletionBuilder builder = processEngine.getTaskService().createTaskCompletionBuilder().taskId(task.getId());
-        return new FlowTask.Completer(builder).accessId(access.getId());
+        return new FlowTask.Submitter(builder).accessId(access.getId());
     }
 
     // ------------------------------------------------------------------------

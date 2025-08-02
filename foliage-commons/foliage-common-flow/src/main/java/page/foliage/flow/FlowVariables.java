@@ -35,6 +35,8 @@ public class FlowVariables extends ForwardingMap<String, Object> {
 
     // ------------------------------------------------------------------------
 
+    public static final String KEY_ASSIGNEE_ID = "_assigneeId";
+
     public static final String KEY_ACCESS_ID = "_accessId";
 
     public static final String KEY_REFERENCE_ID = "_referenceId";
@@ -75,6 +77,36 @@ public class FlowVariables extends ForwardingMap<String, Object> {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public static FlowVariables of(String k1, Object v1) {
+        FlowVariables variables = new FlowVariables();
+        variables.put(k1, v1);
+        return variables;
+    }
+
+    public static FlowVariables of(String k1, Object v1, String k2, Object v2) {
+        FlowVariables variables = new FlowVariables();
+        variables.put(k1, v1);
+        variables.put(k2, v2);
+        return variables;
+    }
+
+    public static FlowVariables of(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
+        FlowVariables variables = new FlowVariables();
+        variables.put(k1, v1);
+        variables.put(k2, v2);
+        variables.put(k3, v3);
+        return variables;
+    }
+
+    public static FlowVariables of(String k1, Object v1, String k2, Object v2, String k3, Object v3, String k4, Object v4) {
+        FlowVariables variables = new FlowVariables();
+        variables.put(k1, v1);
+        variables.put(k2, v2);
+        variables.put(k3, v3);
+        variables.put(k4, v4);
+        return variables;
     }
 
     // ------------------------------------------------------------------------

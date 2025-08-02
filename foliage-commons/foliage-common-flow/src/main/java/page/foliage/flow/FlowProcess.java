@@ -185,8 +185,6 @@ public class FlowProcess {
 
         private final ProcessInstanceBuilder delegate;
 
-        private FlowVariables variables = new FlowVariables();
-
         Starter(ProcessInstanceBuilder delegate) {
             this.delegate = delegate;
         }
@@ -197,24 +195,30 @@ public class FlowProcess {
         }
 
         public Starter accessId(Long accessId) {
-            variables.put(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
+            delegate.variable(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
+            return this;
+        }
+
+        public Starter assigneeId(Long assigneeId) {
+            delegate.assignee(CodecUtils.encodeHex36(assigneeId));
+            delegate.variable(FlowVariables.KEY_ASSIGNEE_ID, CodecUtils.encodeHex36(assigneeId));
             return this;
         }
 
         public Starter referenceId(Long referenceId) {
             delegate.referenceId(CodecUtils.encodeHex36(referenceId));
-            variables.put(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
+            delegate.variable(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
             return this;
         }
 
         public Starter referenceType(String referenceType) {
             delegate.referenceType(referenceType);
-            variables.put(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
+            delegate.variable(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
             return this;
         }
 
-        public Starter assignee(String userId) {
-            delegate.assignee(userId);
+        public Starter result(String result) {
+            delegate.variable(FlowVariables.KEY_RESULT, result);
             return this;
         }
 
@@ -224,17 +228,16 @@ public class FlowProcess {
         }
 
         public Starter variable(String key, Object value) {
-            variables.put(key, value);
+            delegate.variable(key, value);
             return this;
         }
 
         public Starter variables(FlowVariables variables) {
-            variables.putAll(variables);
+            delegate.variables(variables);
             return this;
         }
 
         public FlowProcess start() {
-            delegate.variables(variables);
             return new FlowProcess(delegate.start());
         }
 

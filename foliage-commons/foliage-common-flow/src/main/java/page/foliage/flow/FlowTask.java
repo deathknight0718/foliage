@@ -62,7 +62,7 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public Completer submitter() {
+    public Submitter submitter() {
         return getInstance(FederatedEngine.class).taskCompleting(Access.current(), this);
     }
 
@@ -142,42 +142,56 @@ public class FlowTask {
         return delegate.getTaskDefinitionKey();
     }
 
+    public Boolean getSuspended() {
+        return delegate.isSuspended();
+    }
+
     // ------------------------------------------------------------------------
 
-    public static class Completer {
+    public static class Submitter {
 
         private final TaskCompletionBuilder delegate;
 
-        private FlowVariables variables = new FlowVariables();
-
-        public Completer(TaskCompletionBuilder delegate) {
+        public Submitter(TaskCompletionBuilder delegate) {
             this.delegate = delegate;
         }
 
-        public Completer accessId(Long accessId) {
-            variables.put(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
+        public Submitter accessId(Long accessId) {
+            variable(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
             return this;
         }
 
-        public Completer variable(String key, Object value) {
-            variables.put(key, value);
+        public Submitter assigneeId(Long assigneeId) {
+            variable(FlowVariables.KEY_ASSIGNEE_ID, CodecUtils.encodeHex36(assigneeId));
             return this;
         }
 
-        public Completer variables(FlowVariables variables) {
-            variables.putAll(variables);
+        public Submitter referenceId(Long referenceId) {
+            variable(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
             return this;
         }
 
-        public void complete() {
-            variables.put(FlowStatus.VARIABLE_STATUS, FlowStatus.PASSED.name());
+        public Submitter referenceType(String referenceType) {
+            variable(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
+            return this;
+        }
+
+        public Submitter result(String result) {
+            variable(FlowVariables.KEY_RESULT, result);
+            return this;
+        }
+
+        public Submitter variable(String key, Object value) {
+            delegate.variable(key, value);
+            return this;
+        }
+
+        public Submitter variables(FlowVariables variables) {
             delegate.variables(variables);
-            delegate.complete();
+            return this;
         }
 
-        public void reject() {
-            variables.put(FlowStatus.VARIABLE_STATUS, FlowStatus.REJECTED.name());
-            delegate.variables(variables);
+        public void submit() {
             delegate.complete();
         }
 

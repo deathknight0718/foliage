@@ -26,18 +26,44 @@ import org.flowable.engine.runtime.Execution;
  */
 public class FlowExecution {
 
+    // ------------------------------------------------------------------------
+
     private final Execution delegate;
+
+    // ------------------------------------------------------------------------
 
     public FlowExecution(Execution delegate) {
         this.delegate = delegate;
     }
 
-    public String getId() {
-        return delegate.getId();
+    // ------------------------------------------------------------------------
+
+    public void receivedMessage(String name, String result) {
+        receivedMessage(name, FlowVariables.of(FlowVariables.KEY_RESULT, result));
+    }
+
+    public void receivedMessage(String name, String result, String resultReason) {
+        receivedMessage(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason));
+    }
+
+    public void receivedMessage(String name, String result, String resultReason, String resultReferenceId) {
+        receivedMessage(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason, FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId));
     }
 
     public void receivedMessage(String name, FlowVariables variables) {
         getInstance(FederatedEngine.class).executionEventReceivedMessage(name, delegate.getId(), variables);
+    }
+
+    public void receivedSignal(String name, String result) {
+        receivedSignal(name, FlowVariables.of(FlowVariables.KEY_RESULT, result));
+    }
+
+    public void receivedSignal(String name, String result, String resultReason) {
+        receivedSignal(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason));
+    }
+
+    public void receivedSignal(String name, String result, String resultReason, String resultReferenceId) {
+        receivedSignal(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason, FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId));
     }
 
     public void receivedSignal(String name, FlowVariables variables) {
@@ -46,6 +72,24 @@ public class FlowExecution {
 
     public void trigger() {
         getInstance(FederatedEngine.class).executionTrigger(delegate.getId());
+    }
+
+    // ------------------------------------------------------------------------
+
+    public String getId() {
+        return delegate.getId();
+    }
+
+    public String getName() {
+        return delegate.getName();
+    }
+
+    public String getProcessInstanceId() {
+        return delegate.getProcessInstanceId();
+    }
+
+    public String getActivityId() {
+        return delegate.getActivityId();
     }
 
 }
