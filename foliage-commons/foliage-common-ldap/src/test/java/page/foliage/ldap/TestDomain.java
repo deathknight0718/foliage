@@ -28,8 +28,8 @@ import page.foliage.common.ioc.InstanceGuice;
 import page.foliage.inject.AbstractModule;
 import page.foliage.inject.Provides;
 import page.foliage.ldap.session.IdentitySession;
-import page.foliage.ldap.session.IdentitySessionLdap;
 import page.foliage.ldap.session.LdapConnection;
+import page.foliage.ldap.session.impl.IdentitySessionLdap;
 
 /**
  * 
@@ -79,11 +79,25 @@ public class TestDomain {
     }
 
     @Test(enabled = true)
+    public void testDomainTree2() throws Exception {
+        for (Domain domain : Domain.get("domain1s1").members(QueryParams.ALL)) {
+            LOGGER.info("Domain: {} {} {}", domain.getId(), domain.getIdentifier(), domain.getDisplayName());
+        }
+    }
+
+    @Test(enabled = true)
     public void testDomainUserList() throws Exception {
         Domain domain = Domain.get("domain1");
         for (User user : domain.users(QueryParams.ALL)) {
             LOGGER.info("User: {} {} {} {}", user.getId(), user.getName(), user.getEmail(), user.domain().getDisplayName());
         }
+    }
+
+     @Test(enabled = true)
+    public void testDomainParent() throws Exception {
+        Domain domain = Domain.get("domain1s1");
+        Domain parent = domain.parent();
+        LOGGER.info("Parent Domain: {} {} {}", parent.getId(), parent.getIdentifier(), parent.getDisplayName());
     }
 
     // ------------------------------------------------------------------------

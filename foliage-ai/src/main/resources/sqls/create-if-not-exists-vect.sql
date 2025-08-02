@@ -1,6 +1,6 @@
--- definition: public.fli_vec_patients
+-- definition: ldap.fli_vec_patients
 
-CREATE TABLE IF NOT EXISTS public.fli_vec_patients (
+CREATE TABLE IF NOT EXISTS ldap.fli_vec_patients (
     id_           serial4 NOT NULL,
     ref_id_       varchar(255) NOT NULL,
     name_         varchar(255) NOT NULL,
@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS public.fli_vec_patients (
     CONSTRAINT fli_vec_patients_pk PRIMARY KEY (id_)
 );
 
--- definition: public.fli_vec_intents
+-- definition: ldap.fli_vec_intents
 
-CREATE TABLE IF NOT EXISTS public.fli_vec_intents (
+CREATE TABLE IF NOT EXISTS ldap.fli_vec_intents (
     id_                    serial4 NOT NULL,
     question_              text NOT NULL,
     question_embeddings_   vector NULL,

@@ -27,8 +27,8 @@ import page.foliage.inject.AbstractModule;
 import page.foliage.inject.Provides;
 import page.foliage.inject.Singleton;
 import page.foliage.ldap.session.IdentitySession;
-import page.foliage.ldap.session.IdentitySessionLdap;
 import page.foliage.ldap.session.LdapConnection;
+import page.foliage.ldap.session.impl.IdentitySessionLdap;
 
 /**
  * @author deathknight0718@qq.com

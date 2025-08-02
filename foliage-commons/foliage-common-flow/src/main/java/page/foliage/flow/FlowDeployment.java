@@ -15,7 +15,7 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.flow.FederatedEngine.singleton;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,9 +33,10 @@ import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
 import page.foliage.common.util.DateTimes;
-import page.foliage.ldap.Domain;
 import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.io.Resources;
+import page.foliage.ldap.Access;
+import page.foliage.ldap.Domain;
 
 /**
  * 
@@ -55,34 +56,38 @@ public class FlowDeployment {
 
     // ------------------------------------------------------------------------
 
+    public static Builder builder(Access access) {
+        return builder(access.getDomain());
+    }
+
     public static Builder builder(Domain domain) {
-        return singleton().deploymentBuilder(domain);
+        return getInstance(FederatedEngine.class).deploymentBuilding(domain);
     }
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowDeployment> list(QueryParams params, Domain domain) {
-        return singleton().deploymentsQueryByParamsAndDomain(params, domain);
+    public static PaginList<FlowDeployment> list(QueryParams params) {
+        return getInstance(FederatedEngine.class).deploymentQueryList(Access.current(), params);
     }
 
     // ------------------------------------------------------------------------
 
     public static FlowDeployment get(String id) {
-        return singleton().deploymentQueryById(id);
+        return getInstance(FederatedEngine.class).deploymentQueryById(Access.current(), id);
     }
 
     // ------------------------------------------------------------------------
 
     public void remove() {
-        singleton().deploymentDeleteById(getId());
+        getInstance(FederatedEngine.class).deploymentDelete(this);
     }
 
     public PaginList<FlowDefinition> definitions(QueryParams params) {
-        return singleton().definitionsQueryByParamsAndDeploymentId(params, getId());
+        return getInstance(FederatedEngine.class).definitionQueryList(params, this);
     }
 
     public List<FlowResource> resources() {
-        return singleton().resourcesQueryByDeploymentId(getId());
+        return getInstance(FederatedEngine.class).resourceQueryList(getId());
     }
 
     public FlowResource resource() {
@@ -91,10 +96,6 @@ public class FlowDeployment {
 
     public FlowResource resource(String name) {
         return resources().stream().filter(i -> StringUtils.equalsIgnoreCase(i.getName(), name)).findFirst().get();
-    }
-
-    public Domain domain() {
-        return Domain.get(getTenantId());
     }
 
     // ------------------------------------------------------------------------

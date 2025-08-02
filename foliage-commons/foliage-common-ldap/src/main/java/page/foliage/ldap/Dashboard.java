@@ -15,7 +15,7 @@
  */
 package page.foliage.ldap;
 
-import static page.foliage.ldap.session.DashboardSessionFactory.openSession;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -63,7 +63,7 @@ public class Dashboard {
     }
 
     public static Dashboard get(Long id) {
-        try (DashboardSession session = openSession()) {
+        try (DashboardSession session = getInstance(DashboardSession.class)) {
             return session.dashboardSelectById(id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -71,7 +71,7 @@ public class Dashboard {
     }
 
     public static PaginList<Dashboard> list(QueryParams params, Domain domain) {
-        try (DashboardSession session = openSession()) {
+        try (DashboardSession session = getInstance(DashboardSession.class)) {
             return session.dashboardsSelectByParamsAndDomainId(params, domain.getId());
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -85,7 +85,7 @@ public class Dashboard {
     }
 
     public void remove() {
-        try (DashboardSession session = openSession()) {
+        try (DashboardSession session = getInstance(DashboardSession.class)) {
             session.dashboardDeleteById(id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -120,6 +120,7 @@ public class Dashboard {
         return id;
     }
 
+    @JsonSerialize(using = Hex36Serializer.class)
     public Long getDomainId() {
         return domainId;
     }
@@ -191,7 +192,7 @@ public class Dashboard {
             Preconditions.checkNotNull(referenceId);
             Preconditions.checkNotNull(name);
             Preconditions.checkNotNull(token);
-            try (DashboardSession session = openSession()) {
+            try (DashboardSession session = getInstance(DashboardSession.class)) {
                 return session.dashboardInsertOrUpdate(this);
             } catch (Exception e) {
                 throw new IllegalArgumentException(e);

@@ -15,7 +15,7 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.flow.FederatedEngine.singleton;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
 import java.time.LocalDateTime;
 
@@ -27,8 +27,8 @@ import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
 import page.foliage.common.util.DateTimes;
-import page.foliage.ldap.Domain;
 import page.foliage.guava.common.base.Preconditions;
+import page.foliage.ldap.Access;
 
 /**
  * 
@@ -48,8 +48,9 @@ public class FlowHistoricActivity {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowHistoricActivity> list(QueryParams params, Domain domain) {
-        return singleton().historicActivitiesQueryByParamsAndDomain(params, domain);
+    public static PaginList<FlowHistoricActivity> list(QueryParams params) {
+        Preconditions.checkNotNull(Access.current().getRoles());
+        return getInstance(FederatedEngine.class).historicActivitieQueryList(Access.current(), params);
     }
 
     // ------------------------------------------------------------------------

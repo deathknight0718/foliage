@@ -31,12 +31,10 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-guava</artifactId>
-            <version>32.1.3</version>
         </dependency>
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-guice</artifactId>
-            <version>5.1.0</version>
             <optional>true</optional>
         </dependency>
         <!-- ======================================== -->

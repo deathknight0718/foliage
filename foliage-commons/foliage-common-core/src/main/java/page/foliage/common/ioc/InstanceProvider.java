@@ -15,6 +15,8 @@
  ******************************************************************************/
 package page.foliage.common.ioc;
 
+import java.lang.annotation.Annotation;
+
 /**
  * The instance provider interface.
  * 
@@ -24,5 +26,13 @@ package page.foliage.common.ioc;
 public interface InstanceProvider {
 
     <T> T getInstance(Class<T> clazz);
+
+    <T> T getInstance(Class<T> clazz, Annotation annotation);
+
+    <T> T getInstance(Class<T> clazz, String name);
+
+    <T> T getInstanceComposited(Class<T> clazz);
+
+    <T> T getInstanceSpecialized(Class<T> clazz);
 
 }

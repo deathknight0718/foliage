@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Foliage Develop Team.
+ * Copyright 2025 Foliage Develop Team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,57 +15,37 @@
  */
 package page.foliage.flow;
 
-import java.util.List;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
-import org.flowable.engine.delegate.DelegateExecution;
+import org.flowable.engine.runtime.Execution;
 
 /**
- * 
- * @author deathknight0718@qq.com
+ *
+ *
+ * @author: liuzheng@cecdat.com
  */
 public class FlowExecution {
 
-    // ------------------------------------------------------------------------
+    private final Execution delegate;
 
-    private final DelegateExecution delegate;
-
-    // ------------------------------------------------------------------------
-
-    public FlowExecution(DelegateExecution delegate) {
+    public FlowExecution(Execution delegate) {
         this.delegate = delegate;
     }
 
-    // ------------------------------------------------------------------------
-
-    public FlowVariables getVariables() {
-        return new FlowVariables(delegate.getVariables());
-    }
-
-    public FlowVariables.OptionalValue getVariable(String name) {
-        return getVariables().val(name);
-    }
-
-    // ------------------------------------------------------------------------
-
-    public void setVariables(FlowVariables variables) {
-        delegate.setVariables(variables);
-    }
-
-    public void setVariable(String key, Object value) {
-        delegate.setVariable(key, value);
-    }
-
-    // ------------------------------------------------------------------------
-
-    public List<FormPayloadReference> references() {
-        FlowProcess process = FlowProcess.get(delegate.getProcessDefinitionId());
-        return process.references();
-    }
-
-    // ------------------------------------------------------------------------
-
     public String getId() {
         return delegate.getId();
+    }
+
+    public void receivedMessage(String name, FlowVariables variables) {
+        getInstance(FederatedEngine.class).executionEventReceivedMessage(name, delegate.getId(), variables);
+    }
+
+    public void receivedSignal(String name, FlowVariables variables) {
+        getInstance(FederatedEngine.class).executionEventReceivedSignal(name, delegate.getId(), variables);
+    }
+
+    public void trigger() {
+        getInstance(FederatedEngine.class).executionTrigger(delegate.getId());
     }
 
 }

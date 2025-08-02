@@ -15,9 +15,16 @@
  */
 package page.foliage.common.ioc;
 
-import jakarta.enterprise.inject.Default;
+import java.lang.annotation.Annotation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
+import page.foliage.common.annotation.Composited;
+import page.foliage.common.annotation.Specialized;
 
 /**
  * 
@@ -28,6 +35,8 @@ public class InstanceCDI implements InstanceProvider {
     // ------------------------------------------------------------------------
 
     private static volatile InstanceCDI singleton;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InstanceCDI.class);
 
     // ------------------------------------------------------------------------
 
@@ -49,8 +58,35 @@ public class InstanceCDI implements InstanceProvider {
     @Override
     public <T> T getInstance(Class<T> clazz) {
         Instance<T> instance = CDI.current().select(clazz);
-        if (instance.isAmbiguous()) return instance.select(Default.Literal.INSTANCE).get();
-        return CDI.current().select(clazz).get();
+        if (instance.isAmbiguous()) {
+            LOGGER.debug("Instance of {} is ambiguous, selecting specialized instance.", clazz.getName());
+            instance = instance.select(Specialized.Literal.INSTANCE);
+        }
+        if (instance.isUnsatisfied()) {
+            LOGGER.debug("Instance of {} is unsatisfied, selecting specialized instance.", clazz.getName());
+            instance = instance.select(Specialized.Literal.INSTANCE);
+        }
+        return instance.get();
+    }
+
+    @Override
+    public <T> T getInstance(Class<T> clazz, Annotation annotation) {
+        return CDI.current().select(clazz).select(annotation).get();
+    }
+
+    @Override
+    public <T> T getInstanceComposited(Class<T> clazz) {
+        return CDI.current().select(clazz).select(Composited.Literal.INSTANCE).get();
+    }
+
+    @Override
+    public <T> T getInstanceSpecialized(Class<T> clazz) {
+        return CDI.current().select(clazz).select(Specialized.Literal.INSTANCE).get();
+    }
+
+    @Override
+    public <T> T getInstance(Class<T> clazz, String name) {
+        return CDI.current().select(clazz).select(NamedLiteral.of(name)).get();
     }
 
 }

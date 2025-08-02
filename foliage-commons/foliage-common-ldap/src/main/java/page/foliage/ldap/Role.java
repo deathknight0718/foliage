@@ -15,7 +15,7 @@
  */
 package page.foliage.ldap;
 
-import static page.foliage.ldap.session.IdentitySessionFactory.openSession;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
 import java.io.IOException;
 
@@ -51,7 +51,7 @@ public enum Role {
     // --------------------------------------------------------------------
 
     public static PaginList<Role> list(QueryParams params) {
-        try (IdentitySession session = openSession()) {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
             return session.rolesSelectByParams(params);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

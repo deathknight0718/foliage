@@ -88,7 +88,7 @@
         <simpleType>
             <restriction base="string">
                 <!-- regular expression taken from http://regexlib.com/REDetails.aspx?regexp_id=2821 -->
-                <pattern value="([a-z]{2,3}(\.[a-zA-Z][a-zA-Z_$0-9]*)*)\.([A-Z][a-zA-Z_$0-9]*)" />
+                <pattern value="([a-z]{2,5}(\.[a-zA-Z][a-zA-Z_$0-9]*)*)\.([A-Z][a-zA-Z_$0-9]*)" />
             </restriction>
         </simpleType>
     </attribute>

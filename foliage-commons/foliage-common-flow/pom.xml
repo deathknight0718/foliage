@@ -67,7 +67,18 @@
         <dependency>
             <groupId>page.foliage</groupId>
             <artifactId>foliage-guice</artifactId>
-            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.4.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

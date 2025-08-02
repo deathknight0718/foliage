@@ -18,6 +18,10 @@ package page.foliage.flow;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 
+import page.foliage.common.util.CodecUtils;
+import page.foliage.guava.common.base.Preconditions;
+import page.foliage.ldap.Access;
+
 /**
  * 
  * @author deathknight0718@qq.com
@@ -26,9 +30,12 @@ public abstract class FlowCommandDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        doExecute(new FlowExecution(execution));
+        Preconditions.checkState(execution.hasVariable(FlowVariables.KEY_ACCESS_ID), "Access is required");
+        Access.register(Access.get(CodecUtils.decodeHex36(execution.getVariable(FlowVariables.KEY_ACCESS_ID).toString())));
+        doExecute(new FlowDelegateExecution(execution));
+        Access.unregister();
     }
 
-    abstract protected void doExecute(FlowExecution execution);
+    abstract protected void doExecute(FlowDelegateExecution execution);
 
 }

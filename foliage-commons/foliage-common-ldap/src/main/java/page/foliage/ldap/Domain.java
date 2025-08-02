@@ -15,7 +15,9 @@
  */
 package page.foliage.ldap;
 
-import static page.foliage.ldap.session.IdentitySessionFactory.openSession;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
+
+import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.Hex36Serializer;
+import page.foliage.common.util.CodecUtils;
 import page.foliage.guava.common.base.Objects;
 import page.foliage.ldap.session.IdentitySession;
 
@@ -33,7 +36,7 @@ import page.foliage.ldap.session.IdentitySession;
  * 
  * @author deathknight0718@qq.com
  */
-public class Domain {
+public class Domain implements Serializable {
 
     // ------------------------------------------------------------------------
 
@@ -41,18 +44,17 @@ public class Domain {
 
     // ------------------------------------------------------------------------
 
+    private static final long serialVersionUID = 1L;
+
+    // ------------------------------------------------------------------------
+
     private final Long id;
 
     private final String identifier;
 
-    private String displayName;
+    private final String displayName;
 
     // ------------------------------------------------------------------------
-
-    public Domain(Long id, String identifier) {
-        this.id = id;
-        this.identifier = identifier;
-    }
 
     public Domain(Long id, String identifier, String displayName) {
         this.id = id;
@@ -63,7 +65,7 @@ public class Domain {
     // ------------------------------------------------------------------------
 
     public static PaginList<Domain> list(QueryParams params) {
-        try (IdentitySession session = openSession()) {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
             return session.domainsSelectByParams(params);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -71,7 +73,7 @@ public class Domain {
     }
 
     public static Domain get(Long id) {
-        try (IdentitySession session = openSession()) {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
             return session.domainSelectById(id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -79,7 +81,7 @@ public class Domain {
     }
 
     public static Domain get(String identifier) {
-        try (IdentitySession session = openSession()) {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
             return session.domainSelectByIdentifier(identifier);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -89,7 +91,7 @@ public class Domain {
     // ------------------------------------------------------------------------
 
     public PaginList<Domain> members(QueryParams params) {
-        try (IdentitySession session = openSession()) {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
             return session.domainsRecursionByParamsAndRoot(params, this);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
@@ -97,8 +99,16 @@ public class Domain {
     }
 
     public PaginList<User> users(QueryParams params) {
-        try (IdentitySession session = openSession()) {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
             return session.usersSelectByParamsAndDomainId(params, id);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public Domain parent() {
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
+            return session.domainParentById(id);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
@@ -132,16 +142,16 @@ public class Domain {
         return id;
     }
 
+    public String getHexId() {
+        return CodecUtils.encodeHex36(id);
+    }
+
     public String getIdentifier() {
         return identifier;
     }
 
     public String getDisplayName() {
         return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
 }

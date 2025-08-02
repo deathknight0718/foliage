@@ -15,23 +15,12 @@
  */
 package page.foliage.flow;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import javax.sql.DataSource;
 
-import org.apache.commons.text.StringSubstitutor;
 import org.flowable.common.engine.impl.AbstractEngineConfiguration;
 import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.ProcessEngineConfiguration;
 import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-
-import page.foliage.guava.common.collect.ImmutableMap;
-import page.foliage.guava.common.io.Resources;
 
 /**
  * 
@@ -41,70 +30,38 @@ public class FederatedEngineBuilder {
 
     // ------------------------------------------------------------------------
 
-    public static final String DB_SCHEMA_UPDATE_DROP_CREATE = AbstractEngineConfiguration.DB_SCHEMA_UPDATE_DROP_CREATE;
-
-    public static final String DB_SCHEMA_UPDATE_FALSE = AbstractEngineConfiguration.DB_SCHEMA_UPDATE_FALSE;
-
     public static final String DB_SCHEMA = "flow";
 
     // ------------------------------------------------------------------------
 
-    private DataSource source;
-
-    private String databaseSchemaUpdate;
-
-    // ------------------------------------------------------------------------
-
-    private static void createSchemaIfNotExists(DataSource source) {
-        try ( //
-            Connection connection = source.getConnection(); //
-            Statement statement = connection.createStatement(); //
-        ) {
-            statement.execute(String.format("CREATE SCHEMA IF NOT EXISTS %s;", DB_SCHEMA));
-        } catch (SQLException e) {
-            throw new Error(e);
-        }
-    }
-
-    private static void createExternalIfNotExists(DataSource source) {
-        try ( //
-            Connection connection = source.getConnection(); //
-            Statement statement = connection.createStatement(); //
-        ) {
-            URL url = Resources.getResource("sqls/create-if-not-exists-form.sql");
-            String template = Resources.toString(url, StandardCharsets.UTF_8);
-            StringSubstitutor substitutor = new StringSubstitutor(ImmutableMap.of("schema", DB_SCHEMA));
-            statement.execute(substitutor.replace(template));
-        } catch (SQLException | IOException e) {
-            throw new Error(e);
-        }
-    }
+    private ProcessEngineConfiguration configuration = new StandaloneProcessEngineConfiguration();
 
     // ------------------------------------------------------------------------
 
     public FederatedEngineBuilder withDataSource(DataSource source) {
-        this.source = source;
+        configuration.setDataSource(source);
         return this;
     }
 
-    public FederatedEngineBuilder withDatabaseSchemaUpdate(String databaseSchemaUpdate) {
-        this.databaseSchemaUpdate = databaseSchemaUpdate;
+    public FederatedEngineBuilder withAsyncExecutorActivate(boolean asyncExecutorActivate) {
+        configuration.setAsyncExecutorActivate(asyncExecutorActivate);
+        return this;
+    }
+
+    public FederatedEngineBuilder withEnableEventDispatcher(boolean enableEventDispatcher) {
+        configuration.setEnableEventDispatcher(enableEventDispatcher);
         return this;
     }
 
     // ------------------------------------------------------------------------
 
-    public FederatedEngine build() throws SQLException, IOException {
-        ProcessEngineConfiguration pec = new StandaloneProcessEngineConfiguration();
-        pec.setDataSource(source);
-        pec.setDatabaseType(ProcessEngineConfiguration.DATABASE_TYPE_POSTGRES);
-        createSchemaIfNotExists(source);
-        pec.setDatabaseSchema(DB_SCHEMA);
-        pec.setDatabaseSchemaUpdate(databaseSchemaUpdate);
-        pec.setIdmEngineConfigurator(new FederatedIdentityConfigurator());
-        ProcessEngine engine = pec.buildProcessEngine();
-        if (DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) createExternalIfNotExists(source);
-        return new FederatedEngine(source, DB_SCHEMA, engine);
+    public FederatedEngine build() {
+        configuration.setDatabaseType(ProcessEngineConfiguration.DATABASE_TYPE_POSTGRES);
+        configuration.setDatabaseSchema(DB_SCHEMA);
+        configuration.setDatabaseSchemaUpdate(AbstractEngineConfiguration.DB_SCHEMA_UPDATE_FALSE);
+        configuration.setIdmEngineConfigurator(new FederatedIdentityConfigurator());
+        ProcessEngine engine = configuration.buildProcessEngine();
+        return new FederatedEngine(engine);
     }
 
 }

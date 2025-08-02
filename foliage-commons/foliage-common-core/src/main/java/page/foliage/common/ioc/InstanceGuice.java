@@ -15,9 +15,15 @@
  ******************************************************************************/
 package page.foliage.common.ioc;
 
+import java.lang.annotation.Annotation;
+
+import page.foliage.common.annotation.Composited;
+import page.foliage.common.annotation.Specialized;
 import page.foliage.inject.AbstractModule;
 import page.foliage.inject.Guice;
 import page.foliage.inject.Injector;
+import page.foliage.inject.Key;
+import page.foliage.inject.name.Names;
 
 /**
  * 
@@ -33,7 +39,7 @@ public class InstanceGuice implements InstanceProvider {
 
     // ------------------------------------------------------------------------
 
-    private InstanceGuice(Injector injector) {
+    public InstanceGuice(Injector injector) {
         this.injector = injector;
     }
 
@@ -48,6 +54,26 @@ public class InstanceGuice implements InstanceProvider {
     @Override
     public <T> T getInstance(Class<T> clazz) {
         return injector.getInstance(clazz);
+    }
+
+    @Override
+    public <T> T getInstance(Class<T> clazz, Annotation annotation) {
+        return injector.getInstance(Key.get(clazz, annotation));
+    }
+
+    @Override
+    public <T> T getInstanceComposited(Class<T> clazz) {
+        return injector.getInstance(Key.get(clazz, Composited.Literal.INSTANCE));
+    }
+
+    @Override
+    public <T> T getInstanceSpecialized(Class<T> clazz) {
+        return injector.getInstance(Key.get(clazz, Specialized.Literal.INSTANCE));
+    }
+
+    @Override
+    public <T> T getInstance(Class<T> clazz, String name) {
+        return injector.getInstance(Key.get(clazz, Names.named(name)));
     }
 
 }

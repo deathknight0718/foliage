@@ -59,7 +59,7 @@ public class DashboardSession implements AutoCloseable {
 
     public PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
         ImmutableList.Builder<Dashboard> builder = ImmutableList.builder();
-        SQLE sqle = new SQLE().SELECT("id_, name_, domain_id_, dashboard_id_, dashboard_token_").FROM("public.fli_core_dashboard").WHERE("domain_id_ = ?");
+        SQLE sqle = new SQLE().SELECT("id_, name_, domain_id_, dashboard_id_, dashboard_token_").FROM("ldap.fli_ldap_dashboard").WHERE("domain_id_ = ?");
         sqle.LIMIT(params.limit().toString()).OFFSET(params.offset().toString());
         try (PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString())) {
             statement.setLong(1, domainId);
@@ -75,7 +75,7 @@ public class DashboardSession implements AutoCloseable {
                 }
             }
         }
-        SQLE sqlc = new SQLE().SELECT("count(1)").FROM("public.fli_core_dashboard").WHERE("domain_id_ = ?");
+        SQLE sqlc = new SQLE().SELECT("count(1)").FROM("ldap.fli_ldap_dashboard").WHERE("domain_id_ = ?");
         try (PreparedStatement statement = connection.prepareStatement(sqlc.toNormalizeString())) {
             statement.setLong(1, domainId);
             LOGGER.debug("execute sql: {}", statement);
@@ -87,7 +87,7 @@ public class DashboardSession implements AutoCloseable {
     }
 
     public Dashboard dashboardSelectById(Long id) throws Exception {
-        SQLE sqle = new SQLE().SELECT("id_, name_, domain_id_, dashboard_id_, dashboard_token_").FROM("public.fli_core_dashboard").WHERE("id_ = ?");
+        SQLE sqle = new SQLE().SELECT("id_, name_, domain_id_, dashboard_id_, dashboard_token_").FROM("ldap.fli_ldap_dashboard").WHERE("id_ = ?");
         try (PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString())) {
             statement.setLong(1, id);
             LOGGER.debug("execute sql: {}", statement);
@@ -106,7 +106,7 @@ public class DashboardSession implements AutoCloseable {
     public Dashboard dashboardInsertOrUpdate(Dashboard.Builder builder) throws Exception {
         Long id = builder.getId() != null ? builder.getId() : Identities.snowflake();
         SQLE sqle1 = new SQLE();
-        sqle1.INSERT_INTO("public.fli_core_dashboard");
+        sqle1.INSERT_INTO("ldap.fli_ldap_dashboard");
         sqle1.VALUES("id_, name_, domain_id_, dashboard_id_, dashboard_token_, update_time_", "?, ?, ?, ?, ?, now()");
         sqle1.ON_CONFLICT("id_");
         sqle1.DO_UPDATE_SET("name_ = ?", "dashboard_id_ = ?", "dashboard_token_ = ?", "update_time_ = now()");
@@ -132,7 +132,7 @@ public class DashboardSession implements AutoCloseable {
     }
 
     public Long dashboardDeleteById(Long id) throws Exception {
-        SQLE sqle = new SQLE().DELETE_FROM("public.fli_core_dashboard").WHERE("id_ = ?");
+        SQLE sqle = new SQLE().DELETE_FROM("ldap.fli_ldap_dashboard").WHERE("id_ = ?");
         try (PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString())) {
             statement.setLong(1, id);
             LOGGER.debug("execute sql: {}", statement);

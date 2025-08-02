@@ -15,6 +15,10 @@
  ******************************************************************************/
 package page.foliage.common.ioc;
 
+import java.lang.annotation.Annotation;
+
+import page.foliage.common.annotation.Specialized;
+
 /**
  * The common instance factory.
  *
@@ -31,6 +35,22 @@ public class InstanceFactory {
 
     public static <T> T getInstance(Class<T> clazz) {
         return provider.getInstance(clazz);
+    }
+
+    public static <T> T getInstance(Class<T> clazz, Annotation annotation) {
+        return provider.getInstance(clazz, annotation);
+    }
+
+    public static <T> T getInstanceComposited(Class<T> clazz) {
+        return provider.getInstanceComposited(clazz);
+    }
+
+    public static <T> T getInstanceSpecialized(Class<T> clazz) {
+        return provider.getInstance(clazz, Specialized.Literal.INSTANCE);
+    }
+
+    public static <T> T getInstance(Class<T> clazz, String name) {
+        return provider.getInstance(clazz, name);
     }
 
     // ------------------------------------------------------------------------

@@ -15,12 +15,9 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.flow.FederatedEngine.singleton;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.flowable.task.api.DelegationState;
@@ -32,10 +29,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
+import page.foliage.common.util.CodecUtils;
 import page.foliage.common.util.DateTimes;
-import page.foliage.ldap.Domain;
-import page.foliage.ldap.User;
 import page.foliage.guava.common.base.Preconditions;
+import page.foliage.ldap.Access;
 
 /**
  * 
@@ -55,34 +52,18 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowTask> list(QueryParams params, Domain domain) {
-        return singleton().tasksQueryByParamsAndDomain(params, domain);
-    }
-
-    public static PaginList<FlowTask> list(QueryParams params, User user) {
-        return singleton().tasksQueryByParamsAndUser(params, user);
+    public static PaginList<FlowTask> list(QueryParams params) {
+        return getInstance(FederatedEngine.class).taskQueryList(Access.current(), params);
     }
 
     public static FlowTask get(String id) {
-        return singleton().taskQueryById(id);
+        return getInstance(FederatedEngine.class).taskQueryById(Access.current(), id);
     }
 
     // ------------------------------------------------------------------------
 
-    public SubmitionBuilder submitter(User user) {
-        return singleton().taskCompletionBuild(user, getProcessId(), getId(), getFormKey());
-    }
-
-    public FormResource resource() {
-        return FormResource.get(getFormKey(), Domain.get(getTenantId()));
-    }
-
-    public List<FormPayloadReference> references() {
-        try (FederatedSession session = singleton().openSession()) {
-            return session.referencesSelectByProcessId(getProcessId());
-        } catch (SQLException | IOException e) {
-            throw new IllegalStateException(e);
-        }
+    public Completer submitter() {
+        return getInstance(FederatedEngine.class).taskCompleting(Access.current(), this);
     }
 
     public FlowDefinition definition() {
@@ -91,26 +72,14 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public List<FormPayloadReference> payloads() {
-        try (FederatedSession session = singleton().openSession()) {
-            return session.referencesSelectByProcessId(getProcessId());
-        } catch (SQLException | IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public Domain domain() {
-        return Domain.get(getTenantId());
-    }
-
     public FlowVariables variables() {
-        return singleton().variablesQueryByTaskId(getId());
+        return getInstance(FederatedEngine.class).variablesQuery(this);
     }
 
     // ------------------------------------------------------------------------
 
     public void remove() {
-        singleton().taskDeleteById(getId());
+        getInstance(FederatedEngine.class).taskDelete(this);
     }
 
     // ------------------------------------------------------------------------
@@ -169,76 +138,44 @@ public class FlowTask {
         return delegate.getDelegationState();
     }
 
-    public String getFormKey() {
-        String formKey = delegate.getFormKey();
-        return formKey != null ? formKey : FormResource.KEY_DEFAULT;
-    }
-
     public String getTaskDefinitionKey() {
         return delegate.getTaskDefinitionKey();
     }
 
     // ------------------------------------------------------------------------
 
-    public static class SubmitionBuilder {
+    public static class Completer {
 
         private final TaskCompletionBuilder delegate;
 
-        private String processId, taskId, formKey;
-
-        private FormPayload payload;
-
         private FlowVariables variables = new FlowVariables();
 
-        public SubmitionBuilder(TaskCompletionBuilder delegate) {
+        public Completer(TaskCompletionBuilder delegate) {
             this.delegate = delegate;
         }
 
-        public SubmitionBuilder formKey(String formKey) {
-            this.formKey = formKey;
+        public Completer accessId(Long accessId) {
+            variables.put(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
             return this;
         }
 
-        public SubmitionBuilder taskId(String taskId) {
-            this.taskId = taskId;
-            return this;
-        }
-
-        public SubmitionBuilder processId(String processId) {
-            this.processId = processId;
-            return this;
-        }
-
-        public SubmitionBuilder payload(FormPayload payload) {
-            this.payload = payload;
-            return this;
-        }
-
-        public SubmitionBuilder variable(String key, Object value) {
+        public Completer variable(String key, Object value) {
             variables.put(key, value);
             return this;
         }
 
-        public SubmitionBuilder variables(FlowVariables variables) {
+        public Completer variables(FlowVariables variables) {
             variables.putAll(variables);
             return this;
         }
 
         public void complete() {
-            Preconditions.checkNotNull(taskId);
-            if (payload != null) {
-                FormPayloadReference.Builder builder = FormPayloadReference.builder();
-                builder.source(payload);
-                variables.payload(builder.source);
-                builder.key(formKey).executionId(taskId).build(processId);
-            }
             variables.put(FlowStatus.VARIABLE_STATUS, FlowStatus.PASSED.name());
             delegate.variables(variables);
             delegate.complete();
         }
-        
+
         public void reject() {
-            Preconditions.checkNotNull(taskId);
             variables.put(FlowStatus.VARIABLE_STATUS, FlowStatus.REJECTED.name());
             delegate.variables(variables);
             delegate.complete();

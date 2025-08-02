@@ -35,6 +35,20 @@ public class FlowVariables extends ForwardingMap<String, Object> {
 
     // ------------------------------------------------------------------------
 
+    public static final String KEY_ACCESS_ID = "_accessId";
+
+    public static final String KEY_REFERENCE_ID = "_referenceId";
+
+    public static final String KEY_REFERENCE_TYPE = "_referenceType";
+
+    public static final String KEY_RESULT = "_result";
+
+    public static final String KEY_RESULT_REASON = "_resultReason";
+
+    public static final String KEY_RESULT_REFERENCE_ID = "_resultReferenceId";
+
+    // ------------------------------------------------------------------------
+
     public static final FlowVariables EMPTY = new FlowVariables(ImmutableMap.of());
 
     public static final TypeReference<Map<String, Object>> TYPE_REFERENCE = new TypeReference<>() {};
@@ -64,11 +78,6 @@ public class FlowVariables extends ForwardingMap<String, Object> {
     }
 
     // ------------------------------------------------------------------------
-
-    public FlowVariables payload(FormPayload payload) {
-        putAll(payload.variables());
-        return this;
-    }
 
     public OptionalValue val(String key) {
         return new OptionalValue(Optional.ofNullable(get(key)));

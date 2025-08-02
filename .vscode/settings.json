@@ -28,5 +28,6 @@
       " *",
       " * @author: liuzheng@cecdat.com",
       " */"
-    ]
+    ],
+    "java.dependency.syncWithFolderExplorer": false
 }

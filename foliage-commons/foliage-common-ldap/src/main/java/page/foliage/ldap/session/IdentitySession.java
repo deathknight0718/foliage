@@ -35,6 +35,8 @@ public interface IdentitySession extends AutoCloseable {
 
     Domain domainSelectById(Long id) throws Exception;
 
+    Domain domainParentById(Long id) throws Exception;
+
     Domain domainSelectByIdentifier(String identifier) throws Exception;
 
     PaginList<User> usersSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception;

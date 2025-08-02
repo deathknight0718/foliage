@@ -15,10 +15,8 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.flow.FederatedEngine.singleton;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -32,10 +30,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
+import page.foliage.common.util.CodecUtils;
 import page.foliage.common.util.DateTimes;
-import page.foliage.ldap.Domain;
-import page.foliage.ldap.User;
 import page.foliage.guava.common.base.Preconditions;
+import page.foliage.ldap.Access;
 
 /**
  * 
@@ -55,56 +53,53 @@ public class FlowProcess {
 
     // ------------------------------------------------------------------------
 
-    public static Builder builder(Domain domain) {
-        return singleton().processBuild(domain);
-    }
-
-    public static Builder builder(User user) {
-        return singleton().processBuild(user);
+    public static Starter builder() {
+        return getInstance(FederatedEngine.class).processStarting(Access.current());
     }
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowProcess> list(QueryParams params, Domain domain) {
-        return singleton().processesQueryByParamsAndDomain(params, domain);
+    public static PaginList<FlowProcess> list(QueryParams params) {
+        return getInstance(FederatedEngine.class).processQueryList(Access.current(), params);
     }
 
-    public static PaginList<FlowProcess> list(QueryParams params, User user) {
-        return singleton().processesQueryByParamsAndUser(params, user);
-    }
-
-    public static FlowProcess get(String processId) {
-        return singleton().processQueryById(processId);
+    public static FlowProcess get(String id) {
+        return getInstance(FederatedEngine.class).processQuery(Access.current(), id);
     }
 
     // ------------------------------------------------------------------------
+
+    public FlowExecution execution(String activityKey) {
+        return getInstance(FederatedEngine.class).executionQuery(Access.current(), this, activityKey);
+    }
 
     public PaginList<FlowTask> tasks(QueryParams params) {
-        return singleton().tasksQueryByParamsAndProcessId(params, getId());
+        return getInstance(FederatedEngine.class).taskQueryList(Access.current(), params, this);
+    }
+
+    public FlowTask task(String key) {
+        return getInstance(FederatedEngine.class).taskQueryByKey(Access.current(), this, key);
     }
 
     public PaginList<FlowHistoricActivity> historicActivities(QueryParams params) {
-        return singleton().historicActivitiesQueryByParamsAndProcessId(params, getId());
+        return getInstance(FederatedEngine.class).historicActivitieQueryList(Access.current(), params, this);
+    }
+
+    public List<String> waitingIds() {
+        return getInstance(FederatedEngine.class).waitingIdQueryList(this);
     }
 
     public FlowVariables variables() {
         return new FlowVariables(delegate.getProcessVariables());
     }
 
-    public List<FormPayloadReference> references() {
-        try (FederatedSession session = singleton().openSession()) {
-            return session.referencesSelectByProcessId(getId());
-        } catch (SQLException | IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public Domain domain() {
-        return Domain.get(getTenantId());
-    }
-
     public boolean isEnded() {
         return delegate.isEnded();
+    }
+
+    public void terminate(String reason) {
+        Preconditions.checkState(!isEnded(), "Process has already ended.");
+        getInstance(FederatedEngine.class).processDelete(this, reason);
     }
 
     // ------------------------------------------------------------------------
@@ -170,6 +165,10 @@ public class FlowProcess {
         return delegate.getStartUserId();
     }
 
+    public String getBusinessKey() {
+        return delegate.getBusinessKey();
+    }
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     public LocalDateTime getStartTime() {
         Date time = delegate.getStartTime();
@@ -182,59 +181,59 @@ public class FlowProcess {
 
     // ------------------------------------------------------------------------
 
-    public static class Builder {
+    public static class Starter {
 
         private final ProcessInstanceBuilder delegate;
 
-        private FormPayload payload;
-
-        private String formKey;
-
         private FlowVariables variables = new FlowVariables();
 
-        Builder(ProcessInstanceBuilder delegate) {
+        Starter(ProcessInstanceBuilder delegate) {
             this.delegate = delegate;
         }
 
-        public Builder formKey(String formKey) {
-            this.formKey = formKey;
-            return this;
-        }
-
-        public Builder definitionId(String definitionId) {
+        public Starter definitionId(String definitionId) {
             delegate.processDefinitionId(definitionId);
             return this;
         }
 
-        public Builder name(String name) {
+        public Starter accessId(Long accessId) {
+            variables.put(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
+            return this;
+        }
+
+        public Starter referenceId(Long referenceId) {
+            delegate.referenceId(CodecUtils.encodeHex36(referenceId));
+            variables.put(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
+            return this;
+        }
+
+        public Starter referenceType(String referenceType) {
+            delegate.referenceType(referenceType);
+            variables.put(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
+            return this;
+        }
+
+        public Starter assignee(String userId) {
+            delegate.assignee(userId);
+            return this;
+        }
+
+        public Starter name(String name) {
             delegate.name(name);
             return this;
         }
 
-        public Builder payload(FormPayload payload) {
-            this.payload = payload;
+        public Starter variable(String key, Object value) {
+            variables.put(key, value);
             return this;
         }
 
-        public Builder variable(String key, Object value) {
-            this.variables.put(key, value);
-            return this;
-        }
-
-        public Builder variables(FlowVariables variables) {
-            this.variables.putAll(variables);
+        public Starter variables(FlowVariables variables) {
+            variables.putAll(variables);
             return this;
         }
 
         public FlowProcess start() {
-            if (payload != null) {
-                FormPayloadReference.Builder builder = FormPayloadReference.builder();
-                builder.source(payload);
-                delegate.variables(variables.payload(payload));
-                ProcessInstance instance = delegate.start();
-                builder.key(formKey).build(instance.getProcessInstanceId());
-                return new FlowProcess(instance);
-            }
             delegate.variables(variables);
             return new FlowProcess(delegate.start());
         }

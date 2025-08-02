@@ -15,7 +15,7 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.flow.FederatedEngine.singleton;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
 import java.io.InputStream;
 
@@ -56,7 +56,7 @@ public class FlowResource {
     // ------------------------------------------------------------------------
 
     public InputStream stream() {
-        return singleton().streamForResourceByDeploymentIdAndName(deploymentId, name);
+        return getInstance(FederatedEngine.class).streamForResource(deploymentId, name);
     }
 
     // ------------------------------------------------------------------------

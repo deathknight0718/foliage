@@ -24,7 +24,7 @@
         </encoder>
     </appender>
     <logger name="org.apache" level="WARN" />
-    <logger name="page.foliage" level="INFO" />
+    <logger name="page.foliage" level="DEBUG" />
     <root level="INFO">
         <appender-ref ref="TEST" />
     </root>

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.flowable.common.engine.api.query.CacheAwareQuery;
 import org.flowable.common.engine.impl.interceptor.CommandContext;
@@ -40,10 +41,11 @@ import org.flowable.idm.engine.impl.persistence.entity.ByteArrayRef;
 import org.flowable.idm.engine.impl.persistence.entity.GroupEntity;
 import org.flowable.idm.engine.impl.persistence.entity.UserEntity;
 
-import page.foliage.common.collect.QueryParams;
+import page.foliage.common.util.CodecUtils;
 import page.foliage.guava.common.collect.ImmutableList;
 import page.foliage.guava.common.collect.ImmutableMap;
 import page.foliage.guava.common.collect.Lists;
+import page.foliage.ldap.Access;
 import page.foliage.ldap.Role;
 
 /**
@@ -315,29 +317,28 @@ public class FederatedIdentityService extends IdmIdentityServiceImpl {
 
         private static final long serialVersionUID = 1L;
 
-        public final page.foliage.ldap.User user;
+        public final Access access;
 
-        public LdapUser(page.foliage.ldap.User user) {
-            this.user = user;
+        public LdapUser(Access user) {
+            this.access = user;
         }
 
         public List<Group> groups() {
-            return Lists.transform(user.roles(QueryParams.ALL), LdapGroup::new);
+            return access.getRoles().stream().map(LdapGroup::new).collect(Collectors.toList());
         }
 
         public static LdapUser get(String id) {
-            Long lid = Long.valueOf(id);
-            return new LdapUser(page.foliage.ldap.User.get(lid));
+            return new LdapUser(Access.get(CodecUtils.decodeHex36(id)));
         }
 
         @Override
         public String getId() {
-            return user.getId().toString();
+            return access.getHexId();
         }
 
         @Override
         public String getTenantId() {
-            return user.domain().getIdentifier();
+            return access.getDomainHexId();
         }
 
         @Override
@@ -348,8 +349,8 @@ public class FederatedIdentityService extends IdmIdentityServiceImpl {
         @Override
         public Object getPersistentState() {
             Map<String, Object> persistentState = new HashMap<>();
-            persistentState.put("displayName", user.getDisplayName());
-            persistentState.put("email", user.getEmail());
+            persistentState.put("displayName", access.getUser().getDisplayName());
+            persistentState.put("email", access.getUser().getEmail());
             persistentState.put("tenantId", getTenantId());
             return persistentState;
         }
@@ -386,7 +387,7 @@ public class FederatedIdentityService extends IdmIdentityServiceImpl {
 
         @Override
         public String getDisplayName() {
-            return user.getDisplayName();
+            return access.getUser().getDisplayName();
         }
 
         @Override
@@ -396,7 +397,7 @@ public class FederatedIdentityService extends IdmIdentityServiceImpl {
 
         @Override
         public String getEmail() {
-            return user.getEmail();
+            return access.getUser().getEmail();
         }
 
         @Override

@@ -15,7 +15,7 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.flow.FederatedEngine.singleton;
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
 import java.io.InputStream;
 
@@ -24,9 +24,9 @@ import org.flowable.engine.repository.ProcessDefinition;
 
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
-import page.foliage.ldap.Domain;
-import page.foliage.ldap.User;
 import page.foliage.guava.common.base.Preconditions;
+import page.foliage.ldap.Access;
+import page.foliage.ldap.Domain;
 
 /**
  * 
@@ -46,63 +46,54 @@ public class FlowDefinition {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowDefinition> list(QueryParams params, Domain domain) {
-        return singleton().definitionsQueryByParamsAndDomain(params, domain);
+    public static PaginList<FlowDefinition> list(QueryParams params) {
+        return getInstance(FederatedEngine.class).definitionQueryList(Access.current(), params);
     }
 
     public static FlowDefinition get(String id) {
-        return singleton().definitionQueryById(id);
+        return getInstance(FederatedEngine.class).definitionQueryById(Access.current(), id);
+    }
+
+    public static FlowDefinition get(String id, Domain domain) {
+        Domain current = Preconditions.checkNotNull(Access.current().getDomain());
+        Preconditions.checkArgument(current.members(QueryParams.ALL).contains(domain), "Domain %s is not a member of current domain %s", domain, current);
+        return getInstance(FederatedEngine.class).definitionQueryById(domain, id);
+    }
+
+    public static FlowDefinition parent(String key) {
+        Domain current = Preconditions.checkNotNull(Access.current().getDomain());
+        return getInstance(FederatedEngine.class).definitionQueryByKey(current.parent(), key);
+    }
+
+    public static FlowDefinition latest(String key) {
+        return getInstance(FederatedEngine.class).definitionQueryByKey(Access.current(), key);
     }
 
     public static FlowDefinition latest(String key, Domain domain) {
-        return singleton().definitionQueryByKeyAndDomain(key, domain);
+        Domain current = Preconditions.checkNotNull(Access.current().getDomain());
+        Preconditions.checkArgument(current.members(QueryParams.ALL).contains(domain), "Domain %s is not a member of current domain %s", domain, current);
+        return getInstance(FederatedEngine.class).definitionQueryByKey(domain, key);
     }
 
     // ------------------------------------------------------------------------
 
-    public FlowProcess.Builder starter() {
+    public FlowProcess.Starter starter() {
         Preconditions.checkArgument(!delegate.hasStartFormKey());
-        return FlowProcess.builder(Domain.get(getTenantId())).definitionId(getId());
-    }
-
-    public FlowProcess.Builder starter(User user) {
-        FlowProcess.Builder builder = FlowProcess.builder(user).definitionId(getId());
-        if (delegate.hasStartFormKey()) {
-            String key = singleton().formKeyQueryByDefinitionId(getId());
-            builder.formKey(key);
-        }
-        return builder;
+        return FlowProcess.builder().definitionId(getId());
     }
 
     public PaginList<FlowProcess> processes(QueryParams params) {
-        return singleton().processesQueryByParamsAndDefinitionId(params, getId());
-    }
-
-    // ------------------------------------------------------------------------
-
-    public FormResource formOfStart() {
-        Preconditions.checkArgument(delegate.hasStartFormKey());
-        String key = singleton().formKeyQueryByDefinitionId(getId());
-        return FormResource.get(key, Domain.get(getTenantId()));
-    }
-
-    public FormResource formOfTask(String taskKey) {
-        String key = singleton().formKeyQueryByDefinitionIdAndTaskKey(getId(), taskKey);
-        return FormResource.get(key, Domain.get(getTenantId()));
-    }
-
-    public Domain domain() {
-        return Domain.get(getTenantId());
+        return getInstance(FederatedEngine.class).processQueryList(Access.current(), params, this);
     }
 
     // ------------------------------------------------------------------------
 
     public InputStream streamOfImage() {
-        return singleton().streamForDiagramByDefinitionId(getId());
+        return getInstance(FederatedEngine.class).streamForDiagram(this);
     }
 
     public InputStream streamOfModel() {
-        return singleton().streamForModelByDefinitionId(getId());
+        return getInstance(FederatedEngine.class).streamForModel(this);
     }
 
     // ------------------------------------------------------------------------
