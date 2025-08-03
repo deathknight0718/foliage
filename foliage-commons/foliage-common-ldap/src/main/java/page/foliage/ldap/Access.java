@@ -45,7 +45,7 @@ public class Access implements Serializable {
 
     private static final ThreadLocal<Access> THREAD_LOCAL = ThreadLocal.withInitial(() -> null);
 
-    public static final Access SYSTEM = new Access();
+    private static final Access SYSTEM = new Access();
 
     static {
         SYSTEM.user = User.SYSTEM;
@@ -64,6 +64,12 @@ public class Access implements Serializable {
     // ------------------------------------------------------------------------
 
     private Access() {}
+
+    private Access(User user, Domain domain, Set<Role> roles) {
+        this.user = user;
+        this.domain = domain;
+        this.roles = roles;
+    }
 
     // ------------------------------------------------------------------------
 
@@ -87,6 +93,14 @@ public class Access implements Serializable {
 
     public static Access current() {
         return THREAD_LOCAL.get();
+    }
+
+    public static Access system() {
+        return SYSTEM;
+    }
+
+    public static Access dadmin(long domainId) {
+        return new Access(User.DADMIN, Domain.get(domainId), ImmutableSet.of(Role.DOMAIN_ADMIN));
     }
 
     public static void register(Long id) {

@@ -56,6 +56,15 @@ public class User implements Serializable {
         SYSTEM.email = "system@cecdat.com";
     }
 
+    public static final User DADMIN = new User();
+
+    static {
+        DADMIN.id = 1L;
+        DADMIN.name = "域管理员";
+        DADMIN.displayName = "域管理员";
+        DADMIN.email = "dadmin@cecdat.com";
+    }
+
     // ------------------------------------------------------------------------
 
     private Long id;
