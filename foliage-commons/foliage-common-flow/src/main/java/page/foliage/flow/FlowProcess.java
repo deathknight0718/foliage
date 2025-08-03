@@ -53,36 +53,36 @@ public class FlowProcess {
 
     // ------------------------------------------------------------------------
 
-    public static Starter builder() {
-        return getInstance(FederatedEngine.class).processStarting(Access.current());
+    public static Starter builder(Access access) {
+        return getInstance(FederatedEngine.class).processStarting(access);
     }
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowProcess> list(QueryParams params) {
-        return getInstance(FederatedEngine.class).processQueryList(Access.current(), params);
+    public static PaginList<FlowProcess> list(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).processQueryList(access, params);
     }
 
-    public static FlowProcess get(String id) {
-        return getInstance(FederatedEngine.class).processQuery(Access.current(), id);
+    public static FlowProcess get(Access access, String id) {
+        return getInstance(FederatedEngine.class).processQuery(access, id);
     }
 
     // ------------------------------------------------------------------------
 
-    public FlowExecution execution(String activityKey) {
-        return getInstance(FederatedEngine.class).executionQuery(Access.current(), this, activityKey);
+    public FlowExecution execution(Access access, String activityKey) {
+        return getInstance(FederatedEngine.class).executionQuery(access, this, activityKey);
     }
 
-    public PaginList<FlowTask> tasks(QueryParams params) {
-        return getInstance(FederatedEngine.class).taskQueryList(Access.current(), params, this);
+    public PaginList<FlowTask> tasks(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).taskQueryList(access, params, this);
     }
 
-    public FlowTask task(String key) {
-        return getInstance(FederatedEngine.class).taskQueryByKey(Access.current(), this, key);
+    public FlowTask task(Access access, String key) {
+        return getInstance(FederatedEngine.class).taskQueryByKey(access, this, key);
     }
 
-    public PaginList<FlowHistoricActivity> historicActivities(QueryParams params) {
-        return getInstance(FederatedEngine.class).historicActivitieQueryList(Access.current(), params, this);
+    public PaginList<FlowHistoricActivity> historicActivities(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).historicActivitieQueryList(access, params, this);
     }
 
     public List<String> waitingIds() {

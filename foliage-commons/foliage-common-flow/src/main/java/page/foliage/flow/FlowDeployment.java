@@ -66,14 +66,14 @@ public class FlowDeployment {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowDeployment> list(QueryParams params) {
-        return getInstance(FederatedEngine.class).deploymentQueryList(Access.current(), params);
+    public static PaginList<FlowDeployment> list(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).deploymentQueryList(access, params);
     }
 
     // ------------------------------------------------------------------------
 
-    public static FlowDeployment get(String id) {
-        return getInstance(FederatedEngine.class).deploymentQueryById(Access.current(), id);
+    public static FlowDeployment get(Access access, String id) {
+        return getInstance(FederatedEngine.class).deploymentQueryById(access, id);
     }
 
     // ------------------------------------------------------------------------

@@ -34,6 +34,7 @@ import page.foliage.flow.FlowTask;
 import page.foliage.flow.TestBase;
 import page.foliage.flow.bean.MockDefinition;
 import page.foliage.flow.bean.MockDeployment;
+import page.foliage.ldap.Access;
 
 /**
  *
@@ -64,7 +65,7 @@ public class Test202507250115 extends TestBase {
 
     @Test(dependsOnMethods = "testDefinition")
     public void testProcess() throws JsonProcessingException {
-        process = definition.starter().name("Test202507250115").referenceId(Identities.snowflake()) //
+        process = definition.starter(Access.current()).name("Test202507250115").referenceId(Identities.snowflake()) //
             .referenceType("APPOINTMENT").variable("test", "01").start();
         LOGGER.info(JsonNodes.format(process));
     }
@@ -72,7 +73,7 @@ public class Test202507250115 extends TestBase {
     @Test(dependsOnMethods = "testProcess")
     public void testTask() throws InterruptedException {
         Thread.sleep(50 * 1000);
-        List<FlowTask> tasks = FlowTask.list(QueryParams.ALL);
+        List<FlowTask> tasks = FlowTask.list(Access.current(), QueryParams.ALL);
         Assert.assertFalse(tasks.isEmpty());
         FlowTask task = tasks.iterator().next();
         Assert.assertEquals(task.getName(), "免疫门诊");

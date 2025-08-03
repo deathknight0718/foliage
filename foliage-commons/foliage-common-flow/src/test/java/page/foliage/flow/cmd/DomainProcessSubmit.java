@@ -23,6 +23,7 @@ import page.foliage.flow.FlowCommandDelegate;
 import page.foliage.flow.FlowDefinition;
 import page.foliage.flow.FlowDelegateExecution;
 import page.foliage.flow.FlowProcess;
+import page.foliage.ldap.Access;
 import page.foliage.ldap.Domain;
 
 /**
@@ -50,15 +51,15 @@ public class DomainProcessSubmit extends FlowCommandDelegate {
     // ------------------------------------------------------------------------
 
     @Override
-    protected void doExecute(FlowDelegateExecution execution) {
+    protected void doExecute(FlowDelegateExecution execution, Access access) {
         LOGGER.info("Execute Command: {}", execution.getId());
         String definitionKey = execution.getVariable(VARIABLE_SUBMIT_DEFINITION_KEY).asText();
         Long domainId = execution.getVariable(VARIABLE_SUBMIT_DOMAIN_ID).asLong();
         Domain domain = Domain.get(domainId);
-        FlowDefinition definition = FlowDefinition.latest(definitionKey, domain);
+        FlowDefinition definition = FlowDefinition.latest(Access.current(), definitionKey, domain);
         execution.setVariable(VARIABLE_SUBMIT_MESSAGE_ID, Identities.uuid().toString());
         execution.setVariable(VARIABLE_SUBMIT_EXECUTION_ID, execution.getId());
-        FlowProcess.Starter starter = definition.starter();
+        FlowProcess.Starter starter = definition.starter(Access.current());
         starter.variables(execution.getVariables()).start();
     }
 

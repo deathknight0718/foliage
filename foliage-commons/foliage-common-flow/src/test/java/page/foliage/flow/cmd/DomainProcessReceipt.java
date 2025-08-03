@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import page.foliage.flow.FederatedEngine;
 import page.foliage.flow.FlowCommandDelegate;
 import page.foliage.flow.FlowDelegateExecution;
+import page.foliage.ldap.Access;
 
 /**
  * 
@@ -33,7 +34,7 @@ public class DomainProcessReceipt extends FlowCommandDelegate {
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainProcessReceipt.class);
 
     @Override
-    protected void doExecute(FlowDelegateExecution execution) {
+    protected void doExecute(FlowDelegateExecution execution, Access access) {
         LOGGER.info("Execute Command: {}", execution.getId());
         String messageId = execution.getVariable(DomainProcessSubmit.VARIABLE_SUBMIT_MESSAGE_ID).asText();
         String executionId = execution.getVariable(DomainProcessSubmit.VARIABLE_SUBMIT_EXECUTION_ID).asText();

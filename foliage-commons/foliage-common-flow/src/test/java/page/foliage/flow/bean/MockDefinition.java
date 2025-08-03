@@ -16,6 +16,7 @@
 package page.foliage.flow.bean;
 
 import page.foliage.flow.FlowDefinition;
+import page.foliage.ldap.Access;
 
 /**
  *
@@ -25,11 +26,11 @@ import page.foliage.flow.FlowDefinition;
 public class MockDefinition {
 
     public FlowDefinition d202507221959() {
-        return FlowDefinition.latest("Process_0p9coqt");
+        return FlowDefinition.latest(Access.current(), "Process_0p9coqt");
     }
 
     public FlowDefinition d202507250115() {
-        return FlowDefinition.latest("process_vlsp01");
+        return FlowDefinition.latest(Access.current(), "process_vlsp01");
     }
 
 }

@@ -46,44 +46,44 @@ public class FlowDefinition {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowDefinition> list(QueryParams params) {
-        return getInstance(FederatedEngine.class).definitionQueryList(Access.current(), params);
+    public static PaginList<FlowDefinition> list(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).definitionQueryList(access, params);
     }
 
-    public static FlowDefinition get(String id) {
-        return getInstance(FederatedEngine.class).definitionQueryById(Access.current(), id);
+    public static FlowDefinition get(Access access, String id) {
+        return getInstance(FederatedEngine.class).definitionQueryById(access, id);
     }
 
-    public static FlowDefinition get(String id, Domain domain) {
-        Domain current = Preconditions.checkNotNull(Access.current().getDomain());
+    public static FlowDefinition get(Access access, String id, Domain domain) {
+        Domain current = Preconditions.checkNotNull(access.getDomain());
         Preconditions.checkArgument(current.members(QueryParams.ALL).contains(domain), "Domain %s is not a member of current domain %s", domain, current);
         return getInstance(FederatedEngine.class).definitionQueryById(domain, id);
     }
 
-    public static FlowDefinition parent(String key) {
-        Domain current = Preconditions.checkNotNull(Access.current().getDomain());
+    public static FlowDefinition parent(Access access, String key) {
+        Domain current = Preconditions.checkNotNull(access.getDomain());
         return getInstance(FederatedEngine.class).definitionQueryByKey(current.parent(), key);
     }
 
-    public static FlowDefinition latest(String key) {
-        return getInstance(FederatedEngine.class).definitionQueryByKey(Access.current(), key);
+    public static FlowDefinition latest(Access access, String key) {
+        return getInstance(FederatedEngine.class).definitionQueryByKey(access, key);
     }
 
-    public static FlowDefinition latest(String key, Domain domain) {
-        Domain current = Preconditions.checkNotNull(Access.current().getDomain());
+    public static FlowDefinition latest(Access access, String key, Domain domain) {
+        Domain current = Preconditions.checkNotNull(access.getDomain());
         Preconditions.checkArgument(current.members(QueryParams.ALL).contains(domain), "Domain %s is not a member of current domain %s", domain, current);
         return getInstance(FederatedEngine.class).definitionQueryByKey(domain, key);
     }
 
     // ------------------------------------------------------------------------
 
-    public FlowProcess.Starter starter() {
+    public FlowProcess.Starter starter(Access access) {
         Preconditions.checkArgument(!delegate.hasStartFormKey());
-        return FlowProcess.builder().definitionId(getId());
+        return FlowProcess.builder(access).definitionId(getId());
     }
 
-    public PaginList<FlowProcess> processes(QueryParams params) {
-        return getInstance(FederatedEngine.class).processQueryList(Access.current(), params, this);
+    public PaginList<FlowProcess> processes(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).processQueryList(access, params, this);
     }
 
     // ------------------------------------------------------------------------

@@ -47,6 +47,17 @@ public class User implements Serializable {
 
     // ------------------------------------------------------------------------
 
+    public static final User SYSTEM = new User();
+
+    static {
+        SYSTEM.id = 0L;
+        SYSTEM.name = "系统用户";
+        SYSTEM.displayName = "系统用户";
+        SYSTEM.email = "system@cecdat.com";
+    }
+
+    // ------------------------------------------------------------------------
+
     private Long id;
 
     private String name, displayName;

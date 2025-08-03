@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import page.foliage.flow.FlowCommandDelegate;
 import page.foliage.flow.FlowDelegateExecution;
+import page.foliage.ldap.Access;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class Notification extends FlowCommandDelegate {
     private static final Logger LOGGER = LoggerFactory.getLogger(Notification.class);
 
     @Override
-    protected void doExecute(FlowDelegateExecution execution) {
+    protected void doExecute(FlowDelegateExecution execution, Access access) {
         LOGGER.info("Execute Command: {}", execution.getId());
         LOGGER.info("Execute Command Variables: {}", execution.getVariables());
     }

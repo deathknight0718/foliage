@@ -52,22 +52,22 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowTask> list(QueryParams params) {
-        return getInstance(FederatedEngine.class).taskQueryList(Access.current(), params);
+    public static PaginList<FlowTask> list(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).taskQueryList(access, params);
     }
 
-    public static FlowTask get(String id) {
-        return getInstance(FederatedEngine.class).taskQueryById(Access.current(), id);
+    public static FlowTask get(Access access, String id) {
+        return getInstance(FederatedEngine.class).taskQueryById(access, id);
     }
 
     // ------------------------------------------------------------------------
 
-    public Submitter submitter() {
-        return getInstance(FederatedEngine.class).taskCompleting(Access.current(), this);
+    public Submitter submitter(Access access) {
+        return getInstance(FederatedEngine.class).taskCompleting(access, this);
     }
 
-    public FlowDefinition definition() {
-        return FlowDefinition.get(getProcessDefinitionId());
+    public FlowDefinition definition(Access access) {
+        return FlowDefinition.get(access, getProcessDefinitionId());
     }
 
     // ------------------------------------------------------------------------

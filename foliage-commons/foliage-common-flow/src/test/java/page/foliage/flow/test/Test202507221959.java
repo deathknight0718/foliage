@@ -28,6 +28,7 @@ import page.foliage.flow.FlowProcess;
 import page.foliage.flow.TestBase;
 import page.foliage.flow.bean.MockDefinition;
 import page.foliage.flow.bean.MockDeployment;
+import page.foliage.ldap.Access;
 
 /**
  *
@@ -54,12 +55,12 @@ public class Test202507221959 extends TestBase {
 
     @Test(dependsOnMethods = "testDefinition")
     public void testProcess() {
-        FlowProcess.builder().definitionId(definition.getId()).variable("test", "01").start();
+        FlowProcess.builder(Access.current()).definitionId(definition.getId()).variable("test", "01").start();
     }
 
     @Test(dependsOnMethods = "testProcess")
     public void testTask() {
-        List<FlowHistoricActivity> activities = FlowHistoricActivity.list(QueryParams.ALL);
+        List<FlowHistoricActivity> activities = FlowHistoricActivity.list(Access.current(), QueryParams.ALL);
         Assert.assertFalse(activities.isEmpty());
     }
 

@@ -29,12 +29,9 @@ public abstract class FlowCommandDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegate) {
         FlowDelegateExecution execution = new FlowDelegateExecution(delegate);
-        boolean isRegisteredThread = Access.isRegistered();
-        if (!isRegisteredThread) Access.register(Access.get(execution.getAccessId()));
-        doExecute(execution);
-        if (!isRegisteredThread) Access.unregister();
+        doExecute(execution, Access.get(execution.getAccessId()));
     }
 
-    abstract protected void doExecute(FlowDelegateExecution execution);
+    abstract protected void doExecute(FlowDelegateExecution execution, Access access);
 
 }

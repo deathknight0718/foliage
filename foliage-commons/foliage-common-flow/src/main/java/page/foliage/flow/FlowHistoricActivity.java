@@ -48,9 +48,8 @@ public class FlowHistoricActivity {
 
     // ------------------------------------------------------------------------
 
-    public static PaginList<FlowHistoricActivity> list(QueryParams params) {
-        Preconditions.checkNotNull(Access.current().getRoles());
-        return getInstance(FederatedEngine.class).historicActivitieQueryList(Access.current(), params);
+    public static PaginList<FlowHistoricActivity> list(Access access, QueryParams params) {
+        return getInstance(FederatedEngine.class).historicActivitieQueryList(access, params);
     }
 
     // ------------------------------------------------------------------------

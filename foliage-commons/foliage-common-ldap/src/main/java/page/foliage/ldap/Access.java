@@ -45,6 +45,14 @@ public class Access implements Serializable {
 
     private static final ThreadLocal<Access> THREAD_LOCAL = ThreadLocal.withInitial(() -> null);
 
+    public static final Access SYSTEM = new Access();
+
+    static {
+        SYSTEM.user = User.SYSTEM;
+        SYSTEM.domain = Domain.SYSTEM;
+        SYSTEM.roles = ImmutableSet.of(Role.DOMAIN_ADMIN, Role.SYSTEM_ADMIN);
+    }
+
     // ------------------------------------------------------------------------
 
     private User user;
