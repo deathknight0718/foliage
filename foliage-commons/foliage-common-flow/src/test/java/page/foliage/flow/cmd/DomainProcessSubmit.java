@@ -53,14 +53,14 @@ public class DomainProcessSubmit extends FlowCommandDelegate {
     @Override
     protected void doExecute(FlowDelegateExecution execution, Access access) {
         LOGGER.info("Execute Command: {}", execution.getId());
-        String definitionKey = execution.getVariable(VARIABLE_SUBMIT_DEFINITION_KEY).asText();
-        Long domainId = execution.getVariable(VARIABLE_SUBMIT_DOMAIN_ID).asLong();
+        String definitionKey = execution.get(VARIABLE_SUBMIT_DEFINITION_KEY);
+        Long domainId = execution.getHex36(VARIABLE_SUBMIT_DOMAIN_ID);
         Domain domain = Domain.get(domainId);
         FlowDefinition definition = FlowDefinition.latest(Access.current(), definitionKey, domain);
-        execution.setVariable(VARIABLE_SUBMIT_MESSAGE_ID, Identities.uuid().toString());
-        execution.setVariable(VARIABLE_SUBMIT_EXECUTION_ID, execution.getId());
+        execution.set(VARIABLE_SUBMIT_MESSAGE_ID, Identities.uuid().toString());
+        execution.set(VARIABLE_SUBMIT_EXECUTION_ID, execution.getId());
         FlowProcess.Starter starter = definition.starter(Access.current());
-        starter.variables(execution.getVariables()).start();
+        starter.variables(execution.map()).start();
     }
 
 }

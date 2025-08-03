@@ -33,7 +33,7 @@ public class Notification extends FlowCommandDelegate {
     @Override
     protected void doExecute(FlowDelegateExecution execution, Access access) {
         LOGGER.info("Execute Command: {}", execution.getId());
-        LOGGER.info("Execute Command Variables: {}", execution.getVariables());
+        LOGGER.info("Execute Command Variables: {}", execution.map());
     }
 
 }

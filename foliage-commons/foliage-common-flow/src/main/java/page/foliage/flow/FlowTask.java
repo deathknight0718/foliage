@@ -16,8 +16,10 @@
 package page.foliage.flow;
 
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
+import static page.foliage.common.util.CodecUtils.encodeHex36;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.flowable.task.api.DelegationState;
@@ -29,7 +31,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
-import page.foliage.common.util.CodecUtils;
 import page.foliage.common.util.DateTimes;
 import page.foliage.guava.common.base.Preconditions;
 import page.foliage.ldap.Access;
@@ -72,7 +73,7 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public FlowVariables variables() {
+    public Map<String, Object> variables() {
         return getInstance(FederatedEngine.class).variablesQuery(this);
     }
 
@@ -152,32 +153,36 @@ public class FlowTask {
 
         private final TaskCompletionBuilder delegate;
 
-        public Submitter(TaskCompletionBuilder delegate) {
+        private final FlowTask task;
+
+        public Submitter(TaskCompletionBuilder delegate, FlowTask task) {
             this.delegate = delegate;
+            this.task = task;
+            delegate.taskId(task.getId());
         }
 
         public Submitter accessId(Long accessId) {
-            variable(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
+            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_ACCESS_ID), encodeHex36(accessId));
             return this;
         }
 
         public Submitter assigneeId(Long assigneeId) {
-            variable(FlowVariables.KEY_ASSIGNEE_ID, CodecUtils.encodeHex36(assigneeId));
+            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_ASSIGNEE_ID), encodeHex36(assigneeId));
             return this;
         }
 
         public Submitter referenceId(Long referenceId) {
-            variable(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
+            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_REFERENCE_ID), encodeHex36(referenceId));
             return this;
         }
 
         public Submitter referenceType(String referenceType) {
-            variable(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
+            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_REFERENCE_TYPE), referenceType);
             return this;
         }
 
         public Submitter result(String result) {
-            variable(FlowVariables.KEY_RESULT, result);
+            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_RESULT), result);
             return this;
         }
 
@@ -186,7 +191,7 @@ public class FlowTask {
             return this;
         }
 
-        public Submitter variables(FlowVariables variables) {
+        public Submitter variables(Map<String, Object> variables) {
             delegate.variables(variables);
             return this;
         }

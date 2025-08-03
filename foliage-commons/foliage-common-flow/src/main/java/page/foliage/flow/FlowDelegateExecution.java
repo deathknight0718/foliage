@@ -15,6 +15,8 @@
  */
 package page.foliage.flow;
 
+import java.util.Map;
+
 import org.flowable.engine.delegate.DelegateExecution;
 
 import page.foliage.common.util.CodecUtils;
@@ -37,98 +39,116 @@ public class FlowDelegateExecution {
 
     // ------------------------------------------------------------------------
 
-    public FlowVariables getVariables() {
-        return new FlowVariables(delegate.getVariables());
+    public Map<String, Object> map() {
+        return delegate.getVariables();
     }
 
-    public FlowVariables.OptionalValue getVariable(String name) {
-        return getVariables().val(name);
+    // ------------------------------------------------------------------------
+
+    public String get(String k) {
+        return delegate.getVariable(k, String.class);
     }
 
-    public FlowVariables getLocalVariables() {
-        return new FlowVariables(delegate.getVariablesLocal());
+    public Long getHex36(String k) {
+        return CodecUtils.decodeHex36(delegate.getVariable(k, String.class));
     }
 
-    public FlowVariables.OptionalValue getLocalVariable(String name) {
-        return getLocalVariables().val(name);
+    // ------------------------------------------------------------------------
+
+    public void set(String k, String v) {
+        delegate.setVariable(k, v);
+    }
+
+    public void setHex36(String k, Long v) {
+        delegate.setVariable(k, CodecUtils.encodeHex36(v));
     }
 
     // ------------------------------------------------------------------------
 
     public Long getReferenceId() {
-        return CodecUtils.decodeHex36(delegate.getVariable(FlowVariables.KEY_REFERENCE_ID, String.class));
+        return getHex36(FlowKeys.KEY_REFERENCE_ID);
+    }
+
+    public Long getReferenceId(String definitionKey) {
+        return getHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_ID));
     }
 
     public String getReferenceType() {
-        return delegate.getVariable(FlowVariables.KEY_REFERENCE_TYPE, String.class);
+        return get(FlowKeys.KEY_REFERENCE_TYPE);
+    }
+
+    public String getReferenceType(String definitionKey) {
+        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_TYPE));
     }
 
     public Long getAccessId() {
-        return CodecUtils.decodeHex36(delegate.getVariable(FlowVariables.KEY_ACCESS_ID, String.class));
+        return getHex36(FlowKeys.KEY_ACCESS_ID);
+    }
+
+    public Long getAccessId(String definitionKey) {
+        return getHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ACCESS_ID));
     }
 
     public Long getAssigneeId() {
-        return CodecUtils.decodeHex36(delegate.getVariable(FlowVariables.KEY_ASSIGNEE_ID, String.class));
+        return getHex36(FlowKeys.KEY_ASSIGNEE_ID);
+    }
+
+    public Long getAssigneeId(String definitionKey) {
+        return getHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ASSIGNEE_ID));
     }
 
     public String getResult() {
-        return delegate.getVariable(FlowVariables.KEY_RESULT, String.class);
+        return get(FlowKeys.KEY_RESULT);
+    }
+
+    public String getResult(String definitionKey) {
+        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT));
     }
 
     public String getResultReason() {
-        return delegate.getVariable(FlowVariables.KEY_RESULT_REASON, String.class);
+        return get(FlowKeys.KEY_RESULT_REASON);
+    }
+
+    public String getResultReason(String definitionKey) {
+        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REASON));
     }
 
     public String getResultReferenceId() {
-        return delegate.getVariable(FlowVariables.KEY_RESULT_REFERENCE_ID, String.class);
+        return get(FlowKeys.KEY_RESULT_REFERENCE_ID);
+    }
+
+    public String getResultReferenceId(String definitionKey) {
+        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REFERENCE_ID));
     }
 
     // ------------------------------------------------------------------------
 
-    public void setVariables(FlowVariables variables) {
-        delegate.setVariables(variables);
+    public void setReferenceId(String definitionKey, Long referenceId) {
+        setHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_ID), referenceId);
     }
 
-    public void setVariable(String key, Object value) {
-        delegate.setVariable(key, value);
+    public void setReferenceType(String definitionKey, String referenceType) {
+        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_TYPE), referenceType);
     }
 
-    public void setLocalVariables(FlowVariables variables) {
-        delegate.setVariablesLocal(variables);
+    public void setAccessId(String definitionKey, Long accessId) {
+        setHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ACCESS_ID), accessId);
     }
 
-    public void setLocalVariable(String key, Object value) {
-        delegate.setVariableLocal(key, value);
+    public void setAssigneeId(String definitionKey, Long assigneeId) {
+        setHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ASSIGNEE_ID), assigneeId);
     }
 
-    // ------------------------------------------------------------------------
-
-    public void setReferenceId(Long referenceId) {
-        delegate.setVariable(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
+    public void setResult(String definitionKey, String result) {
+        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT), result);
     }
 
-    public void setReferenceType(String referenceType) {
-        delegate.setVariable(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
+    public void setResultReason(String definitionKey, String resultReason) {
+        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REASON), resultReason);
     }
 
-    public void setAccessId(Long accessId) {
-        delegate.setVariable(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
-    }
-
-    public void setAssigneeId(Long assigneeId) {
-        delegate.setVariable(FlowVariables.KEY_ASSIGNEE_ID, CodecUtils.encodeHex36(assigneeId));
-    }
-
-    public void setResult(String result) {
-        delegate.setVariable(FlowVariables.KEY_RESULT, result);
-    }
-
-    public void setResultReason(String resultReason) {
-        delegate.setVariable(FlowVariables.KEY_RESULT_REASON, resultReason);
-    }
-
-    public void setResultReferenceId(String resultReferenceId) {
-        delegate.setVariable(FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId);
+    public void setResultReferenceId(String definitionKey, String resultReferenceId) {
+        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REFERENCE_ID), resultReferenceId);
     }
 
     // ------------------------------------------------------------------------

@@ -78,8 +78,7 @@ public class FlowDefinition {
     // ------------------------------------------------------------------------
 
     public FlowProcess.Starter starter(Access access) {
-        Preconditions.checkArgument(!delegate.hasStartFormKey());
-        return FlowProcess.builder(access).definitionId(getId());
+        return FlowProcess.builder(access, this);
     }
 
     public PaginList<FlowProcess> processes(Access access, QueryParams params) {

@@ -36,9 +36,9 @@ public class DomainProcessReceipt extends FlowCommandDelegate {
     @Override
     protected void doExecute(FlowDelegateExecution execution, Access access) {
         LOGGER.info("Execute Command: {}", execution.getId());
-        String messageId = execution.getVariable(DomainProcessSubmit.VARIABLE_SUBMIT_MESSAGE_ID).asText();
-        String executionId = execution.getVariable(DomainProcessSubmit.VARIABLE_SUBMIT_EXECUTION_ID).asText();
-        getInstance(FederatedEngine.class).executionEventReceivedMessage(messageId, executionId, execution.getVariables());
+        String messageId = execution.get(DomainProcessSubmit.VARIABLE_SUBMIT_MESSAGE_ID);
+        String executionId = execution.get(DomainProcessSubmit.VARIABLE_SUBMIT_EXECUTION_ID);
+        getInstance(FederatedEngine.class).executionEventReceivedMessage(messageId, executionId, execution.map());
     }
 
 }

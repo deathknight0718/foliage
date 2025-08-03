@@ -17,6 +17,8 @@ package page.foliage.flow;
 
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
 
+import java.util.Map;
+
 import org.flowable.engine.runtime.Execution;
 
 /**
@@ -39,50 +41,50 @@ public class FlowExecution {
     // ------------------------------------------------------------------------
 
     public void receivedMessage(String name, String result) {
-        receivedMessage(name, FlowVariables.of(FlowVariables.KEY_RESULT, result));
+        receivedMessage(name, Map.of(FlowKeys.KEY_RESULT, result));
     }
 
     public void receivedMessage(String name, String result, String resultReason) {
-        receivedMessage(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason));
+        receivedMessage(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason));
     }
 
     public void receivedMessage(String name, String result, String resultReason, String resultReferenceId) {
-        receivedMessage(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason, FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+        receivedMessage(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId));
     }
 
-    public void receivedMessage(String name, FlowVariables variables) {
+    public void receivedMessage(String name, Map<String, Object> variables) {
         getInstance(FederatedEngine.class).executionEventReceivedMessage(name, delegate.getId(), variables);
     }
 
     public void receivedSignal(String name, String result) {
-        receivedSignal(name, FlowVariables.of(FlowVariables.KEY_RESULT, result));
+        receivedSignal(name, Map.of(FlowKeys.KEY_RESULT, result));
     }
 
     public void receivedSignal(String name, String result, String resultReason) {
-        receivedSignal(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason));
+        receivedSignal(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason));
     }
 
     public void receivedSignal(String name, String result, String resultReason, String resultReferenceId) {
-        receivedSignal(name, FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason, FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+        receivedSignal(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId));
     }
 
-    public void receivedSignal(String name, FlowVariables variables) {
+    public void receivedSignal(String name, Map<String, Object> variables) {
         getInstance(FederatedEngine.class).executionEventReceivedSignal(name, delegate.getId(), variables);
     }
 
     public void trigger(String result) {
-        trigger(FlowVariables.of(FlowVariables.KEY_RESULT, result));
+        trigger(Map.of(FlowKeys.KEY_RESULT, result));
     }
 
     public void trigger(String result, String resultReason) {
-        trigger(FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason));
+        trigger(Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason));
     }
 
     public void trigger(String result, String resultReason, String resultReferenceId) {
-        trigger(FlowVariables.of(FlowVariables.KEY_RESULT, result, FlowVariables.KEY_RESULT_REASON, resultReason, FlowVariables.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+        trigger(Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId));
     }
 
-    public void trigger(FlowVariables variables) {
+    public void trigger(Map<String, Object> variables) {
         getInstance(FederatedEngine.class).executionTrigger(delegate.getId(), variables);
     }
 

@@ -55,7 +55,7 @@ public class Test202507221959 extends TestBase {
 
     @Test(dependsOnMethods = "testDefinition")
     public void testProcess() {
-        FlowProcess.builder(Access.current()).definitionId(definition.getId()).variable("test", "01").start();
+        FlowProcess.builder(Access.current(), definition).variable("test", "01").start();
     }
 
     @Test(dependsOnMethods = "testProcess")

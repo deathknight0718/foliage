@@ -168,9 +168,9 @@ public class FederatedEngine {
         processEngine.getRuntimeService().deleteProcessInstance(process.getId(), reason);
     }
 
-    public FlowProcess.Starter processStarting(Access access) {
+    public FlowProcess.Starter processStarting(Access access, FlowDefinition definition) {
         ProcessInstanceBuilder builder = processEngine.getRuntimeService().createProcessInstanceBuilder();
-        return new FlowProcess.Starter(builder.owner(access.getHexId()).tenantId(access.getDomainHexId())).accessId(access.getId());
+        return new FlowProcess.Starter(builder.owner(access.getHexId()), definition).accessId(access.getId());
     }
 
     // ------------------------------------------------------------------------
@@ -182,15 +182,15 @@ public class FederatedEngine {
         return Optional.ofNullable(bean).map(FlowExecution::new).orElse(null);
     }
 
-    public void executionEventReceivedMessage(String name, String executionId, Map<String, Object> processVariables) {
-        processEngine.getRuntimeService().trigger(executionId, processVariables);
+    public void executionEventReceivedMessage(String name, String executionId, Map<String, Object> variables) {
+        processEngine.getRuntimeService().trigger(executionId, variables);
     }
 
-    public void executionEventReceivedSignal(String name, String executionId, Map<String, Object> processVariables) {
-        processEngine.getRuntimeService().signalEventReceived(name, executionId, processVariables);
+    public void executionEventReceivedSignal(String name, String executionId, Map<String, Object> variables) {
+        processEngine.getRuntimeService().signalEventReceived(name, executionId, variables);
     }
 
-    public void executionTrigger(String executionId, FlowVariables variables) {
+    public void executionTrigger(String executionId, Map<String, Object> variables) {
         processEngine.getRuntimeService().trigger(executionId, variables);
     }
 
@@ -235,8 +235,8 @@ public class FederatedEngine {
     }
 
     public FlowTask.Submitter taskCompleting(Access access, FlowTask task) {
-        TaskCompletionBuilder builder = processEngine.getTaskService().createTaskCompletionBuilder().taskId(task.getId());
-        return new FlowTask.Submitter(builder).accessId(access.getId());
+        TaskCompletionBuilder builder = processEngine.getTaskService().createTaskCompletionBuilder();
+        return new FlowTask.Submitter(builder, task).accessId(access.getId());
     }
 
     // ------------------------------------------------------------------------
@@ -276,12 +276,12 @@ public class FederatedEngine {
 
     // ------------------------------------------------------------------------
 
-    public FlowVariables variablesQuery(FlowProcess process) {
-        return new FlowVariables(processEngine.getRuntimeService().getVariables(process.getId()));
+    public Map<String, Object> variablesQuery(FlowProcess process) {
+        return processEngine.getRuntimeService().getVariables(process.getId());
     }
 
-    public FlowVariables variablesQuery(FlowTask task) {
-        return new FlowVariables(processEngine.getTaskService().getVariables(task.getId()));
+    public Map<String, Object> variablesQuery(FlowTask task) {
+        return processEngine.getTaskService().getVariables(task.getId());
     }
 
     // ------------------------------------------------------------------------

@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import page.foliage.common.util.CodecUtils;
 import page.foliage.guava.common.collect.ImmutableMultimap;
 import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.guava.common.collect.LinkedListMultimap;
@@ -51,13 +52,15 @@ public class QueryParams {
 
     public final static QueryParams ALL = new QueryParams(ImmutableMultimap.of(KEYWORD_OFFSET, VALUE_DEF_OFFSET.toString(), KEYWORD_LIMIT, VALUE_MAX_LIMIT.toString()));
 
+    public final static QueryParams ONE = new QueryParams(ImmutableMultimap.of(KEYWORD_OFFSET, VALUE_DEF_OFFSET.toString(), KEYWORD_LIMIT, "1"));
+
     // ------------------------------------------------------------------------
 
     private final Multimap<String, String> delegate;
 
     // ------------------------------------------------------------------------
 
-    private static String lc(Object value) {
+    private static String ec(Object value) {
         return String.valueOf(value).toLowerCase();
     }
 
@@ -160,25 +163,34 @@ public class QueryParams {
     // ------------------------------------------------------------------------
 
     public boolean containsKey(String key) {
-        return delegate.containsKey(lc(key));
+        return delegate.containsKey(ec(key));
     }
 
     public QueryParams set(String key, Object value) {
-        delegate.put(lc(key), lc(value));
+        delegate.put(ec(key), ec(value));
+        return this;
+    }
+
+    public QueryParams setHex36(String key, Long value) {
+        set(key, CodecUtils.encodeHex36(value));
         return this;
     }
 
     public String get(String key) {
-        return containsKey(key) ? delegate.get(lc(key)).iterator().next() : null;
+        return delegate.get(ec(key)).iterator().next();
     }
 
     public String get(String key, Object defaultValue) {
-        return containsKey(key) ? get(key) : lc(defaultValue);
+        return containsKey(key) ? get(key) : ec(defaultValue);
+    }
+
+    public Long getHex36(String key) {
+        return CodecUtils.decodeHex36(get(key));
     }
 
     public Set<String> split(String key) {
         if (!containsKey(key)) return null;
-        String text = delegate.get(lc(key)).iterator().next();
+        String text = delegate.get(ec(key)).iterator().next();
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         for (String item : StringUtils.split(text, KEYWORD_SPLIT)) {
             builder.add(StringUtils.trim(item));

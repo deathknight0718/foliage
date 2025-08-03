@@ -16,10 +16,12 @@
 package page.foliage.flow;
 
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
+import static page.foliage.common.util.CodecUtils.encodeHex36;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -30,7 +32,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.common.jackson.LocalDateTimeSerializer;
-import page.foliage.common.util.CodecUtils;
 import page.foliage.common.util.DateTimes;
 import page.foliage.guava.common.base.Preconditions;
 import page.foliage.ldap.Access;
@@ -53,8 +54,8 @@ public class FlowProcess {
 
     // ------------------------------------------------------------------------
 
-    public static Starter builder(Access access) {
-        return getInstance(FederatedEngine.class).processStarting(access);
+    public static Starter builder(Access access, FlowDefinition definition) {
+        return getInstance(FederatedEngine.class).processStarting(access, definition);
     }
 
     // ------------------------------------------------------------------------
@@ -89,8 +90,8 @@ public class FlowProcess {
         return getInstance(FederatedEngine.class).waitingIdQueryList(this);
     }
 
-    public FlowVariables variables() {
-        return new FlowVariables(delegate.getProcessVariables());
+    public Map<String, Object> variables() {
+        return delegate.getProcessVariables();
     }
 
     public boolean isEnded() {
@@ -185,40 +186,37 @@ public class FlowProcess {
 
         private final ProcessInstanceBuilder delegate;
 
-        Starter(ProcessInstanceBuilder delegate) {
+        Starter(ProcessInstanceBuilder delegate, FlowDefinition definition) {
             this.delegate = delegate;
-        }
-
-        public Starter definitionId(String definitionId) {
-            delegate.processDefinitionId(definitionId);
-            return this;
+            this.delegate.processDefinitionId(definition.getId());
+            this.delegate.tenantId(definition.getTenantId());
         }
 
         public Starter accessId(Long accessId) {
-            delegate.variable(FlowVariables.KEY_ACCESS_ID, CodecUtils.encodeHex36(accessId));
+            delegate.variable(FlowKeys.KEY_ACCESS_ID, encodeHex36(accessId));
             return this;
         }
 
         public Starter assigneeId(Long assigneeId) {
-            delegate.assignee(CodecUtils.encodeHex36(assigneeId));
-            delegate.variable(FlowVariables.KEY_ASSIGNEE_ID, CodecUtils.encodeHex36(assigneeId));
+            delegate.assignee(encodeHex36(assigneeId));
+            delegate.variable(FlowKeys.KEY_ASSIGNEE_ID, encodeHex36(assigneeId));
             return this;
         }
 
         public Starter referenceId(Long referenceId) {
-            delegate.referenceId(CodecUtils.encodeHex36(referenceId));
-            delegate.variable(FlowVariables.KEY_REFERENCE_ID, CodecUtils.encodeHex36(referenceId));
+            delegate.referenceId(encodeHex36(referenceId));
+            delegate.variable(FlowKeys.KEY_REFERENCE_ID, encodeHex36(referenceId));
             return this;
         }
 
         public Starter referenceType(String referenceType) {
             delegate.referenceType(referenceType);
-            delegate.variable(FlowVariables.KEY_REFERENCE_TYPE, referenceType);
+            delegate.variable(FlowKeys.KEY_REFERENCE_TYPE, referenceType);
             return this;
         }
 
         public Starter result(String result) {
-            delegate.variable(FlowVariables.KEY_RESULT, result);
+            delegate.variable(FlowKeys.KEY_RESULT, result);
             return this;
         }
 
@@ -232,7 +230,7 @@ public class FlowProcess {
             return this;
         }
 
-        public Starter variables(FlowVariables variables) {
+        public Starter variables(Map<String, Object> variables) {
             delegate.variables(variables);
             return this;
         }
