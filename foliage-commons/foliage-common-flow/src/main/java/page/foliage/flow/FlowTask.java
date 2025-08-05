@@ -123,6 +123,10 @@ public class FlowTask {
         return delegate.getId();
     }
 
+    public Long getDomainId() {
+        return decodeHex36(delegate.getTenantId());
+    }
+
     public String getTenantId() {
         return delegate.getTenantId();
     }

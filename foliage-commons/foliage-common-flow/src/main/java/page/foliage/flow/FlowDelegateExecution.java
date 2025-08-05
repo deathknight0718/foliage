@@ -15,6 +15,8 @@
  */
 package page.foliage.flow;
 
+import static page.foliage.common.util.CodecUtils.decodeHex36;
+
 import java.util.Map;
 
 import org.flowable.engine.delegate.DelegateExecution;
@@ -145,6 +147,14 @@ public class FlowDelegateExecution {
         return delegate.getId();
     }
 
+    public Long getDomainId() {
+        return decodeHex36(delegate.getTenantId());
+    }
+
+    public String getTenantId() {
+        return delegate.getTenantId();
+    }
+
     public String getCurrentActivityId() {
         return delegate.getCurrentActivityId();
     }
@@ -155,10 +165,6 @@ public class FlowDelegateExecution {
 
     public String getProcessDefinitionId() {
         return delegate.getProcessDefinitionId();
-    }
-
-    public String getTenantId() {
-        return delegate.getTenantId();
     }
 
 }

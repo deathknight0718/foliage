@@ -16,6 +16,7 @@
 package page.foliage.flow;
 
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
+import static page.foliage.common.util.CodecUtils.decodeHex36;
 import static page.foliage.common.util.CodecUtils.encodeHex36;
 
 import java.time.LocalDateTime;
@@ -129,6 +130,10 @@ public class FlowProcess {
 
     public String getId() {
         return delegate.getId();
+    }
+
+    public Long getDomainId() {
+        return decodeHex36(delegate.getTenantId());
     }
 
     public String getTenantId() {
