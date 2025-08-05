@@ -16,7 +16,16 @@
 package page.foliage.flow;
 
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
+import static page.foliage.common.util.CodecUtils.decodeHex36;
 import static page.foliage.common.util.CodecUtils.encodeHex36;
+import static page.foliage.flow.FlowKeys.KEY_ACCESS_ID;
+import static page.foliage.flow.FlowKeys.KEY_ASSIGNEE_ID;
+import static page.foliage.flow.FlowKeys.KEY_REFERENCE_ID;
+import static page.foliage.flow.FlowKeys.KEY_REFERENCE_TYPE;
+import static page.foliage.flow.FlowKeys.KEY_RESULT;
+import static page.foliage.flow.FlowKeys.KEY_RESULT_REASON;
+import static page.foliage.flow.FlowKeys.KEY_RESULT_REFERENCE_ID;
+import static page.foliage.flow.FlowKeys.prefix;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -74,7 +83,11 @@ public class FlowTask {
     // ------------------------------------------------------------------------
 
     public Map<String, Object> variables() {
-        return getInstance(FederatedEngine.class).variablesQuery(this);
+        return getInstance(FederatedEngine.class).variableQueryMap(this);
+    }
+
+    public <T> T variable(String key, Class<T> type) {
+        return getInstance(FederatedEngine.class).variableQuery(this, key, type);
     }
 
     // ------------------------------------------------------------------------
@@ -149,6 +162,64 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
+    public Long getAccessId() {
+        return decodeHex36(variable(KEY_ACCESS_ID, String.class));
+    }
+
+    public Long getAccessId(String activity) {
+        return decodeHex36(variable(prefix(activity, KEY_ACCESS_ID), String.class));
+    }
+
+    public Long getAssigneeId() {
+        return decodeHex36(variable(KEY_ASSIGNEE_ID, String.class));
+    }
+
+    public Long getAssigneeId(String activity) {
+        return decodeHex36(variable(prefix(activity, KEY_ASSIGNEE_ID), String.class));
+    }
+
+    public Long getReferenceId() {
+        return decodeHex36(variable(KEY_REFERENCE_ID, String.class));
+    }
+
+    public Long getReferenceId(String activity) {
+        return decodeHex36(variable(prefix(activity, KEY_REFERENCE_ID), String.class));
+    }
+
+    public String getReferenceType() {
+        return variable(KEY_REFERENCE_TYPE, String.class);
+    }
+
+    public String getReferenceType(String activity) {
+        return variable(prefix(activity, KEY_REFERENCE_TYPE), String.class);
+    }
+
+    public String getResult() {
+        return variable(KEY_RESULT, String.class);
+    }
+
+    public String getResult(String activity) {
+        return variable(prefix(activity, KEY_RESULT), String.class);
+    }
+
+    public String getResultReason() {
+        return variable(KEY_RESULT_REASON, String.class);
+    }
+
+    public String getResultReason(String activity) {
+        return variable(prefix(activity, KEY_RESULT_REASON), String.class);
+    }
+
+    public String getResultReferenceId() {
+        return variable(KEY_RESULT_REFERENCE_ID, String.class);
+    }
+
+    public String getResultReferenceId(String activity) {
+        return variable(prefix(activity, KEY_RESULT_REFERENCE_ID), String.class);
+    }
+
+    // ------------------------------------------------------------------------
+
     public static class Submitter {
 
         private final TaskCompletionBuilder delegate;
@@ -162,27 +233,37 @@ public class FlowTask {
         }
 
         public Submitter accessId(Long accessId) {
-            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_ACCESS_ID), encodeHex36(accessId));
+            variable(prefix(task.getTaskDefinitionKey(), KEY_ACCESS_ID), encodeHex36(accessId));
             return this;
         }
 
         public Submitter assigneeId(Long assigneeId) {
-            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_ASSIGNEE_ID), encodeHex36(assigneeId));
+            variable(prefix(task.getTaskDefinitionKey(), KEY_ASSIGNEE_ID), encodeHex36(assigneeId));
             return this;
         }
 
         public Submitter referenceId(Long referenceId) {
-            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_REFERENCE_ID), encodeHex36(referenceId));
+            variable(prefix(task.getTaskDefinitionKey(), KEY_REFERENCE_ID), encodeHex36(referenceId));
             return this;
         }
 
         public Submitter referenceType(String referenceType) {
-            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_REFERENCE_TYPE), referenceType);
+            variable(prefix(task.getTaskDefinitionKey(), KEY_REFERENCE_TYPE), referenceType);
             return this;
         }
 
         public Submitter result(String result) {
-            variable(FlowKeys.prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_RESULT), result);
+            variable(prefix(task.getTaskDefinitionKey(), KEY_RESULT), result);
+            return this;
+        }
+
+        public Submitter resultReason(String reason) {
+            variable(prefix(task.getTaskDefinitionKey(), KEY_RESULT_REASON), reason);
+            return this;
+        }
+
+        public Submitter resultReferenceId(String referenceId) {
+            variable(prefix(task.getTaskDefinitionKey(), KEY_RESULT_REFERENCE_ID), referenceId);
             return this;
         }
 

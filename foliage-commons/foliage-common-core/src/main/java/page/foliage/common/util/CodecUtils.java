@@ -29,8 +29,8 @@ import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.io.BaseEncoding;
 
 /**
@@ -90,7 +90,7 @@ public class CodecUtils {
     }
 
     public static String encodeHex36(Long value) {
-        Preconditions.checkNotNull(value, "Value to encode cannot be null");
+        if (value == null) return null;
         return Long.toString(value, HEX_BIT_36).toUpperCase();
     }
 
@@ -132,7 +132,7 @@ public class CodecUtils {
     }
 
     public static Long decodeHex36(String value) {
-        Preconditions.checkNotNull(value, "Value to decode cannot be null");
+        if (StringUtils.isBlank(value)) return null;
         return Long.parseLong(value.toLowerCase(), HEX_BIT_36);
     }
 

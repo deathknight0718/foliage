@@ -161,4 +161,16 @@ public class FlowDelegateExecution {
         return delegate.getCurrentActivityId();
     }
 
+    public String getProcessInstanceId() {
+        return delegate.getProcessInstanceId();
+    }
+
+    public String getProcessDefinitionId() {
+        return delegate.getProcessDefinitionId();
+    }
+
+    public String getTenantId() {
+        return delegate.getTenantId();
+    }
+
 }

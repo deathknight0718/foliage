@@ -57,11 +57,11 @@ public class FlowDeployment {
     // ------------------------------------------------------------------------
 
     public static Builder builder(Access access) {
-        return builder(access.getDomain());
+        return builder(access, access.getDomain());
     }
 
-    public static Builder builder(Domain domain) {
-        return getInstance(FederatedEngine.class).deploymentBuilding(domain);
+    public static Builder builder(Access access, Domain domain) {
+        return getInstance(FederatedEngine.class).deploymentBuilding(access, domain);
     }
 
     // ------------------------------------------------------------------------
@@ -82,8 +82,8 @@ public class FlowDeployment {
         getInstance(FederatedEngine.class).deploymentDelete(this);
     }
 
-    public PaginList<FlowDefinition> definitions(QueryParams params) {
-        return getInstance(FederatedEngine.class).definitionQueryList(params, this);
+    public List<FlowDefinition> definitions() {
+        return getInstance(FederatedEngine.class).definitionQueryList(this);
     }
 
     public List<FlowResource> resources() {

@@ -51,16 +51,16 @@ public class User implements Serializable {
 
     static {
         SYSTEM.id = 0L;
-        SYSTEM.name = "系统用户";
-        SYSTEM.displayName = "系统用户";
-        SYSTEM.email = "system@cecdat.com";
+        SYSTEM.name = "FOLIAGE";
+        SYSTEM.displayName = "根用户";
+        SYSTEM.email = "foliage@cecdat.com";
     }
 
     public static final User DADMIN = new User();
 
     static {
         DADMIN.id = 1L;
-        DADMIN.name = "域管理员";
+        DADMIN.name = "DADMIN";
         DADMIN.displayName = "域管理员";
         DADMIN.email = "dadmin@cecdat.com";
     }

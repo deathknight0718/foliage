@@ -15,6 +15,8 @@
  */
 package page.foliage.flow;
 
+import page.foliage.common.util.CodecUtils;
+
 /**
  * 
  * @author deathknight0718@qq.com
@@ -41,6 +43,10 @@ public class FlowKeys {
 
     public static String prefix(String definitionKey, String key) {
         return "_" + definitionKey + key;
+    }
+
+    public static Long decodeHex36(String hex) {
+        return hex == null ? null : CodecUtils.decodeHex36(hex);
     }
 
 }

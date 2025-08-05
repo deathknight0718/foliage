@@ -4,7 +4,7 @@
     "java.format.settings.url": ".vscode/java-formatter.xml",
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.compile.nullAnalysis.mode": "disabled",
-    "java.autobuild.enabled": false,
+    "java.autobuild.enabled": true,
     "java.templates.fileHeader": [
       "/*",
       " * Copyright 2025 Foliage Develop Team.",

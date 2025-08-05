@@ -40,6 +40,7 @@ import org.flowable.task.api.TaskQuery;
 
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
+import page.foliage.guava.common.base.Preconditions;
 import page.foliage.guava.common.collect.Lists;
 import page.foliage.ldap.Access;
 import page.foliage.ldap.Domain;
@@ -68,6 +69,7 @@ public class FederatedEngine {
     // ------------------------------------------------------------------------
 
     public PaginList<FlowDeployment> deploymentQueryList(Access access, QueryParams params) {
+        Preconditions.checkState(access.match(Role.SYSTEM_ADMIN, Role.DOMAIN_ADMIN), "Invalid access");
         DeploymentQuery query = processEngine.getRepositoryService().createDeploymentQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.deploymentTenantId(access.getDomainHexId());
         if (params.containsKey(KEYWORD_KEY)) query.deploymentKey(params.get(KEYWORD_KEY));
@@ -76,6 +78,7 @@ public class FederatedEngine {
     }
 
     public FlowDeployment deploymentQueryById(Access access, String id) {
+        Preconditions.checkState(access.match(Role.SYSTEM_ADMIN, Role.DOMAIN_ADMIN), "Invalid access");
         DeploymentQuery query = processEngine.getRepositoryService().createDeploymentQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.deploymentTenantId(access.getDomainHexId());
         Deployment bean = query.deploymentId(id).singleResult();
@@ -83,13 +86,15 @@ public class FederatedEngine {
     }
 
     public FlowDeployment deploymentQueryByKey(Access access, String key) {
+        Preconditions.checkState(access.match(Role.SYSTEM_ADMIN, Role.DOMAIN_ADMIN), "Invalid access");
         DeploymentQuery query = processEngine.getRepositoryService().createDeploymentQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.deploymentTenantId(access.getDomainHexId());
         Deployment bean = query.deploymentKey(key).latest().singleResult();
         return Optional.ofNullable(bean).map(FlowDeployment::new).orElse(null);
     }
 
-    public FlowDeployment.Builder deploymentBuilding(Domain domain) {
+    public FlowDeployment.Builder deploymentBuilding(Access access, Domain domain) {
+        Preconditions.checkState(access.match(Role.SYSTEM_ADMIN, Role.DOMAIN_ADMIN), "Invalid access");
         DeploymentBuilder builder = processEngine.getRepositoryService().createDeployment().tenantId(domain.getHexId());
         return new FlowDeployment.Builder(builder);
     }
@@ -103,27 +108,23 @@ public class FederatedEngine {
     public PaginList<FlowDefinition> definitionQueryList(Access access, QueryParams params) {
         ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.processDefinitionTenantId(access.getDomainHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.startableByUser(access.getHexId());
         if (params.containsKey(KEYWORD_KEY)) query.processDefinitionKey(params.get(KEYWORD_KEY));
         List<ProcessDefinition> definitions = query.listPage(params.offset(), params.limit());
         return PaginList.copyOf(Lists.transform(definitions, FlowDefinition::new), query.count());
     }
 
-    public PaginList<FlowDefinition> definitionQueryList(QueryParams params, FlowDeployment deployment) {
-        ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployment.getId());
-        if (params.containsKey(KEYWORD_KEY)) query.processDefinitionKey(params.get(KEYWORD_KEY));
-        List<ProcessDefinition> definitions = query.listPage(params.offset(), params.limit());
-        return PaginList.copyOf(Lists.transform(definitions, FlowDefinition::new), query.count());
+    public PaginList<FlowDefinition> definitionQueryList(FlowDeployment deployment) {
+        ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery();
+        query.processDefinitionTenantId(deployment.getTenantId());
+        List<ProcessDefinition> definitions = query.deploymentId(deployment.getId()).list();
+        return PaginList.copyOf(Lists.transform(definitions, FlowDefinition::new), definitions.size());
     }
 
     public FlowDefinition definitionQueryById(Access access, String id) {
         ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.processDefinitionTenantId(access.getDomainHexId());
-        ProcessDefinition bean = query.startableByUser(access.getHexId()).processDefinitionId(id).singleResult();
-        return Optional.ofNullable(bean).map(FlowDefinition::new).orElse(null);
-    }
-
-    public FlowDefinition definitionQueryById(Domain domain, String id) {
-        ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionTenantId(domain.getHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.startableByUser(access.getHexId());
         ProcessDefinition bean = query.processDefinitionId(id).singleResult();
         return Optional.ofNullable(bean).map(FlowDefinition::new).orElse(null);
     }
@@ -131,12 +132,7 @@ public class FederatedEngine {
     public FlowDefinition definitionQueryByKey(Access access, String key) {
         ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.processDefinitionTenantId(access.getDomainHexId());
-        ProcessDefinition bean = query.startableByUser(access.getHexId()).processDefinitionKey(key).latestVersion().singleResult();
-        return Optional.ofNullable(bean).map(FlowDefinition::new).orElse(null);
-    }
-
-    public FlowDefinition definitionQueryByKey(Domain domain, String key) {
-        ProcessDefinitionQuery query = processEngine.getRepositoryService().createProcessDefinitionQuery().processDefinitionTenantId(domain.getHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.startableByUser(access.getHexId());
         ProcessDefinition bean = query.processDefinitionKey(key).latestVersion().singleResult();
         return Optional.ofNullable(bean).map(FlowDefinition::new).orElse(null);
     }
@@ -146,20 +142,22 @@ public class FederatedEngine {
     public PaginList<FlowProcess> processQueryList(Access access, QueryParams params) {
         ProcessInstanceQuery query = processEngine.getRuntimeService().createProcessInstanceQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.processInstanceTenantId(access.getDomainHexId());
-        List<ProcessInstance> beans = query.involvedUser(access.getHexId()).listPage(params.offset(), params.limit());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.involvedUser(access.getHexId());
+        List<ProcessInstance> beans = query.listPage(params.offset(), params.limit());
         return PaginList.copyOf(Lists.transform(beans, FlowProcess::new), query.count());
     }
 
-    public PaginList<FlowProcess> processQueryList(Access access, QueryParams params, FlowDefinition definition) {
+    public PaginList<FlowProcess> processQueryList(FlowDefinition definition) {
         ProcessInstanceQuery query = processEngine.getRuntimeService().createProcessInstanceQuery();
-        if (!access.match(Role.SYSTEM_ADMIN)) query.processInstanceTenantId(access.getDomainHexId());
-        List<ProcessInstance> beans = query.processDefinitionId(definition.getId()).listPage(params.offset(), params.limit());
+        query.processInstanceTenantId(definition.getTenantId());
+        List<ProcessInstance> beans = query.processDefinitionId(definition.getId()).list();
         return PaginList.copyOf(Lists.transform(beans, FlowProcess::new), query.count());
     }
 
     public FlowProcess processQuery(Access access, String id) {
         ProcessInstanceQuery query = processEngine.getRuntimeService().createProcessInstanceQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.processInstanceTenantId(access.getDomainHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.involvedUser(access.getHexId());
         ProcessInstance bean = query.processInstanceId(id).singleResult();
         return Optional.ofNullable(bean).map(FlowProcess::new).orElse(null);
     }
@@ -170,12 +168,14 @@ public class FederatedEngine {
 
     public FlowProcess.Starter processStarting(Access access, FlowDefinition definition) {
         ProcessInstanceBuilder builder = processEngine.getRuntimeService().createProcessInstanceBuilder();
-        return new FlowProcess.Starter(builder.owner(access.getHexId()), definition).accessId(access.getId());
+        builder.tenantId(definition.getTenantId()).owner(access.getHexId());
+        return new FlowProcess.Starter(builder, definition).accessId(access.getId());
     }
 
     // ------------------------------------------------------------------------
 
     public FlowExecution executionQuery(Access access, FlowProcess process, String activityKey) {
+        Preconditions.checkState(access.match(Role.SYSTEM_ADMIN, Role.DOMAIN_ADMIN), "Invalid access");
         ExecutionQuery query = processEngine.getRuntimeService().createExecutionQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.executionTenantId(access.getDomainHexId());
         Execution bean = query.processInstanceId(process.getId()).activityId(activityKey).singleResult();
@@ -205,13 +205,17 @@ public class FederatedEngine {
     public PaginList<FlowTask> taskQueryList(Access access, QueryParams params) {
         TaskQuery query = processEngine.getTaskService().createTaskQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.taskTenantId(access.getDomainHexId());
-        List<Task> beans = query.taskCandidateOrAssigned(access.getHexId()).listPage(params.offset(), params.limit());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.taskCandidateOrAssigned(access.getHexId());
+        if (params.containsKey(KEYWORD_KEY)) query.taskDefinitionKey(params.get(KEYWORD_KEY));
+        List<Task> beans = query.listPage(params.offset(), params.limit());
         return PaginList.copyOf(Lists.transform(beans, FlowTask::new), query.count());
     }
 
     public PaginList<FlowTask> taskQueryList(Access access, QueryParams params, FlowProcess process) {
         TaskQuery query = processEngine.getTaskService().createTaskQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.taskTenantId(access.getDomainHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.taskCandidateOrAssigned(access.getHexId());
+        if (params.containsKey(KEYWORD_KEY)) query.taskDefinitionKey(params.get(KEYWORD_KEY));
         List<Task> beans = query.processInstanceId(process.getId()).listPage(params.offset(), params.limit());
         return PaginList.copyOf(Lists.transform(beans, FlowTask::new), query.count());
     }
@@ -219,6 +223,7 @@ public class FederatedEngine {
     public FlowTask taskQueryByKey(Access access, FlowProcess process, String key) {
         TaskQuery query = processEngine.getTaskService().createTaskQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.taskTenantId(access.getDomainHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.taskCandidateOrAssigned(access.getHexId());
         Task bean = query.processInstanceId(process.getId()).taskDefinitionKey(key).singleResult();
         return Optional.ofNullable(bean).map(FlowTask::new).orElse(null);
     }
@@ -226,6 +231,7 @@ public class FederatedEngine {
     public FlowTask taskQueryById(Access access, String id) {
         TaskQuery query = processEngine.getTaskService().createTaskQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.taskTenantId(access.getDomainHexId()).active();
+        if (!access.match(Role.DOMAIN_ADMIN)) query.taskCandidateOrAssigned(access.getHexId());
         Task bean = query.taskId(id).singleResult();
         return Optional.ofNullable(bean).map(FlowTask::new).orElse(null);
     }
@@ -244,6 +250,7 @@ public class FederatedEngine {
     public PaginList<FlowHistoricActivity> historicActivitieQueryList(Access access, QueryParams params) {
         HistoricActivityInstanceQuery query = processEngine.getHistoryService().createHistoricActivityInstanceQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.activityTenantId(access.getDomainHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.taskAssignee(access.getHexId());
         List<HistoricActivityInstance> beans = query.listPage(params.offset(), params.limit());
         return PaginList.copyOf(Lists.transform(beans, FlowHistoricActivity::new), query.count());
     }
@@ -251,6 +258,7 @@ public class FederatedEngine {
     public PaginList<FlowHistoricActivity> historicActivitieQueryList(Access access, QueryParams params, FlowProcess process) {
         HistoricActivityInstanceQuery query = processEngine.getHistoryService().createHistoricActivityInstanceQuery();
         if (!access.match(Role.SYSTEM_ADMIN)) query.activityTenantId(access.getDomainHexId());
+        if (!access.match(Role.DOMAIN_ADMIN)) query.taskAssignee(access.getHexId());
         List<HistoricActivityInstance> beans = query.processInstanceId(process.getId()).listPage(params.offset(), params.limit());
         return PaginList.copyOf(Lists.transform(beans, FlowHistoricActivity::new), query.count());
     }
@@ -276,12 +284,16 @@ public class FederatedEngine {
 
     // ------------------------------------------------------------------------
 
-    public Map<String, Object> variablesQuery(FlowProcess process) {
+    public Map<String, Object> variableQueryMap(FlowProcess process) {
         return processEngine.getRuntimeService().getVariables(process.getId());
     }
 
-    public Map<String, Object> variablesQuery(FlowTask task) {
+    public Map<String, Object> variableQueryMap(FlowTask task) {
         return processEngine.getTaskService().getVariables(task.getId());
+    }
+
+    public <T> T variableQuery(FlowTask task, String key, Class<T> type) {
+        return processEngine.getTaskService().getVariable(task.getId(), key, type);
     }
 
     // ------------------------------------------------------------------------

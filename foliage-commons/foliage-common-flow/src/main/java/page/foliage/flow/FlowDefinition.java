@@ -26,7 +26,6 @@ import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.base.Preconditions;
 import page.foliage.ldap.Access;
-import page.foliage.ldap.Domain;
 
 /**
  * 
@@ -54,25 +53,8 @@ public class FlowDefinition {
         return getInstance(FederatedEngine.class).definitionQueryById(access, id);
     }
 
-    public static FlowDefinition get(Access access, String id, Domain domain) {
-        Domain current = Preconditions.checkNotNull(access.getDomain());
-        Preconditions.checkArgument(current.members(QueryParams.ALL).contains(domain), "Domain %s is not a member of current domain %s", domain, current);
-        return getInstance(FederatedEngine.class).definitionQueryById(domain, id);
-    }
-
-    public static FlowDefinition parent(Access access, String key) {
-        Domain current = Preconditions.checkNotNull(access.getDomain());
-        return getInstance(FederatedEngine.class).definitionQueryByKey(current.parent(), key);
-    }
-
     public static FlowDefinition latest(Access access, String key) {
         return getInstance(FederatedEngine.class).definitionQueryByKey(access, key);
-    }
-
-    public static FlowDefinition latest(Access access, String key, Domain domain) {
-        Domain current = Preconditions.checkNotNull(access.getDomain());
-        Preconditions.checkArgument(current.members(QueryParams.ALL).contains(domain), "Domain %s is not a member of current domain %s", domain, current);
-        return getInstance(FederatedEngine.class).definitionQueryByKey(domain, key);
     }
 
     // ------------------------------------------------------------------------
@@ -81,8 +63,8 @@ public class FlowDefinition {
         return FlowProcess.builder(access, this);
     }
 
-    public PaginList<FlowProcess> processes(Access access, QueryParams params) {
-        return getInstance(FederatedEngine.class).processQueryList(access, params, this);
+    public PaginList<FlowProcess> processes() {
+        return getInstance(FederatedEngine.class).processQueryList(this);
     }
 
     // ------------------------------------------------------------------------
