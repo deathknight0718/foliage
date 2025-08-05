@@ -65,7 +65,7 @@ public class Test202507250115 extends TestBase {
 
     @Test(dependsOnMethods = "testDefinition")
     public void testProcess() throws JsonProcessingException {
-        process = definition.starter(Access.current()).name("Test202507250115").referenceId(Identities.snowflake()) //
+        process = definition.starter().name("Test202507250115").referenceId(Identities.snowflake()) //
             .referenceType("APPOINTMENT").variable("test", "01").start();
         LOGGER.info(JsonNodes.format(process));
     }

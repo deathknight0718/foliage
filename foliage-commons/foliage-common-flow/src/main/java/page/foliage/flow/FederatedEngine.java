@@ -32,10 +32,8 @@ import org.flowable.engine.repository.ProcessDefinitionQuery;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ExecutionQuery;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.runtime.ProcessInstanceBuilder;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.flowable.task.api.Task;
-import org.flowable.task.api.TaskCompletionBuilder;
 import org.flowable.task.api.TaskQuery;
 
 import page.foliage.common.collect.PaginList;
@@ -166,10 +164,8 @@ public class FederatedEngine {
         processEngine.getRuntimeService().deleteProcessInstance(process.getId(), reason);
     }
 
-    public FlowProcess.Starter processStarting(Access access, FlowDefinition definition) {
-        ProcessInstanceBuilder builder = processEngine.getRuntimeService().createProcessInstanceBuilder();
-        builder.tenantId(definition.getTenantId()).owner(access.getHexId());
-        return new FlowProcess.Starter(builder, definition).accessId(access.getId());
+    public FlowProcess.Starter processStarting(FlowDefinition definition) {
+        return new FlowProcess.Starter(definition, processEngine.getRuntimeService());
     }
 
     // ------------------------------------------------------------------------
@@ -240,9 +236,8 @@ public class FederatedEngine {
         processEngine.getTaskService().deleteTask(task.getId(), true);
     }
 
-    public FlowTask.Submitter taskCompleting(Access access, FlowTask task) {
-        TaskCompletionBuilder builder = processEngine.getTaskService().createTaskCompletionBuilder();
-        return new FlowTask.Submitter(builder, task).accessId(access.getId());
+    public FlowTask.Submitter taskCompleting(FlowTask task) {
+        return new FlowTask.Submitter(task, processEngine.getTaskService());
     }
 
     // ------------------------------------------------------------------------

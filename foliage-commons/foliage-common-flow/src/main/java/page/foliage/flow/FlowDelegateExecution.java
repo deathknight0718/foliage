@@ -81,14 +81,6 @@ public class FlowDelegateExecution {
         return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_TYPE));
     }
 
-    public Long getAccessId() {
-        return getHex36(FlowKeys.KEY_ACCESS_ID);
-    }
-
-    public Long getAccessId(String definitionKey) {
-        return getHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ACCESS_ID));
-    }
-
     public Long getAssigneeId() {
         return getHex36(FlowKeys.KEY_ASSIGNEE_ID);
     }
@@ -129,10 +121,6 @@ public class FlowDelegateExecution {
 
     public void setReferenceType(String definitionKey, String referenceType) {
         set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_TYPE), referenceType);
-    }
-
-    public void setAccessId(String definitionKey, Long accessId) {
-        setHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ACCESS_ID), accessId);
     }
 
     public void setAssigneeId(String definitionKey, Long assigneeId) {

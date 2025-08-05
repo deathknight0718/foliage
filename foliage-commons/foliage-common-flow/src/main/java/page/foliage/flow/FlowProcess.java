@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.flowable.engine.RuntimeService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceBuilder;
 
@@ -54,8 +55,8 @@ public class FlowProcess {
 
     // ------------------------------------------------------------------------
 
-    public static Starter builder(Access access, FlowDefinition definition) {
-        return getInstance(FederatedEngine.class).processStarting(access, definition);
+    public static Starter builder(FlowDefinition definition) {
+        return getInstance(FederatedEngine.class).processStarting(definition);
     }
 
     // ------------------------------------------------------------------------
@@ -184,17 +185,16 @@ public class FlowProcess {
 
     public static class Starter {
 
+        @SuppressWarnings("unused")
+        private final FlowDefinition definition;
+
         private final ProcessInstanceBuilder delegate;
 
-        Starter(ProcessInstanceBuilder delegate, FlowDefinition definition) {
-            this.delegate = delegate;
-            this.delegate.processDefinitionId(definition.getId());
+        Starter(FlowDefinition definition, RuntimeService service) {
+            this.definition = definition;
+            this.delegate = service.createProcessInstanceBuilder();
             this.delegate.tenantId(definition.getTenantId());
-        }
-
-        public Starter accessId(Long accessId) {
-            delegate.variable(FlowKeys.KEY_ACCESS_ID, encodeHex36(accessId));
-            return this;
+            this.delegate.processDefinitionId(definition.getId());
         }
 
         public Starter assigneeId(Long assigneeId) {

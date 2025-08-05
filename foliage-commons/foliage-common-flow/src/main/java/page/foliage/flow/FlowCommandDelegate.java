@@ -15,12 +15,8 @@
  */
 package page.foliage.flow;
 
-import static page.foliage.common.util.CodecUtils.decodeHex36;
-
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
-
-import page.foliage.ldap.Access;
 
 /**
  * 
@@ -30,10 +26,9 @@ public abstract class FlowCommandDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegate) {
-        FlowDelegateExecution execution = new FlowDelegateExecution(delegate);
-        doExecute(execution, Access.dadmin(decodeHex36(execution.getTenantId())));
+        doExecute(new FlowDelegateExecution(delegate));
     }
 
-    abstract protected void doExecute(FlowDelegateExecution execution, Access access);
+    abstract protected void doExecute(FlowDelegateExecution execution);
 
 }

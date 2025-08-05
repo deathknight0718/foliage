@@ -59,8 +59,8 @@ public class FlowDefinition {
 
     // ------------------------------------------------------------------------
 
-    public FlowProcess.Starter starter(Access access) {
-        return FlowProcess.builder(access, this);
+    public FlowProcess.Starter starter() {
+        return FlowProcess.builder(this);
     }
 
     public PaginList<FlowProcess> processes() {

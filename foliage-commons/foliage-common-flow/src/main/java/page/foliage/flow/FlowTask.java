@@ -18,7 +18,6 @@ package page.foliage.flow;
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
 import static page.foliage.common.util.CodecUtils.decodeHex36;
 import static page.foliage.common.util.CodecUtils.encodeHex36;
-import static page.foliage.flow.FlowKeys.KEY_ACCESS_ID;
 import static page.foliage.flow.FlowKeys.KEY_ASSIGNEE_ID;
 import static page.foliage.flow.FlowKeys.KEY_REFERENCE_ID;
 import static page.foliage.flow.FlowKeys.KEY_REFERENCE_TYPE;
@@ -31,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.flowable.engine.TaskService;
 import org.flowable.task.api.DelegationState;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskCompletionBuilder;
@@ -72,8 +72,8 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public Submitter submitter(Access access) {
-        return getInstance(FederatedEngine.class).taskCompleting(access, this);
+    public Submitter submitter() {
+        return getInstance(FederatedEngine.class).taskCompleting(this);
     }
 
     public FlowDefinition definition(Access access) {
@@ -162,14 +162,6 @@ public class FlowTask {
 
     // ------------------------------------------------------------------------
 
-    public Long getAccessId() {
-        return decodeHex36(variable(KEY_ACCESS_ID, String.class));
-    }
-
-    public Long getAccessId(String activity) {
-        return decodeHex36(variable(prefix(activity, KEY_ACCESS_ID), String.class));
-    }
-
     public Long getAssigneeId() {
         return decodeHex36(variable(KEY_ASSIGNEE_ID, String.class));
     }
@@ -222,19 +214,13 @@ public class FlowTask {
 
     public static class Submitter {
 
-        private final TaskCompletionBuilder delegate;
-
         private final FlowTask task;
 
-        public Submitter(TaskCompletionBuilder delegate, FlowTask task) {
-            this.delegate = delegate;
-            this.task = task;
-            delegate.taskId(task.getId());
-        }
+        private final TaskCompletionBuilder delegate;
 
-        public Submitter accessId(Long accessId) {
-            variable(prefix(task.getTaskDefinitionKey(), KEY_ACCESS_ID), encodeHex36(accessId));
-            return this;
+        public Submitter(FlowTask task, TaskService service) {
+            this.task = task;
+            this.delegate = service.createTaskCompletionBuilder().taskId(task.getId());
         }
 
         public Submitter assigneeId(Long assigneeId) {

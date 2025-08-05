@@ -27,8 +27,6 @@ public class FlowKeys {
 
     public static final String KEY_ASSIGNEE_ID = "_assignee_id";
 
-    public static final String KEY_ACCESS_ID = "_access_id";
-
     public static final String KEY_REFERENCE_ID = "_reference_id";
 
     public static final String KEY_REFERENCE_TYPE = "_reference_type";

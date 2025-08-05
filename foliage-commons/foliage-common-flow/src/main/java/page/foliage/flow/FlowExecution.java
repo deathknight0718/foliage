@@ -106,4 +106,8 @@ public class FlowExecution {
         return delegate.getActivityId();
     }
 
+    public String getTenantId() {
+        return delegate.getTenantId();
+    }
+
 }
