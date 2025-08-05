@@ -21,6 +21,7 @@ import org.flowable.common.engine.impl.AbstractEngineConfiguration;
 import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.ProcessEngineConfiguration;
 import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.flowable.job.service.impl.asyncexecutor.AsyncExecutor;
 
 /**
  * 
@@ -48,6 +49,16 @@ public class FederatedEngineBuilder {
         return this;
     }
 
+    public FederatedEngineBuilder withAsyncExecutor(AsyncExecutor executor) {
+        configuration.setAsyncExecutor(executor);
+        return this;
+    }
+
+        public FederatedEngineBuilder withTransactionsExternallyManaged(boolean transactionsExternallyManaged) {
+        configuration.setTransactionsExternallyManaged(transactionsExternallyManaged);
+        return this;
+    }
+
     public FederatedEngineBuilder withEnableEventDispatcher(boolean enableEventDispatcher) {
         configuration.setEnableEventDispatcher(enableEventDispatcher);
         return this;
@@ -60,6 +71,7 @@ public class FederatedEngineBuilder {
         configuration.setDatabaseSchema(DB_SCHEMA);
         configuration.setDatabaseSchemaUpdate(AbstractEngineConfiguration.DB_SCHEMA_UPDATE_FALSE);
         configuration.setIdmEngineConfigurator(new FederatedIdentityConfigurator());
+        configuration.setCreateDiagramOnDeploy(false);
         ProcessEngine engine = configuration.buildProcessEngine();
         return new FederatedEngine(engine);
     }
