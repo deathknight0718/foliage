@@ -15,6 +15,8 @@
  */
 package page.foliage.ldap;
 
+import static page.foliage.common.ioc.InstanceFactory.getInstance;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ import page.foliage.common.jackson.Hex36Serializer;
 import page.foliage.common.util.CodecUtils;
 import page.foliage.guava.common.base.Objects;
 import page.foliage.guava.common.collect.ImmutableSet;
+import page.foliage.ldap.session.IdentitySession;
 
 /**
  * 
@@ -74,19 +77,51 @@ public class Access implements Serializable {
     // ------------------------------------------------------------------------
 
     public static Access get(Long id) {
-        return from(User.get(id));
+        Access bean = new Access();
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
+            bean.user = session.userSelectById(id);
+            bean.domain = session.domainSelectById(bean.user.getDomainId());
+            bean.roles = ImmutableSet.copyOf(session.rolesSelectByParamsAndUserId(QueryParams.ALL, bean.user.getId()));
+            return bean;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public static Access fromEmail(String email) {
-        return from(User.fromEmail(email));
+        Access bean = new Access();
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
+            bean.user = session.userSelectByEmail(email);
+            bean.domain = session.domainSelectById(bean.user.getDomainId());
+            bean.roles = ImmutableSet.copyOf(session.rolesSelectByParamsAndUserId(QueryParams.ALL, bean.user.getId()));
+            return bean;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static Access fromName(String name) {
+        Access bean = new Access();
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
+            bean.user = session.userSelectByName(name);
+            bean.domain = session.domainSelectById(bean.user.getDomainId());
+            bean.roles = ImmutableSet.copyOf(session.rolesSelectByParamsAndUserId(QueryParams.ALL, bean.user.getId()));
+            return bean;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public static Access from(User user) {
         Access bean = new Access();
         bean.user = user;
-        bean.domain = user.domain();
-        bean.roles = ImmutableSet.copyOf(user.roles(QueryParams.ALL));
-        return bean;
+        try (IdentitySession session = getInstance(IdentitySession.class)) {
+            bean.domain = session.domainSelectById(bean.user.getDomainId());
+            bean.roles = ImmutableSet.copyOf(session.rolesSelectByParamsAndUserId(QueryParams.ALL, bean.user.getId()));
+            return bean;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     // ------------------------------------------------------------------------

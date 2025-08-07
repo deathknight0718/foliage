@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
+import page.foliage.common.util.CodecUtils;
 import page.foliage.guava.common.primitives.Bytes;
 
 /**
@@ -55,6 +56,12 @@ public class Identities {
 
     public static long jsonflake() {
         return DEFAULT_JSON_FLAKE_GENERATER.next();
+    }
+
+    // ------------------------------------------------------------------------
+
+    public static String hexflake() {
+        return CodecUtils.encodeHex36(snowflake());
     }
 
     // ------------------------------------------------------------------------

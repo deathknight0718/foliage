@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.RDN;
 
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
@@ -118,7 +117,8 @@ public class IdentitySessionLdap implements IdentitySession {
     public PaginList<User> usersSelectByParamsAndDomainId(QueryParams params, Long domainId) throws LDAPException {
         List<User> beans = Lists.newArrayList();
         Domain domain = domainSelectById(domainId);
-        Iterator<Entry> iterator = connection.selectTree(new RDN("dc", domain.getIdentifier()), "(uid=*)");
+        Entry point = connection.selectTree(String.format("(dc=%s)", domain.getIdentifier())).next();
+        Iterator<Entry> iterator = connection.selectTree(point.getName(), "(&(cn=*)(uid=*))");
         while (iterator.hasNext()) {
             Entry entry = iterator.next();
             User.Builder bean = new User.Builder(entry.get("uid").asLong());

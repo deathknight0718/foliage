@@ -105,14 +105,6 @@ public class LdapConnection implements AutoCloseable {
         return selectTree(dn.toString(), filter);
     }
 
-    public Iterator<Entry> selectTree(RDN rdn, String filter) throws LDAPException {
-        return selectTree(rdn, new DN(base), filter);
-    }
-
-    public Iterator<Entry> selectTree(RDN rdn, DN parent, String filter) throws LDAPException {
-        return selectTree(new DN(rdn, parent).toString(), filter);
-    }
-
     public Iterator<Entry> selectTree(String point, String filter) throws LDAPException {
         SearchRequest request = new SearchRequest(point, SearchScope.SUB, filter);
         LOGGER.debug("LDAP select tree: {}", request.toString());

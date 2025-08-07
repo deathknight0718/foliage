@@ -91,7 +91,7 @@ public class CodecUtils {
 
     public static String encodeHex36(Long value) {
         if (value == null) return null;
-        return Long.toString(value, HEX_BIT_36).toUpperCase();
+        return Long.toString(value, HEX_BIT_36).toLowerCase();
     }
 
     // ------------------------------------------------------------------------
