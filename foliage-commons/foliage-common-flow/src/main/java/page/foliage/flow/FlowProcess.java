@@ -225,6 +225,21 @@ public class FlowProcess {
             return this;
         }
 
+        public Starter resultReason(String resultReason) {
+            delegate.variable(FlowKeys.KEY_RESULT_REASON, resultReason);
+            return this;
+        }
+
+        public Starter resultReferenceId(String resultReferenceId) {
+            delegate.variable(FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId);
+            return this;
+        }
+
+        public Starter timerExpression(String timerExpression) {
+            delegate.variable(FlowKeys.KEY_TIMER_EXPRESSION, timerExpression);
+            return this;
+        }
+
         public Starter name(String name) {
             delegate.name(name);
             return this;

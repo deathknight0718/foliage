@@ -71,74 +71,114 @@ public class FlowDelegateExecution {
         return getHex36(FlowKeys.KEY_REFERENCE_ID);
     }
 
-    public Long getReferenceId(String definitionKey) {
-        return getHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_ID));
+    public Long getReferenceId(String taskDefinition) {
+        return getHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_REFERENCE_ID));
     }
 
     public String getReferenceType() {
         return get(FlowKeys.KEY_REFERENCE_TYPE);
     }
 
-    public String getReferenceType(String definitionKey) {
-        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_TYPE));
+    public String getReferenceType(String taskDefinition) {
+        return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_REFERENCE_TYPE));
     }
 
     public Long getAssigneeId() {
         return getHex36(FlowKeys.KEY_ASSIGNEE_ID);
     }
 
-    public Long getAssigneeId(String definitionKey) {
-        return getHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ASSIGNEE_ID));
+    public Long getAssigneeId(String taskDefinition) {
+        return getHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_ASSIGNEE_ID));
     }
 
     public String getResult() {
         return get(FlowKeys.KEY_RESULT);
     }
 
-    public String getResult(String definitionKey) {
-        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT));
+    public String getResult(String taskDefinition) {
+        return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT));
     }
 
     public String getResultReason() {
         return get(FlowKeys.KEY_RESULT_REASON);
     }
 
-    public String getResultReason(String definitionKey) {
-        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REASON));
+    public String getResultReason(String taskDefinition) {
+        return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REASON));
     }
 
     public String getResultReferenceId() {
         return get(FlowKeys.KEY_RESULT_REFERENCE_ID);
     }
 
-    public String getResultReferenceId(String definitionKey) {
-        return get(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REFERENCE_ID));
+    public String getResultReferenceId(String taskDefinition) {
+        return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REFERENCE_ID));
+    }
+
+    public String getTimerExpression() {
+        return get(FlowKeys.KEY_TIMER_EXPRESSION);
+    }
+
+    public String getTimerExpression(String taskDefinition) {
+        return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_TIMER_EXPRESSION));
     }
 
     // ------------------------------------------------------------------------
 
-    public void setReferenceId(String definitionKey, Long referenceId) {
-        setHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_ID), referenceId);
+    public void setReferenceId(Long referenceId) {
+        setHex36(FlowKeys.KEY_REFERENCE_ID, referenceId);
     }
 
-    public void setReferenceType(String definitionKey, String referenceType) {
-        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_REFERENCE_TYPE), referenceType);
+    public void setReferenceId(String taskDefinition, Long referenceId) {
+        setHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_REFERENCE_ID), referenceId);
     }
 
-    public void setAssigneeId(String definitionKey, Long assigneeId) {
-        setHex36(FlowKeys.prefix(definitionKey, FlowKeys.KEY_ASSIGNEE_ID), assigneeId);
+    public void setReferenceType(String referenceType) {
+        set(FlowKeys.KEY_REFERENCE_TYPE, referenceType);
     }
 
-    public void setResult(String definitionKey, String result) {
-        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT), result);
+    public void setReferenceType(String taskDefinition, String referenceType) {
+        set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_REFERENCE_TYPE), referenceType);
     }
 
-    public void setResultReason(String definitionKey, String resultReason) {
-        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REASON), resultReason);
+    public void setAssigneeId(Long assigneeId) {
+        setHex36(FlowKeys.KEY_ASSIGNEE_ID, assigneeId);
     }
 
-    public void setResultReferenceId(String definitionKey, String resultReferenceId) {
-        set(FlowKeys.prefix(definitionKey, FlowKeys.KEY_RESULT_REFERENCE_ID), resultReferenceId);
+    public void setAssigneeId(String taskDefinition, Long assigneeId) {
+        setHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_ASSIGNEE_ID), assigneeId);
+    }
+
+    public void setResult(String result) {
+        set(FlowKeys.KEY_RESULT, result);
+    }
+
+    public void setResult(String taskDefinition, String result) {
+        set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT), result);
+    }
+
+    public void setResultReason(String resultReason) {
+        set(FlowKeys.KEY_RESULT_REASON, resultReason);
+    }
+
+    public void setResultReason(String taskDefinition, String resultReason) {
+        set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REASON), resultReason);
+    }
+
+    public void setResultReferenceId(String resultReferenceId) {
+        set(FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId);
+    }
+
+    public void setResultReferenceId(String taskDefinition, String resultReferenceId) {
+        set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REFERENCE_ID), resultReferenceId);
+    }
+
+    public void setTimerExpression(String timerExpression) {
+        set(FlowKeys.KEY_TIMER_EXPRESSION, timerExpression);
+    }
+
+    public void setTimerExpression(String taskDefinition, String timerExpression) {
+        set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_TIMER_EXPRESSION), timerExpression);
     }
 
     // ------------------------------------------------------------------------

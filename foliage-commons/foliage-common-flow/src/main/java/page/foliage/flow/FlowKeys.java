@@ -37,10 +37,12 @@ public class FlowKeys {
 
     public static final String KEY_RESULT_REFERENCE_ID = "_result_reference_id";
 
+    public static final String KEY_TIMER_EXPRESSION = "_timer_expression";
+
     // ------------------------------------------------------------------------
 
-    public static String prefix(String definitionKey, String key) {
-        return "_" + definitionKey + key;
+    public static String prefix(String taskDefinition, String key) {
+        return "_" + taskDefinition + key;
     }
 
     public static Long decodeHex36(String hex) {

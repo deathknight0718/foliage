@@ -41,12 +41,6 @@ public interface Flowable {
 
     // ------------------------------------------------------------------------
 
-    default boolean isReadOnly() {
-        return getProcessId() != null && !isProcessActive();
-    }
-
-    // ------------------------------------------------------------------------
-
     public static class Context<T extends Flowable> {
 
         public final static String FLOW_NAME_PATTERN_DEFAULT = "%s：%s";

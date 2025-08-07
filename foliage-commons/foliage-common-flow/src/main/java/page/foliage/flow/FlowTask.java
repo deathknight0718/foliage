@@ -214,6 +214,14 @@ public class FlowTask {
         return variable(prefix(activity, KEY_RESULT_REFERENCE_ID), String.class);
     }
 
+    public String getTimerExpression() {
+        return variable(FlowKeys.KEY_TIMER_EXPRESSION, String.class);
+    }
+
+    public String getTimerExpression(String activity) {
+        return variable(prefix(activity, FlowKeys.KEY_TIMER_EXPRESSION), String.class);
+    }
+
     // ------------------------------------------------------------------------
 
     public static class Submitter {
@@ -254,6 +262,11 @@ public class FlowTask {
 
         public Submitter resultReferenceId(String referenceId) {
             variable(prefix(task.getTaskDefinitionKey(), KEY_RESULT_REFERENCE_ID), referenceId);
+            return this;
+        }
+
+        public Submitter timerExpression(String timerExpression) {
+            variable(prefix(task.getTaskDefinitionKey(), FlowKeys.KEY_TIMER_EXPRESSION), timerExpression);
             return this;
         }
 
