@@ -39,6 +39,8 @@ public class FlowKeys {
 
     public static final String KEY_TIMER_EXPRESSION = "_timer_expression";
 
+    public static final String KEY_ACCOUNT_ID = "_account_id";
+
     // ------------------------------------------------------------------------
 
     public static String prefix(String taskDefinition, String key) {

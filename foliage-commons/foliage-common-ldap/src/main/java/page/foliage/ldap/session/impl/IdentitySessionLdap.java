@@ -26,8 +26,6 @@ import com.unboundid.ldap.sdk.LDAPException;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.collect.Lists;
-import page.foliage.ldap.Dashboard;
-import page.foliage.ldap.Dashboard.Builder;
 import page.foliage.ldap.Domain;
 import page.foliage.ldap.Role;
 import page.foliage.ldap.User;
@@ -166,28 +164,6 @@ public class IdentitySessionLdap implements IdentitySession {
         bean.name(entry.get("cn").asText());
         bean.domainId(connection.reverse(entry, 2).get("uniqueIdentifier").asLong());
         return bean.build();
-    }
-
-    // ------------------------------------------------------------------------
-
-    @Override
-    public PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Dashboard dashboardSelectById(Long id) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Dashboard dashboardInsertOrUpdate(Builder builder) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Long dashboardDeleteById(Long id) {
-        throw new UnsupportedOperationException();
     }
 
     // ------------------------------------------------------------------------

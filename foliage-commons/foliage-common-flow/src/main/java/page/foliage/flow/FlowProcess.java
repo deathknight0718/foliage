@@ -208,6 +208,11 @@ public class FlowProcess {
             return this;
         }
 
+        public Starter accountId(Long accountId) {
+            delegate.variable(FlowKeys.KEY_ACCOUNT_ID, encodeHex36(accountId));
+            return this;
+        }
+
         public Starter referenceId(Long referenceId) {
             delegate.referenceId(encodeHex36(referenceId));
             delegate.variable(FlowKeys.KEY_REFERENCE_ID, encodeHex36(referenceId));

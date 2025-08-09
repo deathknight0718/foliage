@@ -16,6 +16,7 @@
 package page.foliage.flow;
 
 import static page.foliage.common.ioc.InstanceFactory.getInstance;
+import static page.foliage.common.util.CodecUtils.encodeHex36;
 
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public class FlowExecution {
         receivedMessage(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason));
     }
 
-    public void receivedMessage(String name, String result, String resultReason, String resultReferenceId) {
-        receivedMessage(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+    public void receivedMessage(String name, String result, String resultReason, Long resultReferenceId) {
+        receivedMessage(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, encodeHex36(resultReferenceId)));
     }
 
     public void receivedMessage(String name, Map<String, Object> variables) {
@@ -64,8 +65,8 @@ public class FlowExecution {
         receivedSignal(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason));
     }
 
-    public void receivedSignal(String name, String result, String resultReason, String resultReferenceId) {
-        receivedSignal(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+    public void receivedSignal(String name, String result, String resultReason, Long resultReferenceId) {
+        receivedSignal(name, Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, encodeHex36(resultReferenceId)));
     }
 
     public void receivedSignal(String name, Map<String, Object> variables) {
@@ -80,8 +81,8 @@ public class FlowExecution {
         trigger(Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason));
     }
 
-    public void trigger(String result, String resultReason, String resultReferenceId) {
-        trigger(Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId));
+    public void trigger(String result, String resultReason, Long resultReferenceId) {
+        trigger(Map.of(FlowKeys.KEY_RESULT, result, FlowKeys.KEY_RESULT_REASON, resultReason, FlowKeys.KEY_RESULT_REFERENCE_ID, encodeHex36(resultReferenceId)));
     }
 
     public void trigger(Map<String, Object> variables) {

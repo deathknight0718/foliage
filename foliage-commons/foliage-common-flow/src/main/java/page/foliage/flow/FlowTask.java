@@ -19,6 +19,7 @@ import static page.foliage.common.ioc.InstanceFactory.getInstance;
 import static page.foliage.common.util.CodecUtils.decodeHex36;
 import static page.foliage.common.util.CodecUtils.encodeHex36;
 import static page.foliage.flow.FlowKeys.KEY_ASSIGNEE_ID;
+import static page.foliage.flow.FlowKeys.KEY_ACCOUNT_ID;
 import static page.foliage.flow.FlowKeys.KEY_REFERENCE_ID;
 import static page.foliage.flow.FlowKeys.KEY_REFERENCE_TYPE;
 import static page.foliage.flow.FlowKeys.KEY_RESULT;
@@ -237,6 +238,11 @@ public class FlowTask {
 
         public Submitter assigneeId(Long assigneeId) {
             variable(prefix(task.getTaskDefinitionKey(), KEY_ASSIGNEE_ID), encodeHex36(assigneeId));
+            return this;
+        }
+
+        public Submitter accountId(Long accountId) {
+            variable(prefix(task.getTaskDefinitionKey(), KEY_ACCOUNT_ID), encodeHex36(accountId));
             return this;
         }
 

@@ -19,7 +19,6 @@ import page.foliage.common.collect.CacheKey;
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
 import page.foliage.guava.common.cache.Cache;
-import page.foliage.ldap.Dashboard;
 import page.foliage.ldap.Domain;
 import page.foliage.ldap.Role;
 import page.foliage.ldap.User;
@@ -99,26 +98,6 @@ public class IdentitySessionCache implements IdentitySession {
     @Override
     public User userSelectByName(String name) throws Exception {
         return (User) cache.get(new CacheKey("userSelectByName", name), () -> delegate.userSelectByName(name));
-    }
-
-    @Override
-    public PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception {
-        return delegate.dashboardsSelectByParamsAndDomainId(params, domainId);
-    }
-
-    @Override
-    public Dashboard dashboardSelectById(Long id) throws Exception {
-        return delegate.dashboardSelectById(id);
-    }
-
-    @Override
-    public Dashboard dashboardInsertOrUpdate(Dashboard.Builder builder) throws Exception {
-        return delegate.dashboardInsertOrUpdate(builder);
-    }
-
-    @Override
-    public Long dashboardDeleteById(Long id) throws Exception {
-        return delegate.dashboardDeleteById(id);
     }
 
     @Override

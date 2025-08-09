@@ -83,6 +83,14 @@ public class FlowDelegateExecution {
         return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_REFERENCE_TYPE));
     }
 
+    public Long getAccountId() {
+        return getHex36(FlowKeys.KEY_ACCOUNT_ID);
+    }
+
+    public Long getAccountId(String taskDefinition) {
+        return getHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_ACCOUNT_ID));
+    }
+
     public Long getAssigneeId() {
         return getHex36(FlowKeys.KEY_ASSIGNEE_ID);
     }
@@ -107,12 +115,12 @@ public class FlowDelegateExecution {
         return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REASON));
     }
 
-    public String getResultReferenceId() {
-        return get(FlowKeys.KEY_RESULT_REFERENCE_ID);
+    public Long getResultReferenceId() {
+        return getHex36(FlowKeys.KEY_RESULT_REFERENCE_ID);
     }
 
-    public String getResultReferenceId(String taskDefinition) {
-        return get(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REFERENCE_ID));
+    public Long getResultReferenceId(String taskDefinition) {
+        return getHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REFERENCE_ID));
     }
 
     public String getTimerExpression() {
@@ -139,6 +147,14 @@ public class FlowDelegateExecution {
 
     public void setReferenceType(String taskDefinition, String referenceType) {
         set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_REFERENCE_TYPE), referenceType);
+    }
+
+    public void setAccountId(Long accountId) {
+        setHex36(FlowKeys.KEY_ACCOUNT_ID, accountId);
+    }
+
+    public void setAccountId(String taskDefinition, Long accountId) {
+        setHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_ACCOUNT_ID), accountId);
     }
 
     public void setAssigneeId(Long assigneeId) {
@@ -169,8 +185,8 @@ public class FlowDelegateExecution {
         set(FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId);
     }
 
-    public void setResultReferenceId(String taskDefinition, String resultReferenceId) {
-        set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REFERENCE_ID), resultReferenceId);
+    public void setResultReferenceId(String taskDefinition, Long resultReferenceId) {
+        setHex36(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REFERENCE_ID), resultReferenceId);
     }
 
     public void setTimerExpression(String timerExpression) {

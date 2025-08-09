@@ -17,8 +17,6 @@ package page.foliage.ldap.session;
 
 import page.foliage.common.collect.PaginList;
 import page.foliage.common.collect.QueryParams;
-import page.foliage.ldap.Dashboard;
-import page.foliage.ldap.Dashboard.Builder;
 import page.foliage.ldap.Domain;
 import page.foliage.ldap.Role;
 import page.foliage.ldap.User;
@@ -46,14 +44,6 @@ public interface IdentitySession extends AutoCloseable {
     User userSelectByEmail(String email) throws Exception;
 
     User userSelectByName(String name) throws Exception;
-
-    PaginList<Dashboard> dashboardsSelectByParamsAndDomainId(QueryParams params, Long domainId) throws Exception;
-
-    Dashboard dashboardSelectById(Long id) throws Exception;
-
-    Dashboard dashboardInsertOrUpdate(Builder builder) throws Exception;
-
-    Long dashboardDeleteById(Long id) throws Exception;
 
     PaginList<Role> rolesSelectByParams(QueryParams params) throws Exception;
 
