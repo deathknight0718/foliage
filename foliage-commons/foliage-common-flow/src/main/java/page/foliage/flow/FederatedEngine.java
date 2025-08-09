@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.flowable.common.engine.api.delegate.event.FlowableEventListener;
 import org.flowable.engine.ProcessEngine;
@@ -193,7 +194,10 @@ public class FederatedEngine {
     // ------------------------------------------------------------------------
 
     public List<String> waitingIdQueryList(FlowProcess process) {
-        return processEngine.getRuntimeService().getActiveActivityIds(process.getId());
+        if (!process.isEnded()) return processEngine.getRuntimeService().getActiveActivityIds(process.getId());
+        HistoricActivityInstanceQuery query = processEngine.getHistoryService().createHistoricActivityInstanceQuery();
+        List<HistoricActivityInstance> activities = query.processInstanceId(process.getId()).activityType("endEvent").finished().list();
+        return activities.stream().map(HistoricActivityInstance::getActivityId).collect(Collectors.toList());
     }
 
     // ------------------------------------------------------------------------

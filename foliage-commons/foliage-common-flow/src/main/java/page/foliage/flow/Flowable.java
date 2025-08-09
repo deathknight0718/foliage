@@ -39,6 +39,8 @@ public interface Flowable {
 
     boolean isProcessActive();
 
+    boolean isArchived();
+
     // ------------------------------------------------------------------------
 
     public static class Context<T extends Flowable> {
