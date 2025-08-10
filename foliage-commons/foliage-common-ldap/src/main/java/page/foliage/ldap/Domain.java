@@ -40,7 +40,7 @@ public class Domain implements Serializable {
 
     // ------------------------------------------------------------------------
 
-    public static final Domain SYSTEM = new Domain(0L, "system", "平台管理中心");
+    public static final Domain SYSTEM = new Domain(0L, "system", "平台管理中心", "SYS");
 
     // ------------------------------------------------------------------------
 
@@ -54,12 +54,15 @@ public class Domain implements Serializable {
 
     private final String displayName;
 
+    private final String businessCategory;
+
     // ------------------------------------------------------------------------
 
-    public Domain(Long id, String identifier, String displayName) {
+    public Domain(Long id, String identifier, String displayName, String businessCategory) {
         this.id = id;
         this.identifier = identifier;
         this.displayName = displayName;
+        this.businessCategory = businessCategory;
     }
 
     // ------------------------------------------------------------------------
@@ -152,6 +155,10 @@ public class Domain implements Serializable {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getBusinessCategory() {
+        return businessCategory;
     }
 
 }

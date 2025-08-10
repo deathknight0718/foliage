@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.util.TypeLiteral;
 import page.foliage.common.annotation.Composited;
 import page.foliage.common.annotation.Specialized;
 
@@ -87,6 +88,20 @@ public class InstanceCDI implements InstanceProvider {
     @Override
     public <T> T getInstance(Class<T> clazz, String name) {
         return CDI.current().select(clazz).select(NamedLiteral.of(name)).get();
+    }
+
+    @Override
+    public <T> T getInstanceLiteral(TypeLiteral<T> typeLiteral) {
+        Instance<T> instance = CDI.current().select(typeLiteral);
+        if (instance.isAmbiguous()) {
+            LOGGER.debug("Instance of {} is ambiguous, selecting specialized instance.", typeLiteral.getType().getTypeName());
+            instance = instance.select(Specialized.Literal.INSTANCE);
+        }
+        if (instance.isUnsatisfied()) {
+            LOGGER.debug("Instance of {} is unsatisfied, selecting specialized instance.", typeLiteral.getType().getTypeName());
+            instance = instance.select(Specialized.Literal.INSTANCE);
+        }
+        return instance.get();
     }
 
 }

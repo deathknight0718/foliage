@@ -17,6 +17,7 @@ package page.foliage.common.ioc;
 
 import java.lang.annotation.Annotation;
 
+import jakarta.enterprise.util.TypeLiteral;
 import page.foliage.common.annotation.Composited;
 import page.foliage.common.annotation.Specialized;
 import page.foliage.inject.AbstractModule;
@@ -74,6 +75,11 @@ public class InstanceGuice implements InstanceProvider {
     @Override
     public <T> T getInstance(Class<T> clazz, String name) {
         return injector.getInstance(Key.get(clazz, Names.named(name)));
+    }
+
+    @Override
+    public <T> T getInstanceLiteral(TypeLiteral<T> typeLiteral) {
+        return injector.getInstance(typeLiteral.getRawType());
     }
 
 }

@@ -17,6 +17,7 @@ package page.foliage.common.ioc;
 
 import java.lang.annotation.Annotation;
 
+import jakarta.enterprise.util.TypeLiteral;
 import page.foliage.common.annotation.Specialized;
 
 /**
@@ -51,6 +52,10 @@ public class InstanceFactory {
 
     public static <T> T getInstance(Class<T> clazz, String name) {
         return provider.getInstance(clazz, name);
+    }
+
+    public static <T> T getInstanceLiteral(TypeLiteral<T> typeLiteral) {
+        return provider.getInstanceLiteral(typeLiteral);
     }
 
     // ------------------------------------------------------------------------

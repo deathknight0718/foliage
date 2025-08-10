@@ -64,7 +64,10 @@ public class IdentitySessionLdap implements IdentitySession {
         while (iterator.hasNext()) {
             Entry entry = iterator.next();
             Long id = entry.get("uniqueIdentifier").asLong();
-            beans.add(new Domain(id, entry.get("dc").asText(), entry.get("displayName").asText()));
+            String dc = entry.get("dc").asText();
+            String displayName = entry.get("displayName").asText();
+            String businessCategory = entry.get("businessCategory").asText();
+            beans.add(new Domain(id, dc, displayName, businessCategory));
         }
         Stream<Domain> stream = beans.stream();
         stream = stream.skip(params.offset()).limit(params.limit());
@@ -79,7 +82,10 @@ public class IdentitySessionLdap implements IdentitySession {
         while (iterator.hasNext()) {
             Entry entry = iterator.next();
             Long id = entry.get("uniqueIdentifier").asLong();
-            beans.add(new Domain(id, entry.get("dc").asText(), entry.get("displayName").asText()));
+            String dc = entry.get("dc").asText();
+            String displayName = entry.get("displayName").asText();
+            String businessCategory = entry.get("businessCategory").asText();
+            beans.add(new Domain(id, dc, displayName, businessCategory));
         }
         Stream<Domain> stream = beans.stream();
         stream = stream.skip(params.offset()).limit(params.limit());
@@ -90,7 +96,10 @@ public class IdentitySessionLdap implements IdentitySession {
     public Domain domainSelectById(Long id) throws LDAPException {
         String filter = MessageFormat.format("(uniqueIdentifier={0,number,#})", id);
         Entry entry = connection.selectOne(filter);
-        Domain bean = new Domain(entry.get("uniqueIdentifier").asLong(), entry.get("dc").asText(), entry.get("displayName").asText());
+        String dc = entry.get("dc").asText();
+        String displayName = entry.get("displayName").asText();
+        String businessCategory = entry.get("businessCategory").asText();
+        Domain bean = new Domain(id, dc, displayName, businessCategory);
         return bean;
     }
 
@@ -99,14 +108,22 @@ public class IdentitySessionLdap implements IdentitySession {
         String filter = MessageFormat.format("(uniqueIdentifier={0,number,#})", id);
         Entry entry = connection.selectOne(filter);
         Entry parent = connection.reverse(entry, 1);
-        return new Domain(parent.get("uniqueIdentifier").asLong(), parent.get("dc").asText(), parent.get("displayName").asText());
+        Long pid = parent.get("uniqueIdentifier").asLong();
+        String pdc = parent.get("dc").asText();
+        String pdisplayName = parent.get("displayName").asText();
+        String pbusinessCategory = parent.get("businessCategory").asText();
+        return new Domain(pid, pdc, pdisplayName, pbusinessCategory);
     }
 
     @Override
     public Domain domainSelectByIdentifier(String identifier) throws LDAPException {
         String filter = MessageFormat.format("(dc={0})", identifier);
         Entry entry = connection.selectOne(filter);
-        return new Domain(entry.get("uniqueIdentifier").asLong(), entry.get("dc").asText(), entry.get("displayName").asText());
+        Long id = entry.get("uniqueIdentifier").asLong();
+        String dc = entry.get("dc").asText();
+        String displayName = entry.get("displayName").asText();
+        String businessCategory = entry.get("businessCategory").asText();
+        return new Domain(id, dc, displayName, businessCategory);
     }
 
     // ------------------------------------------------------------------------

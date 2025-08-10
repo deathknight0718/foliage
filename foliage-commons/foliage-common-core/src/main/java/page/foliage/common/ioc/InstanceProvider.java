@@ -17,6 +17,8 @@ package page.foliage.common.ioc;
 
 import java.lang.annotation.Annotation;
 
+import jakarta.enterprise.util.TypeLiteral;
+
 /**
  * The instance provider interface.
  * 
@@ -34,5 +36,7 @@ public interface InstanceProvider {
     <T> T getInstanceComposited(Class<T> clazz);
 
     <T> T getInstanceSpecialized(Class<T> clazz);
+
+    <T> T getInstanceLiteral(TypeLiteral<T> typeLiteral);
 
 }

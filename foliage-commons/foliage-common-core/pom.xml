@@ -82,7 +82,6 @@
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <version>4.0.1</version>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 
