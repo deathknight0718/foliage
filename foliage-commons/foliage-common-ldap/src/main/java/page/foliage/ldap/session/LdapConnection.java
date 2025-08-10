@@ -203,6 +203,10 @@ public class LdapConnection implements AutoCloseable {
             this.value = value;
         }
 
+        public boolean isNull() {
+            return value == null;
+        }
+
         public String asKey() {
             return value.getName();
         }

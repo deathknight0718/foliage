@@ -108,6 +108,7 @@ public class IdentitySessionLdap implements IdentitySession {
         String filter = MessageFormat.format("(uniqueIdentifier={0,number,#})", id);
         Entry entry = connection.selectOne(filter);
         Entry parent = connection.reverse(entry, 1);
+        if (parent.get("uniqueIdentifier").isNull()) return Domain.SYSTEM;
         Long pid = parent.get("uniqueIdentifier").asLong();
         String pdc = parent.get("dc").asText();
         String pdisplayName = parent.get("displayName").asText();

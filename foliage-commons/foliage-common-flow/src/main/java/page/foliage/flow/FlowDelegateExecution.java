@@ -181,8 +181,8 @@ public class FlowDelegateExecution {
         set(FlowKeys.prefix(taskDefinition, FlowKeys.KEY_RESULT_REASON), resultReason);
     }
 
-    public void setResultReferenceId(String resultReferenceId) {
-        set(FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId);
+    public void setResultReferenceId(Long resultReferenceId) {
+        setHex36(FlowKeys.KEY_RESULT_REFERENCE_ID, resultReferenceId);
     }
 
     public void setResultReferenceId(String taskDefinition, Long resultReferenceId) {

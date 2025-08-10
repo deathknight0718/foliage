@@ -165,6 +165,10 @@ public class FlowTask {
         return delegate.isSuspended();
     }
 
+    public String getDescription() {
+        return delegate.getDescription();
+    }
+
     // ------------------------------------------------------------------------
 
     public Long getAssigneeId() {
