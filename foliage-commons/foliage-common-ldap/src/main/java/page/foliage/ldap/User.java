@@ -65,6 +65,15 @@ public class User implements Serializable {
         DADMIN.email = "dadmin@cecdat.com";
     }
 
+    public static final User AI = new User();
+
+    static {
+        AI.id = 100L;
+        AI.name = "AI";
+        AI.displayName = "AI 助手";
+        AI.email = "ai@cecdat.com";
+    }
+
     // ------------------------------------------------------------------------
 
     private Long id;
