@@ -97,7 +97,7 @@ public class MinioSessionImpl implements FileSession {
         query.extraHeaders(ImmutableMap.of(HEADER_REGION, point.getRegion().getName()));
         query.bucket(point.getBucket().name());
         query.prefix(point.getPath());
-        query.recursive(!StringUtils.equalsIgnoreCase("false", params.get("recursive")));
+        query.recursive(!StringUtils.equalsIgnoreCase("false", params.first("recursive")));
         List<FilePoint> points = new ArrayList<>();
         int count = 0, upper = params.offset() + params.limit();
         for (Result<Item> result : delegate.listObjects(query.build())) {

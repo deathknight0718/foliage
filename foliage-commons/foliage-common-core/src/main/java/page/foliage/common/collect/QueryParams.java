@@ -17,14 +17,13 @@ package page.foliage.common.collect;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import page.foliage.common.util.CodecUtils;
+import page.foliage.guava.common.collect.ImmutableList;
 import page.foliage.guava.common.collect.ImmutableMultimap;
-import page.foliage.guava.common.collect.ImmutableSet;
 import page.foliage.guava.common.collect.LinkedListMultimap;
 import page.foliage.guava.common.collect.Multimap;
 
@@ -40,7 +39,19 @@ public class QueryParams {
 
     public final static String KEYWORD_LIMIT = "limit";
 
-    public final static String KEYWORD_SPLIT = ",";
+    public final static String KEYWORD_ORDER = "order";
+
+    public final static String KEYWORD_ORDER_SPLIT = ":";
+
+    public final static String KEYWORD_ORDER_DIRECTION_ASC = "asc";
+
+    public final static String KEYWORD_ORDER_DIRECTION_DESC = "desc";
+
+    public final static String KEYWORD_SEARCH = "search";
+
+    public final static String KEYWORD_ARRAY_SPLIT = ",";
+
+    // ------------------------------------------------------------------------
 
     public final static Integer VALUE_DEF_OFFSET = 0;
 
@@ -130,13 +141,41 @@ public class QueryParams {
     // ------------------------------------------------------------------------
 
     public Integer offset() {
-        if (containsKey(KEYWORD_OFFSET)) return Integer.valueOf(get(KEYWORD_OFFSET));
+        if (containsKey(KEYWORD_OFFSET)) return Integer.valueOf(first(KEYWORD_OFFSET));
         return VALUE_DEF_OFFSET;
     }
 
     public Integer limit() {
-        if (containsKey(KEYWORD_LIMIT)) return Integer.valueOf(get(KEYWORD_LIMIT));
+        if (containsKey(KEYWORD_LIMIT)) return Integer.valueOf(first(KEYWORD_LIMIT));
         return VALUE_DEF_LIMIT;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public String search() {
+        if (containsKey(KEYWORD_SEARCH)) return first(KEYWORD_SEARCH);
+        return null;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public Iterable<String> orders() {
+        if (containsKey(KEYWORD_ORDER)) {
+            ImmutableList.Builder<String> builder = ImmutableList.builder();
+            for (String item : list(KEYWORD_ORDER)) {
+                if (StringUtils.isNotBlank(item)) {
+                    String[] parts = StringUtils.split(item, KEYWORD_ORDER_SPLIT);
+                    if (parts.length == 1) {
+                        builder.add(String.format("%s %s", parts[0], KEYWORD_ORDER_DIRECTION_ASC));
+                    } else if (parts.length == 2) {
+                        builder.add(String.format("%s %s", parts[0], parts[1]));
+                    } else {
+                        throw new IllegalArgumentException("Invalid order format: " + item);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     // ------------------------------------------------------------------------
@@ -166,6 +205,8 @@ public class QueryParams {
         return delegate.containsKey(ec(key));
     }
 
+    // ------------------------------------------------------------------------
+
     public QueryParams set(String key, Object value) {
         delegate.put(ec(key), ec(value));
         return this;
@@ -176,26 +217,24 @@ public class QueryParams {
         return this;
     }
 
-    public String get(String key) {
+    // ------------------------------------------------------------------------
+
+    public String first(String key) {
         return delegate.get(ec(key)).iterator().next();
     }
 
-    public String get(String key, Object defaultValue) {
-        return containsKey(key) ? get(key) : ec(defaultValue);
+    public String first(String key, Object defaultValue) {
+        return containsKey(key) ? first(key) : ec(defaultValue);
     }
 
-    public Long getHex36(String key) {
-        return CodecUtils.decodeHex36(get(key));
+    public Long firstHex36(String key) {
+        return CodecUtils.decodeHex36(first(key));
     }
 
-    public Set<String> split(String key) {
-        if (!containsKey(key)) return null;
-        String text = delegate.get(ec(key)).iterator().next();
-        ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-        for (String item : StringUtils.split(text, KEYWORD_SPLIT)) {
-            builder.add(StringUtils.trim(item));
-        }
-        return builder.build();
+    // ------------------------------------------------------------------------
+
+    public Iterable<String> list(String key) {
+        return delegate.get(ec(key));
     }
 
 }
