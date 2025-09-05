@@ -264,6 +264,10 @@ public class FlowProcess {
             return new FlowProcess(delegate.start());
         }
 
+        public FlowProcess startAsync() {
+            return new FlowProcess(delegate.startAsync());
+        }
+
     }
 
 }
