@@ -111,9 +111,7 @@ public class QueryBuilder {
         if (offset != null && limit != null) sqle.LIMIT(String.valueOf(limit)).OFFSET(String.valueOf(offset));
         if (!orders.isEmpty()) sqle.ORDER_BY(orders.toArray(String[]::new));
         PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString());
-        for (int i = 0; i < operations.size(); i++) {
-            operations.get(i).operation.apply(statement, i + 1);
-        }
+        for (int i = 0; i < operations.size(); i++) operations.get(i).operation.apply(statement, i + 1);
         return statement;
     }
 
@@ -123,9 +121,7 @@ public class QueryBuilder {
         if (search != null) sqle.WHERE(search);
         for (StatementBuilder builder : operations) sqle.WHERE(builder.expression);
         PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString());
-        for (int i = 0; i < operations.size(); i++) {
-            operations.get(i).operation.apply(statement, i + 1);
-        }
+        for (int i = 0; i < operations.size(); i++) operations.get(i).operation.apply(statement, i + 1);
         return statement;
     }
 
