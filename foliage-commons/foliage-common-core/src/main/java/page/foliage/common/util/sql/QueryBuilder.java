@@ -15,6 +15,12 @@
  */
 package page.foliage.common.util.sql;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import page.foliage.common.collect.QueryParams;
 
 /**
@@ -26,54 +32,125 @@ public class QueryBuilder {
 
     // ------------------------------------------------------------------------
 
-    private final SQLE sqle;
+    private List<StatementBuilder> operations = new ArrayList<>();
+
+    private List<String> selects = new ArrayList<>(), orders = new ArrayList<>();
+
+    private Integer offset, limit;
+
+    private String search, from;
 
     // ------------------------------------------------------------------------
 
-    public QueryBuilder(SQLE sqle) {
-        this.sqle = sqle;
+    public QueryBuilder() {}
+
+    // ------------------------------------------------------------------------
+
+    public QueryBuilder select(String... columns) {
+        selects.addAll(List.of(columns));
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public QueryBuilder from(String from) {
+        this.from = from;
+        return this;
     }
 
     // ------------------------------------------------------------------------
 
     public QueryBuilder offset(int offset) {
-        sqle.OFFSET(Integer.toString(offset));
+        this.offset = offset;
         return this;
     }
 
     public QueryBuilder limit(int limit) {
-        sqle.LIMIT(Integer.toString(limit));
+        this.limit = limit;
         return this;
     }
 
     // ------------------------------------------------------------------------
 
     public QueryBuilder orderBy(String expression) {
-        sqle.ORDER_BY(expression);
+        this.orders.add(expression);
+        return this;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public QueryBuilder where(String expression, StatementOperation consumer) {
+        operations.add(new StatementBuilder(expression, consumer));
         return this;
     }
 
     // ------------------------------------------------------------------------
 
     public QueryBuilder search(String expression) {
-        sqle.WHERE(String.format("content_ @@ to_tsquery('%s')", expression));
+        search = String.format("content_ @@ to_tsquery('%s')", expression);
         return this;
     }
 
     // ------------------------------------------------------------------------
 
     public QueryBuilder params(QueryParams params) {
+        if (params.containsKey(QueryParams.KEYWORD_SEARCH)) search(params.first(QueryParams.KEYWORD_SEARCH));
         if (params.containsKey(QueryParams.KEYWORD_OFFSET)) offset(params.offset());
         if (params.containsKey(QueryParams.KEYWORD_LIMIT)) limit(params.limit());
-        if (params.containsKey(QueryParams.KEYWORD_ORDER)) for (String order : params.orders()) sqle.ORDER_BY(order);
-        if (params.containsKey(QueryParams.KEYWORD_SEARCH)) search(params.first(QueryParams.KEYWORD_SEARCH));
+        if (params.containsKey(QueryParams.KEYWORD_ORDER)) for (String order : params.orders()) orderBy(order);
         return this;
     }
 
     // ------------------------------------------------------------------------
 
-    public SQLE build() {
-        return sqle;
+    public PreparedStatement build(Connection connection) throws SQLException {
+        SQLE sqle = new SQLE();
+        sqle.SELECT(selects.toArray(String[]::new)).FROM(from);
+        if (search != null) sqle.WHERE(search);
+        for (StatementBuilder builder : operations) sqle.WHERE(builder.expression);
+        if (offset != null && limit != null) sqle.LIMIT(String.valueOf(limit)).OFFSET(String.valueOf(offset));
+        if (!orders.isEmpty()) sqle.ORDER_BY(orders.toArray(String[]::new));
+        PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString());
+        for (int i = 0; i < operations.size(); i++) {
+            operations.get(i).operation.apply(statement, i + 1);
+        }
+        return statement;
+    }
+
+    public PreparedStatement count(Connection connection) throws SQLException {
+        SQLE sqle = new SQLE();
+        sqle.SELECT("count(1)").FROM(from);
+        if (search != null) sqle.WHERE(search);
+        for (StatementBuilder builder : operations) sqle.WHERE(builder.expression);
+        PreparedStatement statement = connection.prepareStatement(sqle.toNormalizeString());
+        for (int i = 0; i < operations.size(); i++) {
+            operations.get(i).operation.apply(statement, i + 1);
+        }
+        return statement;
+    }
+
+    // ------------------------------------------------------------------------
+
+    @FunctionalInterface
+    public interface StatementOperation {
+
+        void apply(PreparedStatement statement, int index) throws SQLException;
+
+    }
+
+    // ------------------------------------------------------------------------
+
+    public static class StatementBuilder {
+
+        private final String expression;
+
+        private final StatementOperation operation;
+
+        public StatementBuilder(String expression, StatementOperation operation) {
+            this.expression = expression;
+            this.operation = operation;
+        }
+
     }
 
 }
