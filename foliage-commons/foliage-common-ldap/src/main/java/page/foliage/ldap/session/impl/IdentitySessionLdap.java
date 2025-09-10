@@ -65,9 +65,10 @@ public class IdentitySessionLdap implements IdentitySession {
             Entry entry = iterator.next();
             Long id = entry.get("uniqueIdentifier").asLong();
             String dc = entry.get("dc").asText();
+            String name = entry.get("givenName").asText();
             String displayName = entry.get("displayName").asText();
             String businessCategory = entry.get("businessCategory").asText();
-            beans.add(new Domain(id, dc, displayName, businessCategory));
+            beans.add(new Domain(id, dc, name, displayName, businessCategory));
         }
         Stream<Domain> stream = beans.stream();
         stream = stream.skip(params.offset()).limit(params.limit());
@@ -83,9 +84,10 @@ public class IdentitySessionLdap implements IdentitySession {
             Entry entry = iterator.next();
             Long id = entry.get("uniqueIdentifier").asLong();
             String dc = entry.get("dc").asText();
+            String name = entry.get("givenName").asText();
             String displayName = entry.get("displayName").asText();
             String businessCategory = entry.get("businessCategory").asText();
-            beans.add(new Domain(id, dc, displayName, businessCategory));
+            beans.add(new Domain(id, dc, name, displayName, businessCategory));
         }
         Stream<Domain> stream = beans.stream();
         stream = stream.skip(params.offset()).limit(params.limit());
@@ -97,9 +99,10 @@ public class IdentitySessionLdap implements IdentitySession {
         String filter = MessageFormat.format("(uniqueIdentifier={0,number,#})", id);
         Entry entry = connection.selectOne(filter);
         String dc = entry.get("dc").asText();
+        String name = entry.get("givenName").asText();
         String displayName = entry.get("displayName").asText();
         String businessCategory = entry.get("businessCategory").asText();
-        Domain bean = new Domain(id, dc, displayName, businessCategory);
+        Domain bean = new Domain(id, dc, name, displayName, businessCategory);
         return bean;
     }
 
@@ -111,9 +114,10 @@ public class IdentitySessionLdap implements IdentitySession {
         if (parent.get("uniqueIdentifier").isNull()) return Domain.SYSTEM;
         Long pid = parent.get("uniqueIdentifier").asLong();
         String pdc = parent.get("dc").asText();
+        String pname = parent.get("givenName").asText();
         String pdisplayName = parent.get("displayName").asText();
         String pbusinessCategory = parent.get("businessCategory").asText();
-        return new Domain(pid, pdc, pdisplayName, pbusinessCategory);
+        return new Domain(pid, pdc, pname, pdisplayName, pbusinessCategory);
     }
 
     @Override
@@ -122,9 +126,10 @@ public class IdentitySessionLdap implements IdentitySession {
         Entry entry = connection.selectOne(filter);
         Long id = entry.get("uniqueIdentifier").asLong();
         String dc = entry.get("dc").asText();
+        String name = entry.get("givenName").asText();
         String displayName = entry.get("displayName").asText();
         String businessCategory = entry.get("businessCategory").asText();
-        return new Domain(id, dc, displayName, businessCategory);
+        return new Domain(id, dc, name, displayName, businessCategory);
     }
 
     // ------------------------------------------------------------------------
