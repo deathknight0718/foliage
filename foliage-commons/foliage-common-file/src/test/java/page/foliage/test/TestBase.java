@@ -55,9 +55,9 @@ public abstract class TestBase {
 
     // ------------------------------------------------------------------------
 
-    private static final String ENDPOINT = "https://file.foliage.page:7001";
+    private static final String ENDPOINT = "https://portal.cecdat.dev:8606";
 
-    private static final String[] KEYS = new String[]{ "admin", "changeit" };
+    private static final String[] KEYS = new String[]{ "admin", "yFrqfhMS7.PB_nW" };
 
     // ------------------------------------------------------------------------
 
